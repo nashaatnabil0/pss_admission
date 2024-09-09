@@ -11,10 +11,10 @@ if (strlen($_SESSION['sportadmission']==0)) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
+
   
 
-  <title>Sport Admission Management System with git - Admin Dashboard</title>
+  <title>Sport Admission Management System - Admin Dashboard</title>
 
   <!-- Bootstrap CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
