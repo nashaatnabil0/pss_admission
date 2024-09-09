@@ -30,7 +30,7 @@ if($sql){
 
 <head>
 
-  <title>Manage Trainees| Sports Admission Management System</title>
+  <title>Manage Trainees| Peace Sports School Admission System</title>
 
   <!-- Bootstrap CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">

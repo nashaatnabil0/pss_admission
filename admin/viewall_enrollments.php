@@ -27,7 +27,7 @@ $sql= $pdoConnection -> query("DELETE FROM tblartist WHERE ID='$rid'");
 
 <head>
 
-  <title>Manage Artist | Galerie Management System</title>
+  <title>Manage Enrollments | Peace Sports School Admission System</title>
 
   <!-- Bootstrap CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">

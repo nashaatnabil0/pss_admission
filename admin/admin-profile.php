@@ -3,14 +3,14 @@ session_start();
 error_reporting(0);
 include('includes/dbconnection.php');
 include ('includes/validation.php');
-if (strlen($_SESSION['agmsaid']==0)) {
+if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
   } else{
     if(isset($_POST['submit']))
   {
     $errors = [];
-      $adminid=$_SESSION['agmsaid'];
-      $aname=$_POST['adminname'];
+      $adminid=$_SESSION['sportadmission'];
+      $aname=$_POST['name'];
       if (empty($aname)) {
         $errors['name'] = "Name cannot be empty";
     }
@@ -26,7 +26,7 @@ if (strlen($_SESSION['agmsaid']==0)) {
 
 
  if (empty($errors)) {
-     $query=$pdoConnection-> query("update tbladmin set AdminName ='$aname', MobileNumber='$mobnum' where ID='$adminid'");
+     $query=$pdoConnection-> query("update users set name ='$aname', MobileNumber='$mobnum' where ID='$adminid'");
     if ($query) {
     echo "<script>alert('Admin profile has been updated.');</script>";
     echo "<script>window.location.href='admin-profile.php'</script>";
@@ -46,7 +46,7 @@ if (strlen($_SESSION['agmsaid']==0)) {
   
  
 
-  <title>Admin-Profile | Galerie Management System</title>
+  <title>Admin-Profile | Peace Sports School Admission System</title>
 
   <!-- Bootstrap CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -99,27 +99,21 @@ if (strlen($_SESSION['agmsaid']==0)) {
                         <h1> Profile Info</h1>
                         <form class="form-horizontal" role="form" method="post" action="">
                                   <?php
-                                $adminid=$_SESSION['agmsaid'];
-                                $ret=$pdoConnection-> query("select * from tbladmin where ID='$adminid'");
+                                $adminid=$_SESSION['sportadmission'];
+                                $ret=$pdoConnection-> query("select * from users where ID='$adminid'");
                                 $cnt=1;
                                 while ($row=$ret ->fetch(PDO:: FETCH_ASSOC)) {
                                 ?>
                           <div class="form-group">
-                            <label class="col-lg-2 control-label">Admin Name</label>
+                            <label class="col-lg-2 control-label">Name</label>
                             <div class="col-lg-6">
-                              <input class=" form-control" id="adminname" name="adminname" type="text" value="<?php  echo $row['AdminName'];?>">
+                              <input class=" form-control" id="adminname" name="name" type="text" value="<?php  echo $row['name'];?>">
                               <?php if(isset($errors['name'])){ ?>
                                 <span style="color:red;display:block;text-align:left"><?php echo $errors['name'] ?></span>
                               <?php } ?>
                             </div>
                           </div>
-                          <div class="form-group">
-                            <label class="col-lg-2 control-label">User Name</label>
-                            <div class="col-lg-6">
-                              <input class=" form-control" id="username" name="username" type="text" value="<?php  echo $row['UserName'];?>"  readonly='true'>
-                            </div>
-                          </div>
-                          
+
                           <div class="form-group">
                             <label class="col-lg-2 control-label">Contact Number</label>
                             <div class="col-lg-6">

@@ -22,7 +22,7 @@ $sql=$pdoConnection -> query("DELETE FROM tblartmedium where ID='$rid'");
 
 <head>
 
-  <title>Manage Art Medium| Galerie Management System</title>
+  <title>Manage Seasons| Peace Sports School Admission System</title>
 
   <!-- Bootstrap CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">

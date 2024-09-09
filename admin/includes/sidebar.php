@@ -29,7 +29,7 @@
                       </a>
             <ul class="sub">
               <li><a class="" href="add_sport.php">Add sport</a></li>
-              <li><a class="" href="viewall_sports.php">Manage sport</a></li>
+              <li><a class="" href="viewall_sports.php">Manage sports</a></li>
             </ul>
           </li>
           <li class="sub-menu">
@@ -51,7 +51,7 @@
                       </a>
             <ul class="sub">
               <li><a class="" href="add_trainee.php">Add Trainee</a></li>
-              <li><a class="" href="viewall_trainees.php">Manage Product</a></li>
+              <li><a class="" href="viewall_trainees.php">Manage Trainees</a></li>
             </ul>
           </li>
           <li class="sub-menu">
@@ -62,7 +62,7 @@
                       </a>
             <ul class="sub">
               <li><a class="" href="add_group.php">Add group</a></li>
-              <li><a class="" href="viewall_groups.php">Manage group</a></li>
+              <li><a class="" href="viewall_groups.php">Manage groups</a></li>
             </ul>
           </li>
           <li class="sub-menu">
@@ -73,7 +73,7 @@
                       </a>
             <ul class="sub">
               <li><a class="" href="add_enrollment.php">Add enrollment</a></li>
-              <li><a class="" href="viewall_enrollments.php">Manage enrollment</a></li>
+              <li><a class="" href="viewall_enrollments.php">Manage enrollments</a></li>
             </ul>
           </li>
           <li class="sub-menu">
@@ -84,7 +84,7 @@
                       </a>
             <ul class="sub">
               <li><a class="" href="add_payment.php">Add payment</a></li>
-              <li><a class="" href="viewall_payment.php">Manage payment</a></li>
+              <li><a class="" href="viewall_payment.php">Manage payments</a></li>
             </ul>
           </li>
 <li>

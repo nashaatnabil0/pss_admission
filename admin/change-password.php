@@ -2,20 +2,20 @@
 session_start();
 include('includes/dbconnection.php');
 error_reporting(0);
-if (strlen($_SESSION['agmsaid']==0)) {
+if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
   } else{
 if(isset($_POST['submit']))
 {
 
   $errors = [];   
-$adminid=$_SESSION['agmsaid'];
+$adminid=$_SESSION['sportadmission'];
 
 $cpassword=md5($_POST['currentpassword']);
 $newpassword=$_POST['newpassword'];
 $Confpassword=$_POST['confirmpassword'];
 
-$query=$pdoConnection-> query("select ID from tbladmin where ID='$adminid' and Password='$cpassword'");
+$query=$pdoConnection-> query("select ID from users where ID='$adminid' and Password='$cpassword'");
 $row=$query ->fetch(PDO:: FETCH_ASSOC);
 if($row>0){
 
@@ -26,7 +26,7 @@ if($row>0){
           //Password match
 
           $newpassword=md5($_POST['newpassword']);
-          $query=$pdoConnection-> query("update tbladmin set Password='$newpassword' where ID='$adminid'");
+          $query=$pdoConnection-> query("update users set password='$newpassword' where ID='$adminid'");
             if($query)
             {
             echo '<script>alert("Your password successully changed.")</script>';
@@ -59,7 +59,7 @@ echo '<script>alert("Your current password is wrong.")</script>';
   
   
 
-  <title>Change Password | Galerie Management System</title>
+  <title>Change Password | Peace Sports School Admission System</title>
 
   <!-- Bootstrap CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">

@@ -23,7 +23,7 @@ if(isset($_POST['login']))
 <html lang="en">
 
 <head>
-  <title>Login| Sports Admission Management System</title>
+  <title>Login| Peace Sports School Admission System</title>
 
   <!-- Bootstrap CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">

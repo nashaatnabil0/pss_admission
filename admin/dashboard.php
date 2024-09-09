@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 error_reporting(0);
@@ -14,7 +13,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
 
   
 
-  <title>Sport Admission Management System - Admin Dashboard</title>
+  <title>Peace Sports School Admission System - Admin Dashboard</title>
 
   <!-- Bootstrap CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">

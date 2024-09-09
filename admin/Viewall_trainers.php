@@ -2,7 +2,7 @@
 session_start();
 error_reporting(0);
 include('includes/dbconnection.php');
-if (strlen($_SESSION['agmsaid']==0)) {
+if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
   } else{
 
@@ -27,7 +27,7 @@ $sql= $pdoConnection -> query("DELETE FROM tblartist WHERE ID='$rid'");
 
 <head>
 
-  <title>Manage Artist | Galerie Management System</title>
+  <title>Manage Trainers | Peace Sports School Admission System</title>
 
   <!-- Bootstrap CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">

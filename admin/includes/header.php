@@ -14,7 +14,7 @@ $row=$ret-> fetch(PDO:: FETCH_ASSOC);
 $name=$row['name'];
 ?>
    <!--logo start-->
-   <a href="dashboard.php" class="logo"><span class="lite"><strong> Sports admission system | Admin</strong></span></a>
+   <a href="dashboard.php" class="logo"><span class="lite"><strong> Peace Sports School Admission System | Admin</strong></span></a>
    <!--logo end-->
 
    <div class="top-nav notification-row">

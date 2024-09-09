@@ -6,28 +6,17 @@ if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
   } else{
 
-if(isset($_GET['delid']))
-{
-$rid=intval($_GET['delid']);
-$delete_image = $pdoConnection -> query("select Profilepic from tblartist where ID='$rid'");
-$image_data = $delete_image-> fetch(PDO:: FETCH_ASSOC);
-$image_name = $image_data['Profilepic'];
 
-$sql= $pdoConnection -> query("DELETE FROM tblartist WHERE ID='$rid'");
 
-  if($sql){
-    unlink("images/$image_name");
-    echo "<script>alert('Data deleted');</script>"; 
-    echo "<script>window.location.href = 'manage-artist.php'</script>";     
-  }
-}
-?>
+  ?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+  
+  <link rel="shortcut icon" href="img/favicon.png">
 
-  <title>Manage Payments | Peace Sports School Admission System</title>
+  <title>Search | Peace Sports School Admission System</title>
 
   <!-- Bootstrap CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -58,11 +47,11 @@ $sql= $pdoConnection -> query("DELETE FROM tblartist WHERE ID='$rid'");
       <section class="wrapper">
         <div class="row">
           <div class="col-lg-12">
-            <h3 class="page-header"><i class="fa fa-table"></i> Manage Artist</h3>
+            <h3 class="page-header"><i class="fa fa-table"></i> Search Enquiry</h3>
             <ol class="breadcrumb">
               <li><i class="fa fa-home"></i><a href="dashboard.php">Home</a></li>
-              <li><i class="fa fa-table"></i>Artist</li>
-              <li><i class="fa fa-th-list"></i>Manage Artist</li>
+              <li><i class="fa fa-table"></i>Enquiry</li>
+              <li><i class="fa fa-th-list"></i>Search Enquiry</li>
             </ol>
           </div>
         </div>
@@ -71,42 +60,62 @@ $sql= $pdoConnection -> query("DELETE FROM tblartist WHERE ID='$rid'");
           <div class="col-sm-12">
             <section class="panel">
               <header class="panel-heading">
-                Manage Artist
+                Search Enquiry
+  <form class="form-horizontal " name="search" method="post" action="" enctype="multipart/form-data">
+                
+                  <div class="form-group">
+                    <label class="col-sm-5 control-label">Search by Enquiry Number / Name / Mobile No.</label>
+                    <div class="col-sm-7">
+                      <input class="form-control" id="searchdata" name="searchdata"  type="text" required="true">
+                    </div>
+                  </div>
+               
+                 <p style="text-align: center;"> <button type="submit" name="search" class="btn btn-primary">Submit</button></p>
+                </form>
+
               </header>
+
+<?php
+if(isset($_POST['search']))
+{ 
+
+$sdata=$_POST['searchdata'];
+  ?>
+  <h4 align="center">Result against "<?php echo $sdata;?>" keyword </h4> 
               <table class="table">
-                <thead>
-                                        
-                                            <tr>
-                  <th>S.NO</th>
-            
-                 
-                    <th>Name</th>
-                    <th>Email</th>
+                <thead>                      
+                  <tr>
+                    <th>S.NO</th>
+                    <th>Enquiry Number</th>
+                    <th>Full Name</th>
                     <th>Mobile Number</th>
-                    <th>Registration Date</th>
-                   
-                          <th>Action</th>
-                </tr>
-                                        </tr>
-                                        </thead>
+                    <th>Enquiry Date</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
                <?php
-$ret= $pdoConnection-> query("SELECT * FROM tblartist");
+$ret= $pdoConnection -> query ("SELECT * FROM tblenquiry where ( EnquiryNumber like '%$sdata%' OR FullName like '%$sdata%' OR MobileNumber like '%$sdata%')");
+$num= $ret -> rowCount();
+if($num>0){
 $cnt=1;
-while ($row=$ret-> fetch(PDO:: FETCH_ASSOC)) {
+while ($row=$ret->fetch(PDO:: FETCH_ASSOC)) {
 
 ?>
-              
                 <tr>
                   <td><?php echo $cnt;?></td>
-            <td><?php  echo $row['Name'];?></td>
-                <td><?php  echo $row['Email'];?></td> 
+                  <td><?php  echo $row['EnquiryNumber'];?></td>
+                  <td><?php  echo $row['FullName'];?></td>
                   <td><?php  echo $row['MobileNumber'];?></td>
-                  <td><?php  echo $row['CreationDate'];?></td>
-                  <td><a href="edit-artist-detail.php?editid=<?php echo $row['ID'];?>" class="btn btn-success">Edit</a> || <a href="manage-artist.php?delid=<?php echo $row['ID'];?>" class="btn btn-danger confirm">Delete</a></td>
+                  <td><?php  echo $row['EnquiryDate'];?></td>
+                  <td><a href="view-enquiry-detail.php?viewid=<?php echo $row['ID'];?>" class="btn btn-success">View Details</a></td>
                 </tr>
-                <?php 
+<?php 
 $cnt=$cnt+1;
-}?>
+} } else { ?>
+  <tr>
+    <td colspan="8"> No record found against this search</td>
+  </tr>
+<?php } }?>
               </table>
             </section>
           </div>
@@ -128,17 +137,7 @@ $cnt=$cnt+1;
   <script src="js/jquery.nicescroll.js" type="text/javascript"></script>
   <!--custome script for all page-->
   <script src="js/scripts.js"></script>
-<script>
-  let deleteBtn = document.querySelectorAll(".confirm");
-for (let i = 0; i < deleteBtn.length; i++) {
-    deleteBtn[i].addEventListener("click", (e) => {
-        let ans = confirm("Are You Sure!!")
-        if (!ans) {
-            e.preventDefault();
-        }
-    })
-}
-</script>
+
 
 </body>
 

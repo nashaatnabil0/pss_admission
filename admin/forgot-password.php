@@ -25,7 +25,7 @@ if(isset($_POST['submit']))
 
 <head>
 
-  <title>Forgot Password| Sports Admission Management System</title>
+  <title>Forgot Password| Peace Sports School Admission System</title>
 
   <!-- Bootstrap CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">

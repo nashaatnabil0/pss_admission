@@ -1,5 +1,5 @@
  <div class="text-right">
         <div class="credits">
-        <p>Sports admission System.</p>
+        <p>Peace Sports School Admission System.</p>
         </div>
       </div>
