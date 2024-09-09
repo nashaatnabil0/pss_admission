@@ -8,7 +8,7 @@ if(isset($_POST['submit']))
     $contactno=$_POST['contactno'];
     $email=$_POST['email'];
 
-    $query= $pdoConnection -> query("SELECT ID from tbladmin WHERE Email='$email' AND MobileNumber='$contactno'");
+    $query= $pdoConnection -> query("SELECT ID from users WHERE Email='$email' AND MobileNumber='$contactno'");
     $ret= $query-> fetch(PDO:: FETCH_ASSOC);
     if($ret>0){
       $_SESSION['contactno']=$contactno;
@@ -25,7 +25,7 @@ if(isset($_POST['submit']))
 
 <head>
 
-  <title>Forgot Password| Galerie Management System</title>
+  <title>Forgot Password| Sports Admission Management System</title>
 
   <!-- Bootstrap CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
