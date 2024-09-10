@@ -151,10 +151,10 @@ if($sql){
                       <p><strong>Contact Ph. Number:</strong> <span id="modalContPhone"></span></p>
                       <p><strong>Father Name:</strong> <span id="modalFaN"></span></p>
                       <p><strong>Father Ph. Num:</strong> <span id="modalFaPhone"></span></p>
-                      <p><strong>Father Jop:</strong> <span id="modalFaJop"></span></p>
+                      <p><strong>Father Job:</strong> <span id="modalFaJop"></span></p>
                       <p><strong>Mother Name:</strong> <span id="modalMaN"></span></p>
                       <p><strong>Mother Ph. Num:</strong> <span id="modalMaPhone"></span></p>
-                      <p><strong>Mother Jop:</strong> <span id="modalMaJop"></span></p>
+                      <p><strong>Mother Job:</strong> <span id="modalMaJop"></span></p>
                       <p><strong>Notes:</strong> <span id="modalNotes"></span></p>
                     </div>
                     <div class="modal-footer">
