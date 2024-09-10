@@ -88,7 +88,7 @@ $sql=$pdoConnection -> query("DELETE FROM tblartmedium where ID='$rid'");
                   <td><?php echo $cnt;?></td>
                   <td><?php  echo $row['title'];?></td>
                   <td><?php  echo $row['Supervisor'];?></td>
-                  <td><a href="edit_season_detail.php?editid=<?php echo $row['ID'];?>" class="btn btn-primary">Edit</a> || <a href="viewall_seasons.php?delid=<?php echo $row['ID'];?>" class="btn btn-danger confirm">Delete</a></td>
+                  <td><a href="edit_sport_detail.php?editid=<?php echo $row['ID'];?>" class="btn btn-primary">Edit</a> || <a href="viewall_seasons.php?delid=<?php echo $row['ID'];?>" class="btn btn-danger confirm">Delete</a></td>
                 </tr>
                     <?php 
                       $cnt=$cnt+1;
