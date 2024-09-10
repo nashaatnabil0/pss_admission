@@ -9,16 +9,11 @@ if (strlen($_SESSION['sportadmission']==0)) {
 if(isset($_GET['delid']))
 {
 $rid=intval($_GET['delid']);
-$delete_image = $pdoConnection -> query("select Profilepic from tblartist where ID='$rid'");
-$image_data = $delete_image-> fetch(PDO:: FETCH_ASSOC);
-$image_name = $image_data['Profilepic'];
-
-$sql= $pdoConnection -> query("DELETE FROM tblartist WHERE ID='$rid'");
+$sql= $pdoConnection -> query("DELETE FROM groups WHERE ID='$rid'");
 
   if($sql){
-    unlink("images/$image_name");
     echo "<script>alert('Data deleted');</script>"; 
-    echo "<script>window.location.href = 'manage-artist.php'</script>";     
+    echo "<script>window.location.href = 'viewall_groups.php'</script>";     
   }
 }
 ?>
@@ -85,15 +80,36 @@ $sql= $pdoConnection -> query("DELETE FROM tblartist WHERE ID='$rid'");
                       <th>Capacity</th>
                       <th>Enrollments</th>
                       <th>Sport</th>
+                      <th>Season</th>
                       <th>Price</th>
                       <th>Action</th>
                     </tr>
                   </thead>
                   <?php
-                    $ret= $pdoConnection-> query("SELECT groups.ID as gID,groups.Title,groups.days,groups.Timeslot,groups.place,groups.minAge,groups.maxAge,groups.capacity,groups.price, sport.name FROM groups LEFT JOIN sport on groups.sportId=sport.ID");
+                    $ret= $pdoConnection-> query("SELECT 
+                          g.ID,
+                          g.Title,
+                          g.place,
+                          g.days,
+                          g.Timeslot,
+                          g.minAge,
+                          g.maxAge,
+                          g.price,
+                          g.capacity,
+                          t.name AS trainer_name,  
+                          s.name AS sport_name,    
+                          se.name AS season_name   
+                      FROM 
+                          `groups` g
+                      JOIN 
+                          `trainers` t ON g.trainerId = t.ID
+                      JOIN 
+                          `sport` s ON g.sportId = s.ID
+                      JOIN 
+                          `season` se ON g.seasonId = se.ID;");
                     $cnt=1;
                     while ($row=$ret-> fetch(PDO:: FETCH_ASSOC)) {
-                      $gID = $row['gID'];
+                      $gID = $row['ID'];
                       $query2=$pdoConnection-> query("SELECT * FROM `enrollment` WHERE enrollment.groupId = '$gID' AND enrollment.state='on'");
                       $enrollmentcount=$query2 ->rowCount();
                     ?>
@@ -105,7 +121,8 @@ $sql= $pdoConnection -> query("DELETE FROM tblartist WHERE ID='$rid'");
                       <td><?php  echo $row['minAge'].'y - '.$row['maxAge'].'y';?></td>
                       <td><?php  echo $row['capacity'];?></td>
                       <td><?php  echo $enrollmentcount;?></td>
-                      <td><?php  echo $row['name'];?></td>
+                      <td><?php  echo $row['sport_name'];?></td>
+                      <td><?php  echo $row['season_name'];?></td>
                       <td><?php  echo $row['price'];?></td>
                       <td><a href="edit_group_detail.php?editid=<?php echo $row['ID'];?>" class="btn btn-success">Edit</a> || <a href="viewall_groups.php?delid=<?php echo $row['ID'];?>" class="btn btn-danger confirm">Delete</a></td>
                     </tr>
@@ -136,7 +153,7 @@ $sql= $pdoConnection -> query("DELETE FROM tblartist WHERE ID='$rid'");
   let deleteBtn = document.querySelectorAll(".confirm");
   for (let i = 0; i < deleteBtn.length; i++) {
       deleteBtn[i].addEventListener("click", (e) => {
-          let ans = confirm("Are You Sure!!")
+          let ans = confirm("Are You Sure!!\nThis Process will delete all the enrollment in this group too ?")
           if (!ans) {
               e.preventDefault();
           }
