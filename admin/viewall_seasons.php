@@ -10,10 +10,8 @@ if(isset($_GET['delid']))
 {
 $rid=intval($_GET['delid']);
 $sql=$pdoConnection -> query("DELETE FROM tblartmedium where ID='$rid'");
- echo "<script>alert('Data deleted');</script>"; 
+  echo "<script>alert('Data deleted');</script>"; 
   echo "<script>window.location.href = 'manage-art-medium.php'</script>";     
-
-
 }
 
   ?>
@@ -53,11 +51,11 @@ $sql=$pdoConnection -> query("DELETE FROM tblartmedium where ID='$rid'");
       <section class="wrapper">
         <div class="row">
           <div class="col-lg-12">
-            <h3 class="page-header"><i class="fa fa-table"></i> Manage Art Medium</h3>
+            <h3 class="page-header"><i class="fa fa-table"></i> Season Management</h3>
             <ol class="breadcrumb">
               <li><i class="fa fa-home"></i><a href="dashboard.php">Home</a></li>
-              <li><i class="fa fa-table"></i>Manage Art Medium</li>
-              <li><i class="fa fa-th-list"></i>Manage Art Medium</li>
+              <li><i class="fa fa-table"></i>Season</li>
+              <li><i class="fa fa-th-list"></i>View All Season</li>
             </ol>
           </div>
         </div>
@@ -66,45 +64,42 @@ $sql=$pdoConnection -> query("DELETE FROM tblartmedium where ID='$rid'");
           <div class="col-sm-12">
             <section class="panel">
               <header class="panel-heading">
-                Manage Art Medium
+                Season Search
+                <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search for title, state, or start date..." class="form-control" style="margin-bottom: 10px;">
               </header>
               <table class="table">
-                <thead>
-                                        
-                                            <tr>
-                  <th>S.NO</th>
-            
-                 
-                    <th>Medium of Art</th>
-                    
-                    <th>Creation Date</th>
-                   
-                          <th>Action</th>
-                </tr>
-                                        </tr>
-                                        </thead>
-               <?php
-$ret=$pdoConnection-> query("SELECT * from tblartmedium ");
-$cnt=1;
-while ($row= $ret-> fetch(PDO:: FETCH_ASSOC)) {
-
-?>
-              
+                <thead>                    
+                  <tr>
+                    <th>S.NO</th>
+                    <th>Title</th>
+                    <th>State</th>
+                    <th>Start Date</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                    <?php $ret=$pdoConnection->query("SELECT * FROM `season`");
+                    if($ret->rowCount()>0){ 
+                    $cnt=1;
+                    while ($row= $ret-> fetch(PDO:: FETCH_ASSOC)) {
+                    ?>     
                 <tr>
                   <td><?php echo $cnt;?></td>
-            <td><?php  echo $row['ArtMedium'];?></td>
-                  <td><?php  echo $row['CreationDate'];?></td>
-                  <td><a href="edit-art-medium-detail.php?editid=<?php echo $row['ID'];?>" class="btn btn-success">Edit</a> || <a href="manage-art-medium.php?delid=<?php echo $row['ID'];?>" class="btn btn-danger confirm">Delete</a></td>
+                  <td><?php  echo $row['name'];?></td>
+                  <td><?php  if($row['state']=="on"){ echo "Active";}else{echo "Not Active";}?></td>
+                  <td><?php  echo $row['startDate'];?></td>
+                  <td><a href="edit_season_detail.php?editid=<?php echo $row['ID'];?>" class="btn btn-primary">Edit</a> || <a href="viewall_seasons.php?delid=<?php echo $row['ID'];?>" class="btn btn-danger confirm">Delete</a></td>
                 </tr>
-<?php 
-  $cnt=$cnt+1;
-}?>
+                    <?php 
+                      $cnt=$cnt+1;
+                    } }else {?>
+                <tr>
+                  <td colspan="5" style="text-align: center;">no Data</td>
+                </tr>
+                    <?php }?>
               </table>
             </section>
           </div>
-       
         </div>
-       
         <!-- page end-->
       </section>
     </section>
@@ -120,18 +115,50 @@ while ($row= $ret-> fetch(PDO:: FETCH_ASSOC)) {
   <script src="js/jquery.nicescroll.js" type="text/javascript"></script>
   <!--custome script for all page-->
   <script src="js/scripts.js"></script>
-<script>
-let deleteBtn = document.querySelectorAll(".confirm");
-for (let i = 0; i < deleteBtn.length; i++) {
-    deleteBtn[i].addEventListener("click", (e) => {
-        let ans = confirm("Are You Sure!!")
-        if (!ans) {
-            e.preventDefault();
-        }
-    })
-}
-</script>
+  <!-- Delete Btn Confirm -->
+  <script>
+    let deleteBtn = document.querySelectorAll(".confirm");
+    for (let i = 0; i < deleteBtn.length; i++) {
+        deleteBtn[i].addEventListener("click", (e) => {
+            let ans = confirm("Are You Sure!!")
+            if (!ans) {
+                e.preventDefault();
+            }
+        })
+    }
+  </script>
+  <!-- Search Script -->
+  <script>
+    function searchTable() {
+      var input = document.getElementById("searchInput");
+      var filter = input.value.toUpperCase();
+      var table = document.querySelector(".table");
+      var tr = table.getElementsByTagName("tr");
 
+      for (var i = 1; i < tr.length; i++) {
+        var tdTitle = tr[i].getElementsByTagName("td")[1]; // Title column
+        var tdState = tr[i].getElementsByTagName("td")[2]; // State column
+        var tdDate = tr[i].getElementsByTagName("td")[3]; // Start Date column
+        
+        if (tdTitle || tdState || tdDate) {
+          var titleText = tdTitle.textContent || tdTitle.innerText;
+          var stateText = tdState.textContent || tdState.innerText;
+          var dateText = tdDate.textContent || tdDate.innerText;
+
+          // Check if any of the columns match the search query
+          if (
+            titleText.toUpperCase().indexOf(filter) > -1 || 
+            stateText.toUpperCase().indexOf(filter) > -1 || 
+            dateText.toUpperCase().indexOf(filter) > -1
+          ) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }       
+      }
+    }
+  </script>
 </body>
 
 </html>
