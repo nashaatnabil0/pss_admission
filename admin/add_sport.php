@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(0);
+//error_reporting(0);
 include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
@@ -10,20 +10,18 @@ if (strlen($_SESSION['sportadmission']==0)) {
 if(isset($_POST['submit']))
   {
    
-    $arttype=$_POST['arttype'];
-    $query=$pdoConnection-> query("insert into tblarttype(ArtType) value('$arttype')");
+    $sportName=$_POST['sportname'];
+    $supervisor=$_POST['supervisor'];
+    $query = $pdoConnection->query("INSERT INTO sport (name , supervisorID) VALUES ('$sportName', '$supervisor')");
     if ($query) {
-echo "<script>alert('Artist type has been added.');</script>";
-echo "<script>window.location.href ='manage-art-type.php'</script>";
+echo "<script>alert('sport has been added.');</script>";
+echo "<script>window.location.href ='viewall_sports.php'</script>";
   }
   else
     {
       
       echo "<script>alert('Something Went Wrong. Please try again.');</script>";
     }
-
-  
-
 }
   ?>
 <!DOCTYPE html>
@@ -70,11 +68,11 @@ echo "<script>window.location.href ='manage-art-type.php'</script>";
       <section class="wrapper">
         <div class="row">
           <div class="col-lg-12">
-            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Add Art Type</h3>
+            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Add Sport</h3>
             <ol class="breadcrumb">
               <li><i class="fa fa-home"></i><a href="dashboard.php">Home</a></li>
-              <li><i class="icon_document_alt"></i>Art Type</li>
-              <li><i class="fa fa-file-text-o"></i>Add Art Type</li>
+              <li><i class="icon_document_alt"></i>Sport</li>
+              <li><i class="fa fa-file-text-o"></i>Add Sport</li>
             </ol>
           </div>
         </div>
@@ -88,12 +86,26 @@ echo "<script>window.location.href ='manage-art-type.php'</script>";
                 <form class="form-horizontal " method="post" action="" enctype="multipart/form-data">
                   
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Art Type</label>
+                    <label class="col-sm-2 control-label">Sport Name</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="arttype" name="arttype"  type="text" required="true">
+                      <input class="form-control" id="sportname" name="sportname"  type="text" required="true">
                     </div>
                   </div>
-                  
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Supervisor</label>
+                    <div class="col-sm-10">
+                      <select class="form-control m-bot15" name="supervisor" id="supervisor">
+                                <option value="">Choose trainer</option>
+                                <?php $query=$pdoConnection-> query("select * from trainers");
+
+              while($row=$query ->fetch(PDO:: FETCH_ASSOC))
+
+              {
+              ?>    
+              <option value="<?php echo $row['ID'];?>"><?php echo $row['name'];?></option>
+                  <?php } ?> 
+                            </select>
+                    </div>
                   <div class="form-group">
                 
                  <p style="text-align: center;"> <button type="submit" name='submit' class="btn btn-primary">Submit</button></p>
