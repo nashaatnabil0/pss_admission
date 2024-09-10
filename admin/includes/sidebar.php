@@ -16,7 +16,7 @@
                           <span class="menu-arrow arrow_carrot-right"></span>
                       </a>
             <ul class="sub">
-              <li><a class="" href="add-season.php">Add season</a></li>
+              <li><a class="" href="add_season.php">Add season</a></li>
               <li><a class="" href="viewall_seasons.php">Manage seasons</a></li>
              
             </ul>

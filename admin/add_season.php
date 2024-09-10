@@ -10,21 +10,34 @@ if (strlen($_SESSION['sportadmission']==0)) {
 if(isset($_POST['submit']))
   {
    
-    $arttype=$_POST['arttype'];
-    $query=$pdoConnection-> query("insert into tblarttype(ArtType) value('$arttype')");
-    if ($query) {
-echo "<script>alert('Artist type has been added.');</script>";
-echo "<script>window.location.href ='manage-art-type.php'</script>";
+    $Name=$_POST['Name'];
+    $State=$_POST['State'];
+    $stDate=$_POST['startdate'];
+    $seasonImg = $_FILES['image']['name'];
+
+    $extension = strtolower(pathinfo($seasonImg, PATHINFO_EXTENSION));
+    $allowed_extensions = array("jpg", "jpeg", "png", "gif");
+      // Validation for allowed extensions
+      if (!in_array($extension, $allowed_extensions)) {
+        $errors['image'] = "Invalid format. Only jpg / jpeg/ png /gif format allowed";
+     }
+
+    if (empty($errors)) {
+      $renameSeasonImg = md5($seasonImg) . '.' . $extension;
+      move_uploaded_file($_FILES["image"]["tmp_name"], "images/" . $renameSeasonImg);
+    
+        $query = $pdoConnection->query("INSERT INTO season (name, state, startDate, image) VALUES ('$Name', '$State', '$stDate', '$renameSeasonImg')");
+        if ($query) {
+echo "<script>alert('New season has been added.');</script>";
+echo "<script>window.location.href ='viewall_seasons.php'</script>";
   }
   else
     {
       
       echo "<script>alert('Something Went Wrong. Please try again.');</script>";
     }
-
-  
-
 }
+  }
   ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -70,11 +83,11 @@ echo "<script>window.location.href ='manage-art-type.php'</script>";
       <section class="wrapper">
         <div class="row">
           <div class="col-lg-12">
-            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Add Art Type</h3>
+            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Add Season</h3>
             <ol class="breadcrumb">
               <li><i class="fa fa-home"></i><a href="dashboard.php">Home</a></li>
-              <li><i class="icon_document_alt"></i>Art Type</li>
-              <li><i class="fa fa-file-text-o"></i>Add Art Type</li>
+              <li><i class="icon_document_alt"></i>Season</li>
+              <li><i class="fa fa-file-text-o"></i>Add Season</li>
             </ol>
           </div>
         </div>
@@ -82,18 +95,38 @@ echo "<script>window.location.href ='manage-art-type.php'</script>";
           <div class="col-lg-12">
             <section class="panel">
               <header class="panel-heading">
-             Add Art Type
+             Add Season
               </header>
               <div class="panel-body">
                 <form class="form-horizontal " method="post" action="" enctype="multipart/form-data">
                   
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Art Type</label>
+                    <label class="col-sm-2 control-label">Season Name</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="arttype" name="arttype"  type="text" required="true">
+                      <input class="form-control" id="Name" name="Name"  type="text" required="true">
                     </div>
                   </div>
-                  
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Season State</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="State" name="State"  type="text" required="true">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Start Date</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="startDate" name="startdate"  type="date">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Image</label>
+                    <div class="col-sm-10">
+                       <input type="file" class="form-control" name="image" id="image" value="" required="true">
+                       <?php if( isset($errors['image'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['image'] ?></span>
+                       <?php } ?>
+                      </div>
+                  </div>
                   <div class="form-group">
                 
                  <p style="text-align: center;"> <button type="submit" name='submit' class="btn btn-primary">Submit</button></p>
