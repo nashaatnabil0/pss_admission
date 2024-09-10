@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(0);
+// error_reporting(0);
 include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
@@ -11,8 +11,12 @@ if(isset($_POST['submit']))
   {
    
     $sportName=$_POST['sportname'];
-    $supervisor=$_POST['supervisor'];
-    $query = $pdoConnection->query("INSERT INTO sport (name , supervisorID) VALUES ('$sportName', '$supervisor')");
+    $supervisor=$_POST['supervisorID'];
+    if($supervisor==""){
+      $query = $pdoConnection->query("INSERT INTO sport (name) VALUES ('$sportName')");
+    }else{
+      $query = $pdoConnection->query("INSERT INTO sport (name , supervisorID) VALUES ('$sportName', '$supervisor')");
+    }
     if ($query) {
 echo "<script>alert('sport has been added.');</script>";
 echo "<script>window.location.href ='viewall_sports.php'</script>";
@@ -93,7 +97,7 @@ echo "<script>window.location.href ='viewall_sports.php'</script>";
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Supervisor</label>
                     <div class="col-sm-10">
-                      <select class="form-control m-bot15" name="supervisor" id="supervisor">
+                      <select class="form-control m-bot15" name="supervisorID" id="supervisor">
                         <option value="">Choose trainer</option>
                           <?php $query=$pdoConnection-> query("select * from trainers");
                             while($row=$query ->fetch(PDO:: FETCH_ASSOC))

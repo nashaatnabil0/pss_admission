@@ -12,7 +12,11 @@ if(isset($_POST['submit']))
   $spname=$_POST['sportname'];
   $superID=$_POST['supervisor'];
   $eid=$_GET['editid'];
-  $query=$pdoConnection-> query("update sport set name='$spname',supervisorID='$superID' where ID='$eid'");
+  if($superID==""){
+    $query=$pdoConnection-> query("update sport set name='$spname',supervisorID= NULL where ID='$eid'");
+  }else{
+    $query=$pdoConnection-> query("update sport set name='$spname',supervisorID='$superID' where ID='$eid'");
+  }
     if ($query) {
       echo "<script>alert('Sport Data has been updated.');  location.href='viewall_sports.php'</script>";
   }
