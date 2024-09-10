@@ -84,7 +84,7 @@ $sql= $pdoConnection -> query("DELETE FROM tblartist WHERE ID='$rid'");
                     <th>Action</th>
                   </tr>
                 </thead>
-                    <?php $ret=$pdoConnection->query("SELECT trainers.ID as ID, trainers.name, trainers.MobileNumber as mobNum, sport.name as sport FROM `trainers` JOIN sport on trainers.sportId = sport.ID");
+                    <?php $ret=$pdoConnection->query("SELECT trainers.ID as ID, trainers.name, trainers.MobileNumber as mobNum, COALESCE(sport.name, 'No Sport assigned') as sport FROM `trainers` LEFT JOIN sport on trainers.sportId = sport.ID");
                     if($ret->rowCount()>0){ 
                     $cnt=1;
                     while ($row= $ret-> fetch(PDO:: FETCH_ASSOC)) {

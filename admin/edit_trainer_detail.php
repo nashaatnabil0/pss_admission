@@ -15,9 +15,9 @@ if(isset($_POST['submit']))
     $spID=$_POST['SportID'];
     $eid=$_GET['editid'];
     if($spID==""){
-      $query = $pdoConnection -> query("UPDATE trainers SET name='$name', MobileNumber='$mobnum', sportId= NULL where ID='$eid'");
+      $query = $pdoConnection -> query("update trainers SET name='$name', MobileNumber='$mobnum', sportId= NULL where ID='$eid'");
     }else{
-      $query = $pdoConnection -> query("UPDATE trainers SET name='$name', MobileNumber='$mobnum', sportId= '$spID' where ID='$eid'");
+      $query = $pdoConnection -> query("update trainers SET name='$name', MobileNumber='$mobnum', sportId= '$spID' where ID='$eid'");
     }
     
     if ($query) {
@@ -92,9 +92,6 @@ if(isset($_POST['submit']))
               </header>
               <div class="panel-body">
                 <form class="form-horizontal " method="post" action="">
-                  <p style="font-size:16px; color:red" align="left"> 
-                    <?php if($msg){echo $msg;}  ?> 
-                  </p>
                   <?php
                     $cid=$_GET['editid'];
                     $ret= $pdoConnection-> query("SELECT * FROM trainers where ID='$cid'");
