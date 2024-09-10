@@ -119,7 +119,7 @@ if($sql){
                         '<?php echo $row['Notes'];?>'
                       )">Details
                     </button> ||
-                    <a href="edit_trainee_detail.php?editid=<?php echo $row['ID'];?>" class="btn btn-primary">Edit</a> || <a href="viewall_seasons.php?delid=<?php echo $row['ID'];?>" class="btn btn-danger confirm">Delete</a>
+                    <a href="edit_trainee_detail.php?editid=<?php echo $row['NID'];?>" class="btn btn-primary">Edit</a> || <a href="viewall_seasons.php?delid=<?php echo $row['ID'];?>" class="btn btn-danger confirm">Delete</a>
                   </td>
                 </tr>
                     <?php 

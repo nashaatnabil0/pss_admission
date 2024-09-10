@@ -76,37 +76,31 @@ $sql= $pdoConnection -> query("DELETE FROM tblartist WHERE ID='$rid'");
               <table class="table">
                 <thead>
                                         
-                                            <tr>
-                  <th>S.NO</th>
-            
-                 
+                  <tr>
+                    <th>S.NO</th>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Mobile Number</th>
                     <th>Registration Date</th>
-                   
-                          <th>Action</th>
-                </tr>
-                                        </tr>
-                                        </thead>
-               <?php
-$ret= $pdoConnection-> query("SELECT * FROM tblartist");
-$cnt=1;
-while ($row=$ret-> fetch(PDO:: FETCH_ASSOC)) {
-
-?>
-              
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <?php
+                  $ret= $pdoConnection-> query("SELECT * FROM tblartist");
+                  $cnt=1;
+                  while ($row=$ret-> fetch(PDO:: FETCH_ASSOC)) {
+                ?>
                 <tr>
                   <td><?php echo $cnt;?></td>
-            <td><?php  echo $row['Name'];?></td>
-                <td><?php  echo $row['Email'];?></td> 
+                  <td><?php  echo $row['Name'];?></td>
+                  <td><?php  echo $row['Email'];?></td> 
                   <td><?php  echo $row['MobileNumber'];?></td>
                   <td><?php  echo $row['CreationDate'];?></td>
                   <td><a href="edit-artist-detail.php?editid=<?php echo $row['ID'];?>" class="btn btn-success">Edit</a> || <a href="manage-artist.php?delid=<?php echo $row['ID'];?>" class="btn btn-danger confirm">Delete</a></td>
                 </tr>
                 <?php 
-$cnt=$cnt+1;
-}?>
+                  $cnt=$cnt+1;
+                  }?>
               </table>
             </section>
           </div>
