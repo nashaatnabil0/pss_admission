@@ -7,10 +7,11 @@ if(isset($_POST['login']))
   {
     $adminuser=$_POST['username'];
     $password=md5($_POST['password']);
-    $query=$pdoConnection-> query("SELECT ID from users where name='$adminuser' AND Password= '$password'");
+    $query=$pdoConnection-> query("SELECT ID,role from users where name='$adminuser' AND Password= '$password'");
     $ret = $query ->fetch(PDO:: FETCH_ASSOC);
     if($ret>0){
       $_SESSION['sportadmission']=$ret['ID'];
+      $_SESSION['role']=$ret['role'];
       echo "<script type='text/javascript'> document.location ='dashboard.php'; </script>";
     }
     else{
