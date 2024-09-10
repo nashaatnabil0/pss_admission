@@ -78,7 +78,8 @@ $sql=$pdoConnection -> query("DELETE FROM tblartmedium where ID='$rid'");
                     <th>Action</th>
                   </tr>
                 </thead>
-                    <?php $ret=$pdoConnection->query("SELECT sport.ID as ID, sport.name as title, trainers.name AS 'Supervisor' FROM `sport` JOIN `trainers` ON sport.supervisorID = trainers.ID ");
+                    <?php 
+                    $ret=$pdoConnection->query("SELECT sport.ID as ID, sport.name as title, COALESCE(trainers.name, 'No Supervisor') AS Supervisor FROM sport LEFT JOIN trainers ON sport.supervisorID = trainers.ID;");
                     if($ret->rowCount()>0){ 
                     $cnt=1;
                     while ($row= $ret-> fetch(PDO:: FETCH_ASSOC)) {
@@ -99,9 +100,7 @@ $sql=$pdoConnection -> query("DELETE FROM tblartmedium where ID='$rid'");
               </table>
             </section>
           </div>
-       
         </div>
-       
         <!-- page end-->
       </section>
     </section>
