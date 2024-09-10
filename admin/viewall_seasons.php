@@ -9,11 +9,16 @@ if (strlen($_SESSION['sportadmission']==0)) {
 if(isset($_GET['delid']))
 {
 $rid=intval($_GET['delid']);
-$sql=$pdoConnection -> query("DELETE FROM tblartmedium where ID='$rid'");
-  echo "<script>alert('Data deleted');</script>"; 
-  echo "<script>window.location.href = 'manage-art-medium.php'</script>";     
+$delete_image = $pdoConnection -> query("select image from season where ID='$rid'");
+$image_data = $delete_image-> fetch(PDO:: FETCH_ASSOC);
+$image_name = $image_data['image'];
+$sql=$pdoConnection -> query("DELETE FROM season where ID='$rid'");
+  if($sql){
+    unlink("images/$image_name");
+    echo "<script>alert('Data deleted');</script>"; 
+    echo "<script>window.location.href = 'viewall_seasons.php'</script>";     
+  }
 }
-
   ?>
 <!DOCTYPE html>
 <html lang="en">
