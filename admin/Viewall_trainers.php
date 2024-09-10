@@ -94,7 +94,7 @@ $sql= $pdoConnection -> query("DELETE FROM tblartist WHERE ID='$rid'");
                   <td><?php  echo $row['name'];?></td>
                   <td><?php  echo '0'.$row['mobNum'];?></td>
                   <td><?php  echo $row['sport'];?></td>
-                  <td><a href="edit_season_detail.php?editid=<?php echo $row['ID'];?>" class="btn btn-primary">Edit</a> || <a href="viewall_seasons.php?delid=<?php echo $row['ID'];?>" class="btn btn-danger confirm">Delete</a></td>
+                  <td><a href="edit_trainer_detail.php?editid=<?php echo $row['ID'];?>" class="btn btn-primary">Edit</a> || <a href="viewall_seasons.php?delid=<?php echo $row['ID'];?>" class="btn btn-danger confirm">Delete</a></td>
                 </tr>
                     <?php 
                       $cnt=$cnt+1;

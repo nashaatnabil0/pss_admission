@@ -12,14 +12,16 @@ if(isset($_POST['submit']))
     
     $name=$_POST['name'];
     $mobnum=$_POST['mobnum'];
-    $email=$_POST['email'];
-    $edudetails=$_POST['edudetails'];
-    $awarddetails=$_POST['awarddetails'];
-  $eid=$_GET['editid'];
-   
-    $query = $pdoConnection -> query("UPDATE tblartist SET Name='$name', MobileNumber='$mobnum', Email= '$email', Education='$edudetails', Award= '$awarddetails' where ID='$eid'");
+    $spID=$_POST['SportID'];
+    $eid=$_GET['editid'];
+    if($spID==""){
+      $query = $pdoConnection -> query("UPDATE trainers SET name='$name', MobileNumber='$mobnum', sportId= NULL where ID='$eid'");
+    }else{
+      $query = $pdoConnection -> query("UPDATE trainers SET name='$name', MobileNumber='$mobnum', sportId= '$spID' where ID='$eid'");
+    }
+    
     if ($query) {
-      echo "<script>alert('Artist details has been updated.');  location.href='manage-artist.php'</script>";
+      echo "<script>alert('Trainer details has been updated.');  location.href='viewall_trainers.php'</script>";
   }
   else
     {
@@ -74,11 +76,11 @@ if(isset($_POST['submit']))
       <section class="wrapper">
         <div class="row">
           <div class="col-lg-12">
-            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Update Artist Detail</h3>
+            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Update Trainer Detail</h3>
             <ol class="breadcrumb">
               <li><i class="fa fa-home"></i><a href="dashboard.php">Home</a></li>
-              <li><i class="icon_document_alt"></i>Artist</li>
-              <li><i class="fa fa-file-text-o"></i>Artist Detail</li>
+              <li><i class="icon_document_alt"></i>Trainers</li>
+              <li><i class="fa fa-file-text-o"></i>Trainer Detail</li>
             </ol>
           </div>
         </div>
@@ -86,59 +88,41 @@ if(isset($_POST['submit']))
           <div class="col-lg-12">
             <section class="panel">
               <header class="panel-heading">
-               Update Company Detail
+              Trainer Detail
               </header>
               <div class="panel-body">
                 <form class="form-horizontal " method="post" action="">
-                  <p style="font-size:16px; color:red" align="left"> <?php if($msg){
-    echo $msg;
-  }  ?> </p>
-
-  <?php
- $cid=$_GET['editid'];
-$ret= $pdoConnection-> query("SELECT * FROM tblartist where ID='$cid'");
-$cnt=1;
-while ($row=$ret->fetch(PDO:: FETCH_ASSOC)) {
-?>
+                  <p style="font-size:16px; color:red" align="left"> 
+                    <?php if($msg){echo $msg;}  ?> 
+                  </p>
+                  <?php
+                    $cid=$_GET['editid'];
+                    $ret= $pdoConnection-> query("SELECT * FROM trainers where ID='$cid'");
+                    while ($row=$ret->fetch(PDO:: FETCH_ASSOC)) {
+                  ?>
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Name</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="name" name="name"  type="text" required="true" value="<?php  echo $row['Name'];?>">
+                      <input class="form-control" id="name" name="name"  type="text" required="true" value="<?php  echo $row['name'];?>">
                     </div>
                   </div>
                    <div class="form-group">
                     <label class="col-sm-2 control-label">Mobile Number</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="mobnum" maxlength="10" name="mobnum"  type="text" required="true" pattern="[0-9]+" value="<?php  echo $row['MobileNumber'];?>">
+                      <input class="form-control" id="mobnum" maxlength="11" name="mobnum"  type="text" required="true" pattern="[0-9]+" value="<?php  echo '0'.$row['MobileNumber'];?>">
                     </div>
                   </div>
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Email</label>
+                    <label class="col-sm-2 control-label">Sport</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="email" name="email"  type="email" required="true" value="<?php  echo $row['Email'];?>">
+                      <select class="form-control m-bot15" name="SportID" id="SportID">
+                        <option value="">Choose trainer</option>
+                          <?php $query=$pdoConnection-> query("select * from sport");
+                            while($row1=$query ->fetch(PDO:: FETCH_ASSOC)){?>    
+                            <option value="<?php echo $row1['ID'];?>" <?php if($row1['ID'] == $row['sportId']){ echo "selected='selected'";}?> > <?php echo $row1['name'];?></option>
+                            <?php } ?> 
+                      </select>
                     </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="col-sm-2 control-label">Education Details</label>
-                    <div class="col-sm-10">
-                     
-                      <textarea class="form-control" name="edudetails" required="true"><?php  echo $row['Education'];?></textarea>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="col-sm-2 control-label">Award Details</label>
-                    <div class="col-sm-10">
-                    
-                      <textarea class="form-control" name="awarddetails" required="true"><?php  echo $row['Award'];?></textarea>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="col-sm-2 control-label">Profile Pics</label>
-                    <div class="col-sm-10">
-                      <img src="images/<?php echo $row['Profilepic'];?>" width="200" height="150" value="<?php  echo $row['Profilepic'];?>"><a href="changepropic.php?imageid=<?php echo $row['ID'];?>" class="btn btn-success">  Edit Image</a>
-                    </div>
-                   
-                  </div>
                 <?php } ?>
                  <p style="text-align: center;"> <button type="submit" name='submit' class="btn btn-primary">Update</button></p>
                 </form>
