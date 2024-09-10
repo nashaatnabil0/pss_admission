@@ -11,7 +11,7 @@ if(isset($_POST['submit']))
   {
    
     $Name=$_POST['Name'];
-    $State=$_POST['State'];
+    $State = $_POST['seasonstate'];
     $stDate=$_POST['startdate'];
     $seasonImg = $_FILES['image']['name'];
 
@@ -107,10 +107,13 @@ echo "<script>window.location.href ='viewall_seasons.php'</script>";
                     </div>
                   </div>
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Season State</label>
+                    <label class="col-sm-2 control-label">Season State:</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="State" name="State"  type="text" required="true">
+                      <br><p class="">Check the box if the season is active</p>
+                      <input class="form-check-input" type="checkbox" role="switch" name="seasonstate" id="seasonstate" value="on">On
+                      <input type="hidden" name="seasonstate" value="off"> 
                     </div>
+                    
                   </div>
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Start Date</label>
