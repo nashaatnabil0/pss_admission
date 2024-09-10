@@ -1,6 +1,6 @@
 <?php
 session_start();
-//error_reporting(0);
+error_reporting(0);
 include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
@@ -80,11 +80,10 @@ echo "<script>window.location.href ='viewall_sports.php'</script>";
           <div class="col-lg-12">
             <section class="panel">
               <header class="panel-heading">
-             Add Art Type
+             Add Sport
               </header>
               <div class="panel-body">
                 <form class="form-horizontal " method="post" action="" enctype="multipart/form-data">
-                  
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Sport Name</label>
                     <div class="col-sm-10">
@@ -95,24 +94,20 @@ echo "<script>window.location.href ='viewall_sports.php'</script>";
                     <label class="col-sm-2 control-label">Supervisor</label>
                     <div class="col-sm-10">
                       <select class="form-control m-bot15" name="supervisor" id="supervisor">
-                                <option value="">Choose trainer</option>
-                                <?php $query=$pdoConnection-> query("select * from trainers");
-
-              while($row=$query ->fetch(PDO:: FETCH_ASSOC))
-
-              {
-              ?>    
-              <option value="<?php echo $row['ID'];?>"><?php echo $row['name'];?></option>
-                  <?php } ?> 
-                            </select>
+                        <option value="">Choose trainer</option>
+                          <?php $query=$pdoConnection-> query("select * from trainers");
+                            while($row=$query ->fetch(PDO:: FETCH_ASSOC))
+                            {
+                            ?>    
+                          <option value="<?php echo $row['ID'];?>"><?php echo $row['name'];?></option>
+                            <?php } ?> 
+                      </select>
                     </div>
-                  <div class="form-group">
-                
-                 <p style="text-align: center;"> <button type="submit" name='submit' class="btn btn-primary">Submit</button></p>
+                  </div>
+                    <p style="text-align: center;"> <button type="submit" name='submit' class="btn btn-primary">Submit</button></p>
                 </form>
               </div>
-            </section>
-            
+            </section>  
           </div>
         </div>
         <!-- Basic Forms & Horizontal Forms-->
