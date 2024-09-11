@@ -113,7 +113,7 @@ echo "<script>window.location.href ='viewall_seasons.php'</script>";
                       <!--<input class="form-check-input" type="checkbox" role="switch" name="seasonstate" id="seasonstate" value="on">On
                       <input type="hidden" name="seasonstate" value="off"> -->
                       <input class="" id="seasonstate" name="seasonstate"  type="checkbox" value="on"> <t> Active <br>
-                      <input class="" id="paymentPlan" name="seasonstate"  type="checkbox" value="off"> <t> Inactive 
+                      <input class="" id="seasonstateoff" name="seasonstate"  type="checkbox" value="off"> <t> Inactive 
                     </div>
                     
                   </div>
