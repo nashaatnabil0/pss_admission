@@ -20,8 +20,8 @@
                           <span class="menu-arrow arrow_carrot-right"></span>
                       </a>
             <ul class="sub">
-              <li><a class="" href="add_season.php">Add season</a></li>
-              <li><a class="" href="viewall_seasons.php">Manage seasons</a></li>
+              <li><a class="" href="add_season.php">Add Season</a></li>
+              <li><a class="" href="viewall_seasons.php">Manage Seasons</a></li>
              
             </ul>
           </li>
@@ -32,8 +32,8 @@
                           <span class="menu-arrow arrow_carrot-right"></span>
                       </a>
             <ul class="sub">
-              <li><a class="" href="add_sport.php">Add sport</a></li>
-              <li><a class="" href="viewall_sports.php">Manage sports</a></li>
+              <li><a class="" href="add_sport.php">Add Sport</a></li>
+              <li><a class="" href="viewall_sports.php">Manage Sports</a></li>
             </ul>
           </li>
           <li class="sub-menu">
@@ -65,8 +65,8 @@
                           <span class="menu-arrow arrow_carrot-right"></span>
                       </a>
             <ul class="sub">
-              <li><a class="" href="add_group.php">Add group</a></li>
-              <li><a class="" href="viewall_groups.php">Manage groups</a></li>
+              <li><a class="" href="add_group.php">Add Group</a></li>
+              <li><a class="" href="viewall_groups.php">Manage Groups</a></li>
             </ul>
           </li>
           <li class="sub-menu">
@@ -76,8 +76,8 @@
                           <span class="menu-arrow arrow_carrot-right"></span>
                       </a>
             <ul class="sub">
-              <li><a class="" href="add_enrollment.php">Add enrollment</a></li>
-              <li><a class="" href="viewall_enrollments.php">Manage enrollments</a></li>
+              <li><a class="" href="add_enrollment.php">Add Enrollment</a></li>
+              <li><a class="" href="viewall_enrollments.php">Manage Enrollments</a></li>
             </ul>
           </li>
           <li class="sub-menu">
@@ -87,8 +87,8 @@
                           <span class="menu-arrow arrow_carrot-right"></span>
                       </a>
             <ul class="sub">
-              <li><a class="" href="add_payment.php">Add payment</a></li>
-              <li><a class="" href="viewall_payment.php">Manage payments</a></li>
+              <li><a class="" href="add_payment.php">Add Payment</a></li>
+              <li><a class="" href="viewall_payment.php">Manage Payments</a></li>
             </ul>
           </li>
           <li>

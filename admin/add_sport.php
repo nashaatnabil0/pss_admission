@@ -98,7 +98,7 @@ echo "<script>window.location.href ='viewall_sports.php'</script>";
                     <label class="col-sm-2 control-label">Supervisor</label>
                     <div class="col-sm-10">
                       <select class="form-control m-bot15" name="supervisorID" id="supervisor">
-                        <option value="">Choose trainer</option>
+                        <option value="">Choose a trainer</option>
                           <?php $query=$pdoConnection-> query("select * from trainers");
                             while($row=$query ->fetch(PDO:: FETCH_ASSOC))
                             {

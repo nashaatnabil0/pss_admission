@@ -7,60 +7,68 @@ if (strlen($_SESSION['sportadmission']==0)) {
   }
 else {
   $errors = [];
-  $formSubmitted = $_SERVER["REQUEST_METHOD"] == "POST";
-  if ($formSubmitted) {
-    $name = $_POST['name'];
-    if (empty($name)) {
-      $errors['name'] = "Name cannot be empty";
-  }
-    $mobnum = $_POST['mobnum'];
-    $monnumPattern='/^(011|010|015|012)[0-9]{8}$/';
-    if (empty($mobnum)) {
-      $errors['mobnum'] = "phone number cannot be empty";
-  }elseif(!preg_match($monnumPattern,$mobnum)){
-     $errors['mobnuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
- }
-
-    $email = $_POST['email'];
-
-    if (empty($email)) {
-      $errors['email'] = "Email cannot be empty";
-  }elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-          $errors['email'] = "Invalid email format";
-      }
+  if(isset($_POST['submit'])){
    
-      $edudetails = $_POST['edudetails'];
-      $awarddetails = $_POST['awarddetails'];
+    $title = $_POST['title'];
+    if (empty($title)) {
+      $errors['title'] = "Please enter a group name";
+    }
+    $days = $_POST['days'];
+    if (empty($days)) {
+      $errors['days'] = "Please enter the training days";
+    }
+    
+    $place = $_POST['place'];
+    if ($place == "") {
+        $place = "null";
+    }else{
+      $place = $_POST['place'];
+    }
 
-        $img = $_FILES["images"]["name"];
-      $extension = substr($img, strlen($img) - 4, strlen($img));
-      // Allowed extensions
-      $allowed_extensions = array(".jpg", "jpeg", ".png", ".gif");
-      // Validation for allowed extensions
-      if (!in_array($extension, $allowed_extensions)) {
-          $errors['images'] = "Invalid format. Only jpg / jpeg/ png /gif format allowed";
-       }
+    $timing = $_POST['timing'];
 
-      if (empty($errors)) {
-          $proimg = md5($img) . $extension;
-          move_uploaded_file($_FILES["images"]["tmp_name"], "images/" . $proimg);
+    if (empty($timing)) {
+      $errors['timing'] = "Please enter a Training time";
+    }
+    
+    $minAge = $_POST['minAge'];
+    if (empty($minAge)) {
+      $errors['minAge'] = "Minimum Age can't be empty";
+    }
+   
+    $maxAge = $_POST['maxAge'];
+    if (empty($maxAge)) {
+      $errors['maxAge'] = "Maximum Age can't be empty";
+    }
+    
+    $trainer = $_POST['trainer'];
+    $sport = $_POST['sport'];
+    if (empty($sport)) {
+      $errors['sport'] = "Please select a sport";
+    }
+    $season = $_POST['season'];
+    if (empty($season)) {
+      $errors['season'] = "Please select a season";
+    }
+    $price = $_POST['price'];
+    if (empty($season)) {
+      $errors['price'] = "Plese enter a price ";
+    }
+    $capacity = $_POST['capacity'];
+    if (empty($capacity)) {
+      $errors['price'] = "Capacity can't be empty";
+    }
 
-          $query = $pdoConnection->query("INSERT INTO tblartist(Name, MobileNumber, Email, Education, Award, Profilepic) VALUES ('$name', '$mobnum', '$email', '$edudetails', '$awarddetails', '$proimg')");
+          $query = $pdoConnection->query("INSERT INTO groups (Title,place ,days, timeslot, minAge, maxAge, trainerId, sportId, seasonId, price, capacity) VALUES ('$title', '$place', '$days', '$timing', '$minAge', '$maxAge', '$trainer', '$sport', '$season', '$price', '$capacity')");
 
           if ($query) {
-              echo "<script>alert('Artist details have been added.');</script>";
-              echo "<script>window.location.href ='manage-artist.php'</script>";
+              echo "<script>alert('Group has been added.');</script>";
+              echo "<script>window.location.href ='viewall_groups.php'</script>";
           } else {
               echo "<script>alert('Something Went Wrong. Please try again.');</script>";
             }
-      }else{
-        $nameVal=$_POST['name'];
-        $emailVal=$_POST['email'];
-        $mobnumVal=$_POST['mobnum'];
-        $eduVal=$_POST['edudetails'];
-        $awdVal=$_POST['awarddetails'];
-  }
-}
+      }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -107,11 +115,11 @@ else {
       <section class="wrapper">
         <div class="row">
           <div class="col-lg-12">
-            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Add Artist Detail</h3>
+            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Add Group Details</h3>
             <ol class="breadcrumb">
               <li><i class="fa fa-home"></i><a href="dashboard.php">Home</a></li>
-              <li><i class="icon_document_alt"></i>Artist</li>
-              <li><i class="fa fa-file-text-o"></i>Add Artist Detail</li>
+              <li><i class="icon_document_alt"></i>Group</li>
+              <li><i class="fa fa-file-text-o"></i>Add Groups Details</li>
             </ol>
           </div>
         </div>
@@ -119,62 +127,127 @@ else {
           <div class="col-lg-12">
             <section class="panel">
               <header class="panel-heading">
-             Add Artist Detail
+             Add Group Details
               </header>
               <div class="panel-body">
-                <form class="form-horizontal " method="post" action="" enctype="multipart/form-data" novalidate>
+                <form class="form-horizontal " method="post" action="" enctype="multipart/form-data" >
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Name</label>
+                    <label class="col-sm-2 control-label">Group Title</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="name" name="name"  type="text" value = "<?php echo (isset($nameVal))?$nameVal:'';?>"/>
-                      <?php if($formSubmitted && isset($errors['name'])){ ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['name'] ?></span>
+                      <input class="form-control" id="title" name="title"  type="text"  placeholder= "Group Name"/>
+                      <?php if(isset($_POST['submit']) && isset($errors['title'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['title'] ?></span>
                        <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Mobile Number</label>
+                  <label class="col-sm-2 control-label">Training Days</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="mobnum" name="mobnum"  type="text" value = "<?php echo (isset($mobnumVal))?$mobnumVal:'';?>">
-                      <?php if($formSubmitted){ if(isset($errors['mobnum'])){  ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['mobnum'];  ?></span>
-                       <?php } elseif($errors['mobnuminvalid']!=""){ ?>
-                       <span style="color:red;display:block;text-align:left"><?php echo $errors['mobnuminvalid'] ?></span>
-                       <?php } }  ?>
+                      <input class="form-control" id="days" name="days"  type="text" placeholder="sat- tue"/>
+                      <?php if(isset($_POST['submit']) && isset($errors['days'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['days'] ?></span>
+                       <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Email</label>
+                    <label class="col-sm-2 control-label">Training Place</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="email" name="email" type="email" value = "<?php echo (isset($emailVal))?$emailVal:'';?>">
-                      <?php if($formSubmitted && isset($errors['email'])) { ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['email']; ?></span>
+                      <input class="form-control" id="place" name="place"  type="text" value = "">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Timing</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="timing" name="timing" type="text" value = "" placeholder="8:00 pm">
+                      <?php if(isset($_POST['submit']) && isset($errors['timing'])) { ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['timing']; ?></span>
                         <?php } ?>
                       </div>
                     </div>
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Education Details</label>
+                    <label class="col-sm-2 control-label">Min Age</label>
                     <div class="col-sm-10">
-                      <textarea class="form-control" name="edudetails" value = "<?php echo (isset($eduVal))?$eduVal:'';?>"></textarea>
-            
+                      <input class="form-control" id="minAge" name="minAge" type="number" value="">
+                      <?php if(isset($_POST['submit']) && isset($errors['minAge'])) { ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['minAge']; ?></span>
+                        <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Award Details</label>
+                    <label class="col-sm-2 control-label">Max Age</label>
                     <div class="col-sm-10">
-                      <textarea class="form-control" name="awarddetails" value = "<?php echo (isset($awdVal))?$awdVal:'';?>"></textarea>
-                  
+                      <input class="form-control" id="maxAge" name="maxAge" type="number" value="">
+                      <?php if(isset($_POST['submit']) && isset($errors['maxAge'])) { ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['maxAge']; ?></span>
+                        <?php } ?>
                     </div>
                   </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Image</label>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Trainer</label>
                     <div class="col-sm-10">
-                       <input type="file" class="form-control" name="images" id="images" value="" required="true">
-                       <?php if($formSubmitted && isset($errors['images'])){ ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['images'] ?></span>
-                       <?php } ?>
-                      </div>
+                      <select class="form-control m-bot15" name="trainer" id="trainer">
+                        <option value="">Choose a trainer</option>
+                          <?php $query=$pdoConnection-> query("select * from trainers");
+                            while($row=$query ->fetch(PDO:: FETCH_ASSOC))
+                            {
+                            ?>    
+                          <option value="<?php echo $row['ID'];?>"><?php echo $row['name'];?></option>
+                            <?php } ?> 
+                      </select>
+                    </div>
                   </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Sport</label>
+                    <div class="col-sm-10">
+                      <select class="form-control m-bot15" name="sport" id="sport">
+                        <option value="">Choose a sport</option>
+                          <?php $query=$pdoConnection-> query("select * from sport");
+                            while($row=$query ->fetch(PDO:: FETCH_ASSOC))
+                            {
+                            ?>    
+                          <option value="<?php echo $row['ID'];?>"><?php echo $row['name'];?></option>
+                            <?php } ?> 
+                      </select>
+                      <?php if(isset($_POST['submit']) && isset($errors['sport'])) { ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['sport']; ?></span>
+                        <?php } ?>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Season</label>
+                    <div class="col-sm-10">
+                      <select class="form-control m-bot15" name="season" id="season">
+                        <option value="">Choose a Season</option>
+                          <?php $query=$pdoConnection-> query("select * from season where season.state = 'on' ");
+                            while($row=$query ->fetch(PDO:: FETCH_ASSOC))
+                            {
+                            ?>    
+                          <option value="<?php echo $row['ID'];?>"><?php echo $row['name'];?></option>
+                            <?php } ?> 
+                      </select>
+                      <?php if(isset($_POST['submit']) && isset($errors['season'])) { ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['season']; ?></span>
+                        <?php } ?>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Subscription Fees</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="price" name="price" type="number" value = "">
+                      <?php if(isset($_POST['submit']) && isset($errors['price'])) { ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['price']; ?></span>
+                        <?php } ?>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                    <label class="col-sm-2 control-label">Capacity</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="capacity" name="capacity" type="number" value = "">
+                      <?php if(isset($_POST['submit']) && isset($errors['capacity'])) { ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['capacity']; ?></span>
+                        <?php } ?>
+                      </div>
+                    </div>
                  <p style="text-align: center;"> <button type="submit" name='submit' class="btn btn-primary">Submit</button></p>
                 </form>
               </div>
