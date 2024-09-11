@@ -10,7 +10,7 @@ if(isset($_GET['delid']))
 {
 $rid=intval($_GET['delid']);
 
-$sql= $pdoConnection -> query("DELETE FROM payment WHERE ID='$rid'");
+$sql= $pdoConnection -> query("DELETE FROM users WHERE ID='$rid'");
 
   if($sql){
     echo "<script>alert('Data deleted');</script>"; 
@@ -121,7 +121,7 @@ $sql= $pdoConnection -> query("DELETE FROM payment WHERE ID='$rid'");
     let deleteBtn = document.querySelectorAll(".confirm");
     for (let i = 0; i < deleteBtn.length; i++) {
         deleteBtn[i].addEventListener("click", (e) => {
-            let ans = confirm("Are You Sure!!")
+            let ans = confirm("Are You Sure!!\nThis action will make all payment by this user be asigned to null")
             if (!ans) {
                 e.preventDefault();
             }
