@@ -1,6 +1,6 @@
 <?php
 session_start();
-//error_reporting(0);
+error_reporting(0);
 include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
@@ -25,11 +25,12 @@ else {
     if (empty($sport)) {
       $errors['sport'] = "Please choose a sport";
     }
+
   $query = $pdoConnection->query("INSERT INTO trainers (name, MobileNumber, sportId) VALUES ('$name', '$mobnum', '$sport')");
 
  if ($query) {
           echo "<script>alert('Trainer has been added.');</script>";
-          echo "<script>window.location.href ='viewall_trainer.php'</script>";
+          echo "<script>window.location.href ='Viewall_trainers.php'</script>";
     } else {
          echo "<script>alert('Something Went Wrong. Please try again.');</script>";
            }
@@ -122,7 +123,7 @@ else {
                   <label class="col-sm-2 control-label">Sport</label>
                   <div class="col-sm-10">
                     <select class="form-control m-bot15" name="sport" id="sport">
-                      <option value="">Choose sport</option>
+                      <option value="" disabled selected>Choose sport</option>
                       <?php 
                         $query = $pdoConnection->query("SELECT * FROM sport");
                         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {

@@ -9,16 +9,13 @@ if (strlen($_SESSION['sportadmission']==0)) {
 if(isset($_GET['delid']))
 {
 $rid=intval($_GET['delid']);
-$delete_image = $pdoConnection -> query("select Profilepic from tblartist where ID='$rid'");
-$image_data = $delete_image-> fetch(PDO:: FETCH_ASSOC);
-$image_name = $image_data['Profilepic'];
 
-$sql= $pdoConnection -> query("DELETE FROM tblartist WHERE ID='$rid'");
+$sql= $pdoConnection -> query("DELETE FROM trainers WHERE ID='$rid'");
 
   if($sql){
     unlink("images/$image_name");
-    echo "<script>alert('Data deleted');</script>"; 
-    echo "<script>window.location.href = 'manage-artist.php'</script>";     
+    echo "<script>alert('Trainer Data deleted');</script>"; 
+    echo "<script>window.location.href = 'Viewall_trainers.php'</script>";     
   }
 }
 ?>
@@ -94,7 +91,7 @@ $sql= $pdoConnection -> query("DELETE FROM tblartist WHERE ID='$rid'");
                   <td><?php  echo $row['name'];?></td>
                   <td><?php  echo '0'.$row['mobNum'];?></td>
                   <td><?php  echo $row['sport'];?></td>
-                  <td><a href="edit_trainer_detail.php?editid=<?php echo $row['ID'];?>" class="btn btn-primary">Edit</a> || <a href="viewall_seasons.php?delid=<?php echo $row['ID'];?>" class="btn btn-danger confirm">Delete</a></td>
+                  <td><a href="edit_trainer_detail.php?editid=<?php echo $row['ID'];?>" class="btn btn-primary">Edit</a> || <a href="Viewall_trainers.php?delid=<?php echo $row['ID'];?>" class="btn btn-danger confirm">Delete</a></td>
                 </tr>
                     <?php 
                       $cnt=$cnt+1;
@@ -125,14 +122,14 @@ $sql= $pdoConnection -> query("DELETE FROM tblartist WHERE ID='$rid'");
   <!-- Delete Btn Confirm -->
   <script>
     let deleteBtn = document.querySelectorAll(".confirm");
-  for (let i = 0; i < deleteBtn.length; i++) {
-      deleteBtn[i].addEventListener("click", (e) => {
-          let ans = confirm("Are You Sure!!")
-          if (!ans) {
-              e.preventDefault();
-          }
-      })
-  }
+    for (let i = 0; i < deleteBtn.length; i++) {
+        deleteBtn[i].addEventListener("click", (e) => {
+            let ans = confirm("Are You Sure!!\nThis action will set all this trainer groups and sports to Null ?")
+            if (!ans) {
+                e.preventDefault();
+            }
+        })
+    }
   </script>
   <!-- Search Script -->
   <script>
