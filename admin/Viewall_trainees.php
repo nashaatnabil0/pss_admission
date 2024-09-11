@@ -8,11 +8,11 @@ if (strlen($_SESSION['sportadmission']==0)) {
 
 if(isset($_GET['delid']))
 {
-$rid=intval($_GET['delid']);
-$delete_image = $pdoConnection -> query("select Image, Image1, Image2, Image3, Image4 from tblartproduct where ID='$rid'");
+$nid=intval($_GET['delid']);
+$delete_image = $pdoConnection -> query("select photo,birthCertificate from trainees where NID='$nid'");
 $image_data = $delete_image-> fetch(PDO:: FETCH_ASSOC);
 
-$sql= $pdoConnection -> query("DELETE FROM tblartproduct WHERE ID='$rid'");
+$sql= $pdoConnection -> query("DELETE FROM trainees WHERE NID='$nid'");
  
 if($sql){
   if ($image_data) {
@@ -21,8 +21,8 @@ if($sql){
         }
     }
 }
-  echo "<script>alert('Data deleted');</script>"; 
-  echo "<script>window.location.href = 'manage-art-product.php'</script>";     
+  echo "<script>alert('Trainee Data deleted');</script>"; 
+  echo "<script>window.location.href = 'viewall_trainees.php'</script>";     
 }
 ?>
 <!DOCTYPE html>
@@ -119,7 +119,7 @@ if($sql){
                         '<?php echo $row['Notes'];?>'
                       )">Details
                     </button> ||
-                    <a href="edit_trainee_detail.php?editid=<?php echo $row['NID'];?>" class="btn btn-primary">Edit</a> || <a href="viewall_seasons.php?delid=<?php echo $row['ID'];?>" class="btn btn-danger confirm">Delete</a>
+                    <a href="edit_trainee_detail.php?editid=<?php echo $row['NID'];?>" class="btn btn-primary">Edit</a> || <a href="viewall_trainees.php?delid=<?php echo $row['NID'];?>" class="btn btn-danger confirm">Delete</a>
                   </td>
                 </tr>
                     <?php 
@@ -190,7 +190,7 @@ if($sql){
     let deleteBtn = document.querySelectorAll(".confirm");
     for (let i = 0; i < deleteBtn.length; i++) {
         deleteBtn[i].addEventListener("click", (e) => {
-            let ans = confirm("Are You Sure!!")
+            let ans = confirm("Are You Sure!!\nThis action will delete any enrolments too ?")
             if (!ans) {
                 e.preventDefault();
             }
