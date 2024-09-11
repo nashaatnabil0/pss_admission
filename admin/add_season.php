@@ -115,7 +115,6 @@ echo "<script>window.location.href ='viewall_seasons.php'</script>";
                       <input class="" id="seasonstate" name="seasonstate"  type="radio" value="on" style="margin:7px">Active <span style="margin: 30px"></span>
                       <input class="" id="seasonstateoff" name="seasonstate"  type="radio" value="off" style="margin:7px">Inactive 
                     </div>
-                    
                   </div>
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Start Date</label>
