@@ -88,7 +88,7 @@
                       </a>
             <ul class="sub">
               <li><a class="" href="add_payment.php">Add Payment</a></li>
-              <li><a class="" href="viewall_payment.php">Manage Payments</a></li>
+              <li><a class="" href="viewall_payments.php">Manage Payments</a></li>
             </ul>
           </li>
           <li>
