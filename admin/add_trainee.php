@@ -186,8 +186,8 @@ if (isset($_POST['submit'])) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Gender</label>
                     <div class="col-sm-10">
-                      <input class="" id="gender" name="gender"  type="radio" value="male"> <t> Male <br>
-                      <input class="" id="gender" name="gender"  type="radio" value="Female"> <t> Female
+                     <input class="" id="gender" name="gender"  type="radio" value="male" style="margin:7px"> Male <span style="margin: 35px"></span>
+                      <input class="" id="gender" name="gender"  type="radio" value="Female" style="margin:7px"> Female
                     </div>
                   </div>
                   <div class="form-group">
