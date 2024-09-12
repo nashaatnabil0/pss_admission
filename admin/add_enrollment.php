@@ -233,7 +233,20 @@ else {
   <script src="js/form-component.js"></script>
   <!-- custome script for all page -->
   <script src="js/scripts.js"></script>
+  
+  <!-- fill the date automatically with today's date -->
+  <script>
+  var dateElement = document.getElementById("enrolldate");
+  var today = new Date();
 
+  // put the date in the defult format YYYY-MM-DD
+  var formattedDate = today.getFullYear() + '-' +
+                      ('0' + (today.getMonth() + 1)).slice(-2) + '-' + 
+                      ('0' + today.getDate()).slice(-2);
+
+  // Set the value of the input as today's date
+  dateElement.value = formattedDate;  
+</script>
 </body>
 
 </html>
