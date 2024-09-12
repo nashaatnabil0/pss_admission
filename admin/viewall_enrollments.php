@@ -83,7 +83,6 @@ $sql= $pdoConnection -> query("DELETE FROM enrollment WHERE ID='$rid'");
                   </tr>
                 </thead>
                   <?php
-                  // $ret= $pdoConnection-> query("SELECT * FROM enrollment");
                   $ret= $pdoConnection-> query("SELECT
                     en.ID,
                     en.traineeNID,
@@ -95,6 +94,7 @@ $sql= $pdoConnection -> query("DELETE FROM enrollment WHERE ID='$rid'");
                     en.date,
                     t.Name as Tname,
                     g.Title as Gtilte,
+                    g.days as Gdays,
                     g.minAge as gminAge,
                     g.maxAge as gmaxAge,
                     g.Timeslot as Timing
@@ -110,7 +110,7 @@ $sql= $pdoConnection -> query("DELETE FROM enrollment WHERE ID='$rid'");
                   <tr>
                     <td><?php echo $cnt;?></td>
                     <td><?php  echo $row['Tname'];?></td>
-                    <td><?php  echo $row['Gtilte'].' - '.$row['gminAge'].' to '.$row['gmaxAge'].' - '.$row['Timing'];?></td> 
+                    <td><?php  echo $row['Gtilte'].' / '.$row['Gdays'].' / '.$row['gminAge'].' to '.$row['gmaxAge'].' / '.$row['Timing'];?></td> 
                     <td><?php  echo $row['paymentPlan'];?></td>
                     <td><?php  echo $row['paymentState'];?></td>
                     <td><?php  echo $row['state'];?></td>
