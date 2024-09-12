@@ -5,7 +5,7 @@ error_reporting(0);
 include('includes/dbconnection.php');  
 
 // Allowed extensions
-$allowed_extensions = array(".jpg", "jpeg", ".png", ".gif");
+$allowed_extensions = array (".jpg", "jpeg", ".png", ".gif");
 
 // Function to handle image uploads
 function uploadImages($imageFile, $allowed_extensions) {
@@ -42,16 +42,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $contactMobNum = $_POST['contactMobNum'];  // Add a new field if it is in the form
 
     // Upload the images
-    $personalPhoto = uploadImages($_FILES["personalPhoto"], $allowed_extensions);
-    $idPhoto = uploadImages($_FILES["idPhoto"], $allowed_extensions);
+    $personalPhoto = uploadImages($_FILES['personalPhoto'], $allowed_extensions);
+    $idPhoto = uploadImages($_FILES['idPhoto'], $allowed_extensions);
 
     // Check if all required fields are filled
-    if (!empty($name) && !empty($nid) && !empty($gender) && !empty($birthDate) && !empty($fatherName) && !empty($fatherNum) && !empty($fatherJob) && !empty($motherName) && !empty($motherNum) && !empty($motherJob) && $personalPhoto !== null && $idPhoto !== null) {
+    if (!empty($name) && !empty($nid) && !empty($gender) && !empty($dob) && !empty($fatherName) && !empty($fatherNum) && !empty($fatherJob) && !empty($motherName) && !empty($motherNum) && !empty($motherJob) && $personalPhoto !== null && $idPhoto !== null) {
         $sql = "INSERT INTO trainees (Name, NID, birthDate, gender, photo, birthCertificate, contactMobNum, fatherName, fatherMobNum, fatherJob, motherName, motherMobNum, motherJob, Notes) 
-                VALUES (:name, :nid, :birthDate, :gender, :photo, :birthCertificate, :contactMobNum, :fatherName, :fatherMobNum, :fatherJob, :motherName, :motherMobNum, :motherJob, :notes)";
+                VALUES ('$name', '$nid','$dob', '$gender', '$personalPhoto', '$idPhoto', '$contactMobNum', '$fatherName', '$fatherNum', '$fatherJob', '$motherName', '$motherNum', '$motherJob', '$notes')";
         
-        $query = $dbh->prepare($sql);
-        $query->bindParam(':name', $name, PDO::PARAM_STR);
+        $query = $pdoConnection->query($sql);
+       /* $query->bindParam(':name', $name, PDO::PARAM_STR);
         $query->bindParam(':nid', $nid, PDO::PARAM_STR);
         $query->bindParam(':birthDate', $birthDate, PDO::PARAM_STR);
         $query->bindParam(':gender', $gender, PDO::PARAM_STR);
@@ -64,10 +64,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $query->bindParam(':motherName', $motherName, PDO::PARAM_STR);
         $query->bindParam(':motherMobNum', $motherNum, PDO::PARAM_STR);
         $query->bindParam(':motherJob', $motherJob, PDO::PARAM_STR);
-        $query->bindParam(':notes', $notes, PDO::PARAM_STR);
+        $query->bindParam(':notes', $notes, PDO::PARAM_STR);*/
 
         // Execute query
-        if ($query->execute()) {
+        if ($query) {
             echo "<script>alert('Registration successful!');</script>";
         } else {
             echo "<script>alert('Something went wrong. Please try again.');</script>";
@@ -159,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div> <br>
                                 <div class="form-group">
                                     <label for="phoneNum">Enter phone number that has WhatsApp</label>
-                                    <input type="text" class="form-control" name="phonerNum" id="phonerNum" placeholder="Enter phone number" required>
+                                    <input type="text" class="form-control" name="contactMobNum" id="contactMobNum" placeholder="Enter phone number" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="dob">Date of Birth</label>
@@ -198,9 +198,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <input type="text" class="form-control" name="motherJob" id="motherJob" placeholder="Enter mother job" required>
                                 </div>
                                 <div class="control-group">
-                                <textarea class="form-control border-1 py-3 px-4" rows="3" id="Notes" placeholder="Notes"
+                                <textarea class="form-control border-1 py-3 px-4" rows="3" id="Notes" name ="notes" placeholder="Notes"
                                     required="required"
-                                    data-validation-required-message="Please enter any notes here"></textarea>
+                                    data-validation-required-message="If you have notes regarding health or any thing, please write it here."></textarea>
                                 <p class="help-block text-danger"></p>
                             </div>
                                 <div>
