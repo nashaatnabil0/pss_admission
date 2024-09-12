@@ -27,8 +27,8 @@ try {
 try {
     $sql = "SELECT * FROM trainees WHERE NID = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->execute([$user_id]);  
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);  
+    $stmt->execute([$user_id]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$user) {
         // Handle case where no user is found (e.g., user does not exist)
@@ -43,7 +43,6 @@ try {
 // Close db connection
 $conn = null;
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -52,7 +51,7 @@ $conn = null;
         addEventListener("load", function () {
             setTimeout(hideURLbar, 0);
         }, false);
-        
+
         function hideURLbar() {
             window.scrollTo(0, 1);
         }
@@ -94,17 +93,22 @@ $conn = null;
                 <div class="col-lg-4">
                     <div class="bg-light p-4 rounded">
                         <h4 class="text-primary">Personal Information</h4>
-                        <p><strong>Name:</strong> <?php echo htmlspecialchars($user['name']); ?></p>
-                        <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
-                        <p><strong>Phone:</strong> <?php echo htmlspecialchars($user['phone']); ?></p>
-                        <p><strong>Address:</strong> <?php echo htmlspecialchars($user['address']); ?></p>
+                        <p><strong>Name:</strong> <?php echo htmlspecialchars($user['Name']); ?></p>
+                        <p><strong>Birth Date:</strong> <?php echo htmlspecialchars($user['birthDate']); ?></p>
+                        <p><strong>Gender:</strong> <?php echo htmlspecialchars($user['gender']); ?></p>
+                        <p><strong>Contact Mobile Number:</strong> <?php echo htmlspecialchars($user['contactMobNum']); ?></p>
                     </div>
                 </div>
                 <div class="col-lg-8">
                     <div class="bg-light p-4 rounded">
-                        <h4 class="text-primary">Account Details</h4>
-                        <p><strong>Account Created On:</strong> <?php echo htmlspecialchars($user['created_at']); ?></p>
-                        <!-- Add more user-specific information as needed -->
+                        <h4 class="text-primary">Family Information</h4>
+                        <p><strong>Father's Name:</strong> <?php echo htmlspecialchars($user['fatherName']); ?></p>
+                        <p><strong>Father's Mobile Number:</strong> <?php echo htmlspecialchars($user['fatherMobNum']); ?></p>
+                        <p><strong>Father's Job:</strong> <?php echo htmlspecialchars($user['fatherJob']); ?></p>
+                        <p><strong>Mother's Name:</strong> <?php echo htmlspecialchars($user['motherName']); ?></p>
+                        <p><strong>Mother's Mobile Number:</strong> <?php echo htmlspecialchars($user['motherMobNum']); ?></p>
+                        <p><strong>Mother's Job:</strong> <?php echo htmlspecialchars($user['motherJob']); ?></p>
+                        <p><strong>Notes:</strong> <?php echo htmlspecialchars($user['Notes']); ?></p>
                     </div>
                 </div>
             </div>
