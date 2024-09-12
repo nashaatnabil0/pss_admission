@@ -116,6 +116,8 @@ if($sql){
                         '<?php echo $row['motherName'];?>', 
                         '<?php echo $row['motherMobNum'];?>', 
                         '<?php echo $row['motherJob'];?>', 
+                        'images/<?php echo $row['photo'];?>', 
+                        'images/<?php echo $row['birthCertificate'];?>', 
                         '<?php echo $row['Notes'];?>'
                       )">Details
                     </button> ||
@@ -132,30 +134,47 @@ if($sql){
               </table>
             
               <!-- Start Details Modal -->
-             <!-- Modal Structure -->
+             
+              <!-- Modal Structure -->
               <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                   <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header d-flex justify-content-between align-items-center">
                       <h5 class="modal-title" id="exampleModalLongTitle">Trainee Details</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
                     </div>
                     <div class="modal-body">
-                      <!-- Details will be inserted here dynamically -->
-                      <p><strong>Full Name:</strong> <span id="modalFullName"></span></p>
-                      <p><strong>NID:</strong> <span id="modalNID"></span></p>
-                      <p><strong>BirthDate:</strong> <span id="modalBD"></span></p>
-                      <p><strong>Gender:</strong> <span id="modalGender"></span></p>
-                      <p><strong>Contact Ph. Number:</strong> <span id="modalContPhone"></span></p>
-                      <p><strong>Father Name:</strong> <span id="modalFaN"></span></p>
-                      <p><strong>Father Ph. Num:</strong> <span id="modalFaPhone"></span></p>
-                      <p><strong>Father Job:</strong> <span id="modalFaJop"></span></p>
-                      <p><strong>Mother Name:</strong> <span id="modalMaN"></span></p>
-                      <p><strong>Mother Ph. Num:</strong> <span id="modalMaPhone"></span></p>
-                      <p><strong>Mother Job:</strong> <span id="modalMaJop"></span></p>
-                      <p><strong>Notes:</strong> <span id="modalNotes"></span></p>
+                      <div class="container-fluid">
+                        <!-- Details will be inserted here dynamically -->
+                        
+                          <div class="col-md-8">
+                            <p><strong>Full Name:</strong> <span id="modalFullName"></span></p>
+                            <p><strong>NID:</strong> <span id="modalNID"></span></p>
+                            <p><strong>BirthDate:</strong> <span id="modalBD"></span></p>
+                            <p><strong>Gender:</strong> <span id="modalGender"></span></p>
+                            <p><strong>Contact Ph. Number:</strong> <span id="modalContPhone"></span></p>
+                            <p><strong>Father Name:</strong> <span id="modalFaN"></span></p>
+                            <p><strong>Father Ph. Num:</strong> <span id="modalFaPhone"></span></p>
+                            <p><strong>Father Job:</strong> <span id="modalFaJop"></span></p>
+                            <p><strong>Mother Name:</strong> <span id="modalMaN"></span></p>
+                            <p><strong>Mother Ph. Num:</strong> <span id="modalMaPhone"></span></p>
+                            <p><strong>Mother Job:</strong> <span id="modalMaJop"></span></p>
+                            <p><strong>Notes:</strong> <span id="modalNotes"></span></p>
+                          </div>
+                          <div class="row"> 
+                            <div class="col-md-4 ml-auto">
+                            <a href="" target="_blank" id="imageproLink">
+                              <img src="" width='150' height="150" id="modalpropic" style="margin-bottom: 15px;">
+                            </a>
+                            </div>
+                            <a href="" target="_blank" id="imagecartifLink">
+                            <div class="col-md-4 ml-auto">
+                              <img src="" width='150' height="150" id="modalcerificatpic">
+                            </div>
+                            </a>
+                          </div>
+                          
+                                               
+                      </div>
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -234,7 +253,7 @@ if($sql){
   </script>
   <!-- Modal Data Script -->
   <script>
-    function showDetails(name,nid,Bdate,gender,ContNum,FaName,FaNum,FaJop,MaName,MaNum,MaJop, notes) {
+    function showDetails(name,nid,Bdate,gender,ContNum,FaName,FaNum,FaJop,MaName,MaNum,MaJop,propic,ceriticatepic, notes) {
       document.getElementById('modalFullName').textContent = name;
       document.getElementById('modalNID').textContent = nid;
       document.getElementById('modalBD').textContent = Bdate;
@@ -246,6 +265,10 @@ if($sql){
       document.getElementById('modalMaN').textContent = MaName;
       document.getElementById('modalMaPhone').textContent = MaNum;
       document.getElementById('modalMaJop').textContent = MaJop;
+      document.getElementById('modalpropic').src = propic;
+      document.getElementById('imageproLink').href = propic;
+      document.getElementById('modalcerificatpic').src = ceriticatepic;
+      document.getElementById('imagecartifLink').href = ceriticatepic;
       document.getElementById('modalNotes').textContent = notes;
     }
   </script>

@@ -125,7 +125,7 @@ $sql=$pdoConnection -> query("DELETE FROM season where ID='$rid'");
     let deleteBtn = document.querySelectorAll(".confirm");
     for (let i = 0; i < deleteBtn.length; i++) {
         deleteBtn[i].addEventListener("click", (e) => {
-            let ans = confirm("Are You Sure!!")
+            let ans = confirm("Are You Sure!!\nThis action will set null for any group related to it.")
             if (!ans) {
                 e.preventDefault();
             }
