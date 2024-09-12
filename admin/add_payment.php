@@ -9,7 +9,7 @@ else {
   $errors = [];
   $enrollId = $_GET['editid'];
   if(isset($_POST['submit'])){
-    $name = $_POST['name'];
+    $name = $_GET['name'];
     if (empty($name)) {
       $errors['name'] = "Name cannot be empty";
   }
