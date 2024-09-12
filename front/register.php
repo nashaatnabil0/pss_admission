@@ -38,29 +38,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $motherName = $_POST['motherName'];
     $motherNum = $_POST['motherNum'];
     $motherJob = $_POST['motherJob'];
+    $notes = isset($_POST['notes']) ? $_POST['notes'] : '';  // Assuming 'notes' is an optional field
+    $contactMobNum = $_POST['contactMobNum'];  // Add a new field if it is in the form
 
     // Upload the images
     $personalPhoto = uploadImages($_FILES["personalPhoto"], $allowed_extensions);
     $idPhoto = uploadImages($_FILES["idPhoto"], $allowed_extensions);
 
     // Check if all required fields are filled
-    if (!empty($name) && !empty($nid) && !empty($gender) && !empty($dob) && !empty($fatherName) && !empty($fatherNum) && !empty($fatherJob) && !empty($motherName) && !empty($motherNum) && !empty($motherJob) && $personalPhoto !== null && $idPhoto !== null) {
-        $sql = "INSERT INTO trainees (name, nid, gender, dob, personal_photo, id_photo, father_name, father_num, father_job, mother_name, mother_num, mother_job) 
-                VALUES (:name, :nid, :gender, :, :dob, :personal_photo, :id_photo, :father_name, :father_num, :father_job, :mother_name, :mother_num, :mother_job)";
+    if (!empty($name) && !empty($nid) && !empty($gender) && !empty($birthDate) && !empty($fatherName) && !empty($fatherNum) && !empty($fatherJob) && !empty($motherName) && !empty($motherNum) && !empty($motherJob) && $personalPhoto !== null && $idPhoto !== null) {
+        $sql = "INSERT INTO trainees (Name, NID, birthDate, gender, photo, birthCertificate, contactMobNum, fatherName, fatherMobNum, fatherJob, motherName, motherMobNum, motherJob, Notes) 
+                VALUES (:name, :nid, :birthDate, :gender, :photo, :birthCertificate, :contactMobNum, :fatherName, :fatherMobNum, :fatherJob, :motherName, :motherMobNum, :motherJob, :notes)";
         
         $query = $dbh->prepare($sql);
         $query->bindParam(':name', $name, PDO::PARAM_STR);
         $query->bindParam(':nid', $nid, PDO::PARAM_STR);
+        $query->bindParam(':birthDate', $birthDate, PDO::PARAM_STR);
         $query->bindParam(':gender', $gender, PDO::PARAM_STR);
-        $query->bindParam(':dob', $dob, PDO::PARAM_STR);
-        $query->bindParam(':personal_photo', $personalPhoto, PDO::PARAM_STR);
-        $query->bindParam(':id_photo', $idPhoto, PDO::PARAM_STR);
-        $query->bindParam(':father_name', $fatherName, PDO::PARAM_STR);
-        $query->bindParam(':father_num', $fatherNum, PDO::PARAM_STR);
-        $query->bindParam(':father_job', $fatherJob, PDO::PARAM_STR);
-        $query->bindParam(':mother_name', $motherName, PDO::PARAM_STR);
-        $query->bindParam(':mother_num', $motherNum, PDO::PARAM_STR);
-        $query->bindParam(':mother_job', $motherJob, PDO::PARAM_STR);
+        $query->bindParam(':photo', $personalPhoto, PDO::PARAM_STR);
+        $query->bindParam(':birthCertificate', $idPhoto, PDO::PARAM_STR);
+        $query->bindParam(':contactMobNum', $contactMobNum, PDO::PARAM_STR);
+        $query->bindParam(':fatherName', $fatherName, PDO::PARAM_STR);
+        $query->bindParam(':fatherMobNum', $fatherNum, PDO::PARAM_STR);
+        $query->bindParam(':fatherJob', $fatherJob, PDO::PARAM_STR);
+        $query->bindParam(':motherName', $motherName, PDO::PARAM_STR);
+        $query->bindParam(':motherMobNum', $motherNum, PDO::PARAM_STR);
+        $query->bindParam(':motherJob', $motherJob, PDO::PARAM_STR);
+        $query->bindParam(':notes', $notes, PDO::PARAM_STR);
 
         // Execute query
         if ($query->execute()) {
@@ -73,6 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
 
 
 
@@ -142,10 +147,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     name="NID"
                                     id="NID"
                                     placeholder="Enter your National ID"
-                                    required
-                                    pattern="^\d{3}(0[0-9]|1[0-2])([0-2][0-9]|3[01])\d{7}$"
-                                    title="Please enter a 14-digit National ID where the 4th and 5th digits form a number less than or equal to 12, and the 6th and 7th digits form a number less than or equal to 31.">
-                                </div>
+                                    required>
+                                    <!-- Error message placeholder -->
+                                     <span id="nidError" style="color: red; display: none;">Please enter a valid 14-digit National ID where the 4th and 5th digits form a number less than or equal to 12, and the 6th and 7th digits form a number less than or equal to 31.</span>
+                                    </div>
 
                                 <div class="form-control">
                                     <label for="gender" class="form-label">Gender</label> 
@@ -161,13 +166,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <input type="date" class="form-control" name="dob" id="dob" required>
                                 </div>
                                 <div class="form-group">
-    <label class="control-label">Personal Photo</label>
-    <input type="file" class="form-control" name="personalPhoto" id="personalPhoto" required>
-</div>
-<div class="form-group">
-    <label class="control-label">National ID/Birth Certificate Photo</label>
-    <input type="file" class="form-control" name="idPhoto" id="idPhoto" required>
-</div>
+                                    <label class="control-label">Personal Photo</label>
+                                    <input type="file" class="form-control" name="personalPhoto" id="personalPhoto" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">National ID/Birth Certificate Photo</label>
+                                    <input type="file" class="form-control" name="idPhoto" id="idPhoto" required>
+                                </div>
                                 <div class="form-group">
                                     <label for="fatherName">Father Name</label>
                                     <input type="text" class="form-control" name="fatherName" id="fatherName" placeholder="Enter father name" required>
@@ -192,6 +197,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <label for="motherJob">Mother Job</label>
                                     <input type="text" class="form-control" name="motherJob" id="motherJob" placeholder="Enter mother job" required>
                                 </div>
+                                <div class="control-group">
+                                <textarea class="form-control border-1 py-3 px-4" rows="3" id="Notes" placeholder="Notes"
+                                    required="required"
+                                    data-validation-required-message="Please enter any notes here"></textarea>
+                                <p class="help-block text-danger"></p>
+                            </div>
                                 <div>
                                 <button type="submit" style="background-color: #063547" class="btn btn-primary">Register</button>
                             </form>
@@ -223,6 +234,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <!-- Template Javascript -->
         <script src="js/main.js"></script>
+
+        <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const nidInput = document.getElementById("NID");
+        const nidError = document.getElementById("nidError");
+
+        // Regular expression for validating National ID
+        const nidPattern = /^\d{3}(0[0-9]|1[0-2])([0-2][0-9]|3[01])\d{7}$/;
+
+        nidInput.addEventListener("input", function () {
+            // Check if the input value matches the pattern
+            if (!nidPattern.test(nidInput.value)) {
+                nidError.style.display = "block"; // Show error message
+            } else {
+                nidError.style.display = "none"; // Hide error message
+            }
+        });
+    });
+</script>
 
 </body>
 
