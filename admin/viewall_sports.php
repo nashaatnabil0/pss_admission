@@ -6,17 +6,15 @@ if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
   } else{
 
-if(isset($_GET['delid']))
-{
-$rid=intval($_GET['delid']);
-$sql=$pdoConnection -> query("DELETE FROM tblartmedium where ID='$rid'");
- echo "<script>alert('Data deleted');</script>"; 
-  echo "<script>window.location.href = 'manage-art-medium.php'</script>";     
+  if(isset($_GET['delid']))
+  {
+    $rid=intval($_GET['delid']);
+    $sql=$pdoConnection -> query("DELETE FROM sport where ID='$rid'");
+    echo "<script>alert('Data deleted');</script>"; 
+      echo "<script>window.location.href = 'viewall_sports.php'</script>";     
+    }
 
-
-}
-
-  ?>
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -88,7 +86,7 @@ $sql=$pdoConnection -> query("DELETE FROM tblartmedium where ID='$rid'");
                   <td><?php echo $cnt;?></td>
                   <td><?php  echo $row['title'];?></td>
                   <td><?php  echo $row['Supervisor'];?></td>
-                  <td><a href="edit_sport_detail.php?editid=<?php echo $row['ID'];?>" class="btn btn-primary">Edit</a> || <a href="viewall_seasons.php?delid=<?php echo $row['ID'];?>" class="btn btn-danger confirm">Delete</a></td>
+                  <td><a href="edit_sport_detail.php?editid=<?php echo $row['ID'];?>" class="btn btn-primary">Edit</a> || <a href="viewall_sports.php?delid=<?php echo $row['ID'];?>" class="btn btn-danger confirm">Delete</a></td>
                 </tr>
                     <?php 
                       $cnt=$cnt+1;
@@ -121,7 +119,7 @@ $sql=$pdoConnection -> query("DELETE FROM tblartmedium where ID='$rid'");
     let deleteBtn = document.querySelectorAll(".confirm");
     for (let i = 0; i < deleteBtn.length; i++) {
         deleteBtn[i].addEventListener("click", (e) => {
-            let ans = confirm("Are You Sure!!")
+            let ans = confirm("Are You Sure!!\nThis Action Will set null to sport in all Groups AND Trainers related to it ?")
             if (!ans) {
                 e.preventDefault();
             }

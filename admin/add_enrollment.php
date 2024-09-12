@@ -1,66 +1,69 @@
 <?php
 session_start();
-error_reporting(0);
+//error_reporting(0);
 include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
   }
 else {
-  $errors = [];
-  $formSubmitted = $_SERVER["REQUEST_METHOD"] == "POST";
-  if ($formSubmitted) {
-    $name = $_POST['name'];
-    if (empty($name)) {
-      $errors['name'] = "Name cannot be empty";
+  $searchQuery = '';
+  $trainees = [];
+  
+  if (isset($_GET['search'])) {
+      $searchQuery = $_POST['search'];
+  
+      // Fetch trainees matching the user's input
+      $stmt = $pdoConnection->prepare("SELECT NID, name FROM trainees WHERE NID LIKE ? ");
+      $stmt->execute(["%$searchQuery%"]);
+      $trainees = $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
-    $mobnum = $_POST['mobnum'];
-    $monnumPattern='/^(011|010|015|012)[0-9]{8}$/';
-    if (empty($mobnum)) {
-      $errors['mobnum'] = "phone number cannot be empty";
-  }elseif(!preg_match($monnumPattern,$mobnum)){
-     $errors['mobnuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
- }
 
-    $email = $_POST['email'];
+   $errors = [];
+  if(isset($_POST['submit'])){
+    $traineeNID = $_POST['traineeNID'];
+    // Validate traineeNID
+    $stmt = $pdoConnection->query("SELECT COUNT(*) FROM trainees join enrollment on trainees.NID= enrollment.traineeNID WHERE NID = '$traineeNID' AND enrollment.state in ('off',' waiting')" );
+    $exists = $stmt->fetchColumn();
+    
+    if (!$exists) {
+        $errors['traineeNID'] = "Trainee NID not found, please add the trainee first.";
+    }
 
-    if (empty($email)) {
-      $errors['email'] = "Email cannot be empty";
-  }elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-          $errors['email'] = "Invalid email format";
-      }
-   
-      $edudetails = $_POST['edudetails'];
-      $awarddetails = $_POST['awarddetails'];
+    $group = $_POST['group'];
+    if (empty($group)) {
+      $errors['group'] = "Please select a group";
+    }
 
-        $img = $_FILES["images"]["name"];
-      $extension = substr($img, strlen($img) - 4, strlen($img));
-      // Allowed extensions
-      $allowed_extensions = array(".jpg", "jpeg", ".png", ".gif");
-      // Validation for allowed extensions
-      if (!in_array($extension, $allowed_extensions)) {
-          $errors['images'] = "Invalid format. Only jpg / jpeg/ png /gif format allowed";
-       }
+    $pymntPlan = $_POST['pymntplan'];
+    if (empty($pymntPlan)) {
+      $errors['pymntplan'] = "Please select a payment plan";
+    }
 
-      if (empty($errors)) {
-          $proimg = md5($img) . $extension;
-          move_uploaded_file($_FILES["images"]["tmp_name"], "images/" . $proimg);
-
-          $query = $pdoConnection->query("INSERT INTO tblartist(Name, MobileNumber, Email, Education, Award, Profilepic) VALUES ('$name', '$mobnum', '$email', '$edudetails', '$awarddetails', '$proimg')");
-
-          if ($query) {
-              echo "<script>alert('Artist details have been added.');</script>";
-              echo "<script>window.location.href ='manage-artist.php'</script>";
+    $enrollstate = $_POST['enrollstate'];
+    if (empty($enrollstate)) {
+      $errors['enrollstate'] = "Please select an enrollment state";
+    }
+    $enrolldate = $_POST['enrolldate'];
+    if ($enrolldate == "") {
+        $enrolldate = date('Y-m-d') ;
+    }else{
+      $enrolldate = $_POST['enrolldate'];
+    }
+    
+    $discount = $_POST['discount'];
+    if ($discount == "") {
+    $query2 = $pdoConnection->query("INSERT INTO enrollment(traineeNID, groupId, paymentPlan, state, date) VALUES ('$traineeNID', '$group', '$pymntPlan', '$enrollstate', '$enrolldate')");
+    }else{
+    $query2 = $pdoConnection->query("INSERT INTO enrollment(traineeNID, groupId, paymentPlan, state, date, discount) VALUES ('$traineeNID', '$group', '$pymntPlan', '$enrollstate', '$enrolldate', '$discount')");
+    }
+          if ($query2) {
+              echo "<script>alert('Enrollment details have been added.');</script>";
+              echo "<script>window.location.href ='viewall_enrollments.php'</script>";
           } else {
               echo "<script>alert('Something Went Wrong. Please try again.');</script>";
             }
-      }else{
-        $nameVal=$_POST['name'];
-        $emailVal=$_POST['email'];
-        $mobnumVal=$_POST['mobnum'];
-        $eduVal=$_POST['edudetails'];
-        $awdVal=$_POST['awarddetails'];
-  }
-}
+      }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -107,11 +110,11 @@ else {
       <section class="wrapper">
         <div class="row">
           <div class="col-lg-12">
-            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Add Artist Detail</h3>
+            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Add Enrollment</h3>
             <ol class="breadcrumb">
               <li><i class="fa fa-home"></i><a href="dashboard.php">Home</a></li>
-              <li><i class="icon_document_alt"></i>Artist</li>
-              <li><i class="fa fa-file-text-o"></i>Add Artist Detail</li>
+              <li><i class="icon_document_alt"></i>Enrollment</li>
+              <li><i class="fa fa-file-text-o"></i>Add Enrollment</li>
             </ol>
           </div>
         </div>
@@ -119,62 +122,68 @@ else {
           <div class="col-lg-12">
             <section class="panel">
               <header class="panel-heading">
-             Add Artist Detail
+             Add Enrollment Details
               </header>
               <div class="panel-body">
-                <form class="form-horizontal " method="post" action="" enctype="multipart/form-data" novalidate>
-                  <div class="form-group">
-                    <label class="col-sm-2 control-label">Name</label>
-                    <div class="col-sm-10">
-                      <input class="form-control" id="name" name="name"  type="text" value = "<?php echo (isset($nameVal))?$nameVal:'';?>"/>
-                      <?php if($formSubmitted && isset($errors['name'])){ ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['name'] ?></span>
-                       <?php } ?>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="col-sm-2 control-label">Mobile Number</label>
-                    <div class="col-sm-10">
-                      <input class="form-control" id="mobnum" name="mobnum"  type="text" value = "<?php echo (isset($mobnumVal))?$mobnumVal:'';?>">
-                      <?php if($formSubmitted){ if(isset($errors['mobnum'])){  ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['mobnum'];  ?></span>
-                       <?php } elseif($errors['mobnuminvalid']!=""){ ?>
-                       <span style="color:red;display:block;text-align:left"><?php echo $errors['mobnuminvalid'] ?></span>
-                       <?php } }  ?>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="col-sm-2 control-label">Email</label>
-                    <div class="col-sm-10">
-                      <input class="form-control" id="email" name="email" type="email" value = "<?php echo (isset($emailVal))?$emailVal:'';?>">
-                      <?php if($formSubmitted && isset($errors['email'])) { ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['email']; ?></span>
-                        <?php } ?>
-                      </div>
-                    </div>
-                  <div class="form-group">
-                    <label class="col-sm-2 control-label">Education Details</label>
-                    <div class="col-sm-10">
-                      <textarea class="form-control" name="edudetails" value = "<?php echo (isset($eduVal))?$eduVal:'';?>"></textarea>
-            
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="col-sm-2 control-label">Award Details</label>
-                    <div class="col-sm-10">
-                      <textarea class="form-control" name="awarddetails" value = "<?php echo (isset($awdVal))?$awdVal:'';?>"></textarea>
-                  
-                    </div>
-                  </div>
+                <form class="form-horizontal " method="post" action="" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Image</label>
+                    <label class="col-sm-2 control-label">Trainee National ID</label>
                     <div class="col-sm-10">
-                       <input type="file" class="form-control" name="images" id="images" value="" required="true">
-                       <?php if($formSubmitted && isset($errors['images'])){ ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['images'] ?></span>
-                       <?php } ?>
-                      </div>
+                      <input class="form-control" id="searchTrainee" name="traineeNID" type="text" placeholder="Type the national ID number" value="<?php echo htmlspecialchars($searchQuery); ?>" />
+                      <input class="form-control m-bot15" id="traineeList" list="traineeListOptions" />
+                      <datalist id="traineeListOptions">
+                        <?php foreach ($trainees as $trainee): ?>
+                          <option value="<?php echo htmlspecialchars($trainee['NID']); ?>">
+                            <?php echo ($trainee['NID']) . " - " . ($trainee['name']); ?>
+                          </option>
+                        <?php endforeach; ?>
+                      </datalist>
+                      <?php if (isset($_POST['submit']) && isset($errors['traineeNID'])): ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['traineeNID'] ?></span>
+                      <?php endif; ?>
+                    </div>
                   </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Group</label>
+                    <div class="col-sm-10">
+                      <select class="form-control m-bot15" name="group" id="group">
+                        <option value="">Choose a group</option>
+                          <?php $query=$pdoConnection-> query("select * from groups");
+                            while($row=$query ->fetch(PDO:: FETCH_ASSOC))
+                            {
+                            ?> 
+                          <option value="<?php echo $row['ID'];?>"><?php echo $row['Title'];?></option>
+                            <?php } ?> 
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Payment Plan</label>
+                    <div class="col-sm-10">
+                      <input class="" id="paymentPlan" name="pymntplan"  type="radio" value="full" style="margin:7px" required> Full <span style="margin: 35px"></span>
+                      <input class="" id="paymentPlan" name="pymntplan"  type="radio" value="Installment" style="margin:7px" required > Installments
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Discount</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="discount" name="discount"  type="text">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Enrollment State:</label>
+                    <div class="col-sm-10">
+                    <input class="" id="enrolltate" name="enrollstate"  type="radio" value="on" style="margin:7px" required > Active <span style="margin: 35px"></span>
+                    <input class="" id="enrollstateoff" name="enrollstate"  type="radio" value="off" style="margin:7px" required> Inactive  <span style="margin: 35px"></span>
+                    <input class="" id="enrollstatewait" name="enrollstate"  type="radio" value="waiting" style="margin:7px" required> Waiting   
+                  </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Enrollment Date</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="enrolldate" name="enrolldate" type="date" >
+                      </div>
+                    </div>
                  <p style="text-align: center;"> <button type="submit" name='submit' class="btn btn-primary">Submit</button></p>
                 </form>
               </div>
@@ -183,8 +192,6 @@ else {
           </div>
         </div>
         <!-- Basic Forms & Horizontal Forms-->
-
-        
          
       
         <!-- page end-->
@@ -226,7 +233,6 @@ else {
   <script src="js/form-component.js"></script>
   <!-- custome script for all page -->
   <script src="js/scripts.js"></script>
-
 
 </body>
 

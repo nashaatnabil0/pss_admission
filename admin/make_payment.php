@@ -5,24 +5,13 @@ include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
   } else{
-
-if(isset($_GET['delid']))
-{
-$rid=intval($_GET['delid']);
-$sql= $pdoConnection -> query("DELETE FROM enrollment WHERE ID='$rid'");
-
-  if($sql){
-    echo "<script>alert('Enroll Data deleted');</script>"; 
-    echo "<script>window.location.href = 'viewall_enrollments.php'</script>";     
-  }
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
 
-  <title>Manage Enrollments | Peace Sports School Admission System</title>
+  <title>Make Payment | Peace Sports School Admission System</title>
 
   <!-- Bootstrap CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -53,11 +42,11 @@ $sql= $pdoConnection -> query("DELETE FROM enrollment WHERE ID='$rid'");
       <section class="wrapper">
         <div class="row">
           <div class="col-lg-12">
-            <h3 class="page-header"><i class="fa fa-table"></i>Enrollments Management</h3>
+            <h3 class="page-header"><i class="fa fa-table"></i>Pay</h3>
             <ol class="breadcrumb">
               <li><i class="fa fa-home"></i><a href="dashboard.php">Home</a></li>
-              <li><i class="fa fa-table"></i>Enrollments</li>
-              <li><i class="fa fa-th-list"></i>View all Enrollments</li>
+              <li><i class="fa fa-table"></i>Pay</li>
+              <li><i class="fa fa-th-list"></i>Make new Payment</li>
             </ol>
           </div>
         </div>
@@ -66,7 +55,7 @@ $sql= $pdoConnection -> query("DELETE FROM enrollment WHERE ID='$rid'");
           <div class="col-sm-12">
             <section class="panel">
               <header class="panel-heading">
-                Search Enrollment
+                Search an active Enrollment to pay
                 <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search by Trainee Name, Enrol Group, Payment Plan, or State..." class="form-control" style="margin-bottom: 10px;">
               </header>
               <table class="table">
@@ -103,7 +92,9 @@ $sql= $pdoConnection -> query("DELETE FROM enrollment WHERE ID='$rid'");
                   JOIN
                     trainees t on en.traineeNID=t.NID 
                   JOIN 
-                    groups g on en.groupId=g.ID;");
+                    groups g on en.groupId=g.ID
+                  WHERE
+                    en.state='on' AND paymentState != 'complete';");
                   $cnt=1;
                   while ($row=$ret-> fetch(PDO:: FETCH_ASSOC)) {
                   ?>
@@ -115,7 +106,7 @@ $sql= $pdoConnection -> query("DELETE FROM enrollment WHERE ID='$rid'");
                     <td><?php  echo $row['paymentState'];?></td>
                     <td><?php  echo $row['state'];?></td>
                     <td><?php  echo $row['discount'];?></td>
-                    <td><a href="edit_enrollment_detail.php?editid=<?php echo $row['ID'];?>" class="btn btn-success">Edit</a> || <a href="viewall_enrollments.php?delid=<?php echo $row['ID'];?>" class="btn btn-danger confirm">Delete</a></td>
+                    <td><a href="add_payment.php?editid=<?php echo $row['ID'];?>" class="btn btn-success">Add Payment</a></td>
                   </tr>
                 <?php 
                     $cnt=$cnt+1;

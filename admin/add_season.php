@@ -109,11 +109,12 @@ echo "<script>window.location.href ='viewall_seasons.php'</script>";
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Season State:</label>
                     <div class="col-sm-10">
-                      <br><p class="">Check the box if the season is active</p>
-                      <input class="form-check-input" type="checkbox" role="switch" name="seasonstate" id="seasonstate" value="on">On
-                      <input type="hidden" name="seasonstate" value="off"> 
+                      <!--<br><p class="">Check the box if the season is active</p>-->
+                      <!--<input class="form-check-input" type="checkbox" role="switch" name="seasonstate" id="seasonstate" value="on">On
+                      <input type="hidden" name="seasonstate" value="off"> -->
+                      <input class="" id="seasonstate" name="seasonstate"  type="radio" value="on" style="margin:7px">Active <span style="margin: 30px"></span>
+                      <input class="" id="seasonstateoff" name="seasonstate"  type="radio" value="off" style="margin:7px">Inactive 
                     </div>
-                    
                   </div>
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Start Date</label>
@@ -141,9 +142,6 @@ echo "<script>window.location.href ='viewall_seasons.php'</script>";
         </div>
         <!-- Basic Forms & Horizontal Forms-->
 
-        
-         
-      
         <!-- page end-->
       </section>
     </section>

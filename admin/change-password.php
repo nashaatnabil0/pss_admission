@@ -42,7 +42,7 @@ if($row>0){
 
   }else{
           //Weak Password Rejected
-    $errors['PassWeak'] = "Password must have Uppercase, lowercase, dight, spicial char, and length must be 8 or more";
+    $errors['PassWeak'] = "Password must have at least one Uppercase, lowercase, number, special charachter, and length must be 8 or more";
   }
 } else {
 echo '<script>alert("Your current password is wrong.")</script>';

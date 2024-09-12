@@ -4,62 +4,95 @@ error_reporting(0);
 include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
-  }
+}
 else {
   $errors = [];
-  $formSubmitted = $_SERVER["REQUEST_METHOD"] == "POST";
-  if ($formSubmitted) {
-    $name = $_POST['name'];
+if (isset($_POST['submit'])) {
+    // Trainee
+    $name = $_POST['Name'];
     if (empty($name)) {
-      $errors['name'] = "Name cannot be empty";
-  }
-    $mobnum = $_POST['mobnum'];
-    $monnumPattern='/^(011|010|015|012)[0-9]{8}$/';
-    if (empty($mobnum)) {
-      $errors['mobnum'] = "phone number cannot be empty";
-  }elseif(!preg_match($monnumPattern,$mobnum)){
-     $errors['mobnuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
- }
+        $errors['Name'] = "Name cannot be empty";
+    }
+    
+    $gender = $_POST['gender'];
+    if (empty($gender)) {
+        $errors['gender'] = "Please Choose a gender";
+    }
+    
+    $contactmobnum = $_POST['contactMobNum'];
+    $mobnumPattern = '/^(011|010|015|012)[0-9]{8}$/';
+    if (empty($contactmobnum)) {
+        $errors['contactMobNum'] = "Phone number cannot be empty";
+    } elseif (!preg_match($mobnumPattern, $contactmobnum)) {
+        $errors['contactMobNuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
+    }
 
-    $email = $_POST['email'];
+    $birthdate = $_POST['birthdate'];
+    if (empty($birthdate)) {
+        $errors['birthdate'] = "Birthdate cannot be empty";
+    }
+    
+    $NID = $_POST['NID'];
+    if (empty($NID)) {
+        $errors['NID'] = "National ID number cannot be empty";
+    }
 
-    if (empty($email)) {
-      $errors['email'] = "Email cannot be empty";
-  }elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-          $errors['email'] = "Invalid email format";
+    // Father
+    $fatherName = $_POST['fatherName'];
+    $fatherJob = $_POST['fatherJob'];
+    $fathermobnum = $_POST['fatherMobNum'];
+    if (empty($fathermobnum)) {
+        $errors['fatherMobNum'] = "Phone number cannot be empty";
+    } elseif (!preg_match($mobnumPattern, $fathermobnum)) {
+        $errors['fatherMobNuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
+    }
+
+    // Mother
+    $motherName = $_POST['motherName'];
+    $motherJob = $_POST['motherJob'];
+    $mothermobnum = $_POST['motherMobNum'];
+    if (empty($mothermobnum)) {
+        $errors['motherMobNum'] = "Phone number cannot be empty";
+    } elseif (!preg_match($mobnumPattern, $mothermobnum)) {
+        $errors['motherMobNuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
+    }
+
+    // Photo & Birth Certificate/NID
+    $allowed_extensions = ["jpg", "jpeg", "png", "gif"];
+
+    function uploadImages($imageFile, $allowed_extensions, $name, $NID) {
+        if ($imageFile["name"] != "") {
+            $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
+            if (in_array($extension, $allowed_extensions)) {
+                $newImageName = $NID .'-'. md5($imageFile["name"]) . '.' . $extension;
+                move_uploaded_file($imageFile["tmp_name"], "images/" . $newImageName);
+                return $newImageName;
+            } else {
+              echo "<script>alert('Image " . $imageFile["name"] . " Invalid format. Only jpg / jpeg/ png /gif format allowed');</script>";
+              return null;
+            }
+        }
+        return null;
       }
-   
-      $edudetails = $_POST['edudetails'];
-      $awarddetails = $_POST['awarddetails'];
 
-        $img = $_FILES["images"]["name"];
-      $extension = substr($img, strlen($img) - 4, strlen($img));
-      // Allowed extensions
-      $allowed_extensions = array(".jpg", "jpeg", ".png", ".gif");
-      // Validation for allowed extensions
-      if (!in_array($extension, $allowed_extensions)) {
-          $errors['images'] = "Invalid format. Only jpg / jpeg/ png /gif format allowed";
-       }
-
-      if (empty($errors)) {
-          $proimg = md5($img) . $extension;
-          move_uploaded_file($_FILES["images"]["tmp_name"], "images/" . $proimg);
-
-          $query = $pdoConnection->query("INSERT INTO tblartist(Name, MobileNumber, Email, Education, Award, Profilepic) VALUES ('$name', '$mobnum', '$email', '$edudetails', '$awarddetails', '$proimg')");
-
+    $traineePhoto = uploadImages($_FILES["traineePic"], $allowed_extensions, $name, $NID);
+    $bdImage = uploadImages($_FILES["bdimg"], $allowed_extensions, $name, $NID);
+  
+    //notes
+  $notes =$_POST['Notes'];
+  if($notes==""){
+    $query = $pdoConnection->query("INSERT INTO trainees (Name, NID, birthDate, gender, photo, birthCertificate,contactMobNum,fatherName,fatherMobNum,fatherJob,motherName,motherMobNum,motherJob) VALUES ('$name', '$NID','$birthdate', '$gender', '$traineePhoto','$bdImage','$contactmobnum','$fatherName','$fathermobnum','$fatherJob','$motherName','$mothermobnum','$motherJob')");
+  }else{
+  //insert into databse
+  $query = $pdoConnection->query("INSERT INTO trainees (Name, NID, birthDate, gender, photo, birthCertificate,contactMobNum,fatherName,fatherMobNum,fatherJob,motherName,motherMobNum,motherJob,Notes) VALUES ('$name', '$NID','$birthdate', '$gender', '$traineePhoto','$bdImage','$contactmobnum','$fatherName','$fathermobnum','$fatherJob','$motherName','$mothermobnum','$motherJob','$notes')");
+  }
           if ($query) {
-              echo "<script>alert('Artist details have been added.');</script>";
-              echo "<script>window.location.href ='manage-artist.php'</script>";
+              echo "<script>alert('Trainee has been added.');</script>";
+              echo "<script>window.location.href ='viewall_trainees.php'</script>";
           } else {
               echo "<script>alert('Something Went Wrong. Please try again.');</script>";
             }
-      }else{
-        $nameVal=$_POST['name'];
-        $emailVal=$_POST['email'];
-        $mobnumVal=$_POST['mobnum'];
-        $eduVal=$_POST['edudetails'];
-        $awdVal=$_POST['awarddetails'];
-  }
+
 }
 ?>
 <!DOCTYPE html>
@@ -107,11 +140,11 @@ else {
       <section class="wrapper">
         <div class="row">
           <div class="col-lg-12">
-            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Add Artist Detail</h3>
+            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Add trinee</h3>
             <ol class="breadcrumb">
               <li><i class="fa fa-home"></i><a href="dashboard.php">Home</a></li>
-              <li><i class="icon_document_alt"></i>Artist</li>
-              <li><i class="fa fa-file-text-o"></i>Add Artist Detail</li>
+              <li><i class="icon_document_alt"></i>Trainee</li>
+              <li><i class="fa fa-file-text-o"></i>Add Trainee</li>
             </ol>
           </div>
         </div>
@@ -119,61 +152,142 @@ else {
           <div class="col-lg-12">
             <section class="panel">
               <header class="panel-heading">
-             Add Artist Detail
+             Add Trainee Details
               </header>
               <div class="panel-body">
-                <form class="form-horizontal " method="post" action="" enctype="multipart/form-data" novalidate>
+                <form class="form-horizontal " method="post" action="" enctype="multipart/form-data" >
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Name</label>
+                    <label class="col-sm-2 control-label">Full Name</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="name" name="name"  type="text" value = "<?php echo (isset($nameVal))?$nameVal:'';?>"/>
-                      <?php if($formSubmitted && isset($errors['name'])){ ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['name'] ?></span>
+                      <input class="form-control" id="Name" name="Name"  type="text" />
+                      <?php if( isset($errors['Name'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['Name'] ?></span>
                        <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Mobile Number</label>
+                    <label class="col-sm-2 control-label">National ID</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="mobnum" name="mobnum"  type="text" value = "<?php echo (isset($mobnumVal))?$mobnumVal:'';?>">
-                      <?php if($formSubmitted){ if(isset($errors['mobnum'])){  ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['mobnum'];  ?></span>
-                       <?php } elseif($errors['mobnuminvalid']!=""){ ?>
-                       <span style="color:red;display:block;text-align:left"><?php echo $errors['mobnuminvalid'] ?></span>
-                       <?php } }  ?>
+                      <input class="form-control" id="NID" name="NID"  type="text" >
+                      <?php if(isset($_POST['submit'])){ 
+                        if(isset($errors['NID'])){  ?>
+                            <span style="color:red;display:block;text-align:left"><?php echo $errors['NID']; ?></span>
+                        <?php } elseif(isset($errors['nidinvalid'])){ ?>
+                            <span style="color:red;display:block;text-align:left"><?php echo $errors['nidinvalid']; ?></span>
+                        <?php } } ?>
                     </div>
                   </div>
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Email</label>
+                    <label class="col-sm-2 control-label">Birthdate</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="email" name="email" type="email" value = "<?php echo (isset($emailVal))?$emailVal:'';?>">
-                      <?php if($formSubmitted && isset($errors['email'])) { ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['email']; ?></span>
-                        <?php } ?>
-                      </div>
-                    </div>
-                  <div class="form-group">
-                    <label class="col-sm-2 control-label">Education Details</label>
-                    <div class="col-sm-10">
-                      <textarea class="form-control" name="edudetails" value = "<?php echo (isset($eduVal))?$eduVal:'';?>"></textarea>
-            
+                      <input class="form-control" id="birthdate" name="birthdate"  type="date">
                     </div>
                   </div>
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Award Details</label>
+                    <label class="col-sm-2 control-label">Gender</label>
                     <div class="col-sm-10">
-                      <textarea class="form-control" name="awarddetails" value = "<?php echo (isset($awdVal))?$awdVal:'';?>"></textarea>
-                  
+                     <input class="" id="gender" name="gender"  type="radio" value="male" style="margin:7px"> Male <span style="margin: 35px"></span>
+                      <input class="" id="gender" name="gender"  type="radio" value="Female" style="margin:7px"> Female
                     </div>
                   </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Image</label>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Contact Mobile Number</label>
                     <div class="col-sm-10">
-                       <input type="file" class="form-control" name="images" id="images" value="" required="true">
-                       <?php if($formSubmitted && isset($errors['images'])){ ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['images'] ?></span>
+                      <input class="form-control" id="contactMobNum" name="contactMobNum"  type="text">
+                      <?php if(isset($_POST['submit'])){ 
+                        if(isset($errors['contactMobNum'])){ ?>
+                            <span style="color:red;display:block;text-align:left"><?php echo $errors['contactMobNum'];  ?></span>
+                        <?php } elseif(isset($errors['contactMobNuminvalid'])){ ?>
+                            <span style="color:red;display:block;text-align:left"><?php echo $errors['contactMobNuminvalid']; ?></span>
+                        <?php } 
+                        } ?>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Father Name</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="fatherName" name="fatherName"  type="text"/>
+                      <?php if(isset($errors['fatherName'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherName'] ?></span>
                        <?php } ?>
-                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Father Job</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="fatherJob" name="fatherJob"  type="text" />
+                      <?php if(isset($_POST['submit']) && isset($errors['fatherJob'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherJob'] ?></span>
+                       <?php } ?>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Father Mobile Number</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="fatherMobNum" name="fatherMobNum"  type="text">
+                      <?php if(isset($_POST['submit'])){ 
+                        if(isset($errors['contactMobNum'])){ ?>
+                            <span style="color:red;display:block;text-align:left"><?php echo $errors['contactMobNum'];  ?></span>
+                        <?php } elseif(isset($errors['contactMobNuminvalid'])){ ?>
+                            <span style="color:red;display:block;text-align:left"><?php echo $errors['contactMobNuminvalid']; ?></span>
+                        <?php } 
+                        } ?>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Mother Name</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="motherName" name="motherName"  type="text"/>
+                      <?php if(isset($_POST['submit']) && isset($errors['motherName'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['motherName'] ?></span>
+                       <?php } ?>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Mother Job</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="motherJob" name="motherJob"  type="text"/>
+                      <?php if(isset($_POST['submit']) && isset($errors['motherJob'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['motherJob'] ?></span>
+                       <?php } ?>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Mother Mobile Number</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="motherMobNum" name="motherMobNum"  type="text">
+                      <?php if(isset($_POST['submit'])){ 
+                        if(isset($errors['contactMobNum'])){ ?>
+                            <span style="color:red;display:block;text-align:left"><?php echo $errors['contactMobNum'];  ?></span>
+                        <?php } elseif(isset($errors['contactMobNuminvalid'])){ ?>
+                            <span style="color:red;display:block;text-align:left"><?php echo $errors['contactMobNuminvalid']; ?></span>
+                        <?php } 
+                        } ?>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                  <label class="col-sm-2 control-label">Trainee Photo</label>
+                  <div class="col-sm-10">
+                      <input type="file" class="form-control" name="traineePic" id="traineePic" required>
+                      <?php if(isset($errors['traineePhoto'])) { ?>
+                          <span style="color:red;display:block;text-align:left"><?php echo $errors['traineePhoto']; ?></span>
+                      <?php } ?>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label">Birthday Certificate / National ID Image</label>
+                  <div class="col-sm-10">
+                      <input type="file" class="form-control" name="bdimg" id="bdimg" required>
+                      <?php if(isset($errors['bdimg'])) { ?>
+                          <span style="color:red;display:block;text-align:left"><?php echo $errors['bdimg']; ?></span>
+                      <?php } ?>
+                  </div>
+              </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Notes</label>
+                    <div class="col-sm-10">
+                      <textarea class="form-control" name="Notes"></textarea>
+                    </div>
                   </div>
                  <p style="text-align: center;"> <button type="submit" name='submit' class="btn btn-primary">Submit</button></p>
                 </form>
