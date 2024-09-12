@@ -10,7 +10,7 @@ else {
   $trainees = [];
   
   if (isset($_GET['search'])) {
-      $searchQuery = $_GET['search'];
+      $searchQuery = $_POST['search'];
   
       // Fetch trainees matching the user's input
       $stmt = $pdoConnection->prepare("SELECT NID, name FROM trainees WHERE NID LIKE ? ");
@@ -22,8 +22,7 @@ else {
   if(isset($_POST['submit'])){
     $traineeNID = $_POST['traineeNID'];
     // Validate traineeNID
-    $stmt = $pdoConnection->prepare("SELECT COUNT(*) FROM trainees WHERE NID = ?");
-    $stmt->execute([$traineeNID]);
+    $stmt = $pdoConnection->query("SELECT COUNT(*) FROM trainees join enrollment on trainees.NID= enrollment.traineeNID WHERE NID = '$traineeNID' AND enrollment.state in ('off',' waiting')" );
     $exists = $stmt->fetchColumn();
     
     if (!$exists) {
@@ -40,13 +39,6 @@ else {
       $errors['pymntplan'] = "Please select a payment plan";
     }
 
-    $discount = $_POST['discount'];
-    if ($discount == "") {
-        $discount = "null";
-    }else{
-      $discount = $_POST['discount'];
-    }
-
     $enrollstate = $_POST['enrollstate'];
     if (empty($enrollstate)) {
       $errors['enrollstate'] = "Please select an enrollment state";
@@ -57,9 +49,13 @@ else {
     }else{
       $enrolldate = $_POST['enrolldate'];
     }
-
+    
+    $discount = $_POST['discount'];
+    if ($discount == "") {
+    $query2 = $pdoConnection->query("INSERT INTO enrollment(traineeNID, groupId, paymentPlan, state, date) VALUES ('$traineeNID', '$group', '$pymntPlan', '$enrollstate', '$enrolldate')");
+    }else{
     $query2 = $pdoConnection->query("INSERT INTO enrollment(traineeNID, groupId, paymentPlan, state, date, discount) VALUES ('$traineeNID', '$group', '$pymntPlan', '$enrollstate', '$enrolldate', '$discount')");
-
+    }
           if ($query2) {
               echo "<script>alert('Enrollment details have been added.');</script>";
               echo "<script>window.location.href ='viewall_enrollments.php'</script>";

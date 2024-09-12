@@ -18,13 +18,6 @@ else {
       $errors['days'] = "Please enter the training days";
     }
     
-    $place = $_POST['place'];
-    if ($place == "") {
-        $place = "null";
-    }else{
-      $place = $_POST['place'];
-    }
-
     $timing = $_POST['timing'];
 
     if (empty($timing)) {
@@ -58,9 +51,12 @@ else {
     if (empty($capacity)) {
       $errors['price'] = "Capacity can't be empty";
     }
-
+    $place = $_POST['place'];
+    if ($place == "") {
+      $query = $pdoConnection->query("INSERT INTO groups (Title ,days, timeslot, minAge, maxAge, trainerId, sportId, seasonId, price, capacity) VALUES ('$title', '$days', '$timing', '$minAge', '$maxAge', '$trainer', '$sport', '$season', '$price', '$capacity')");
+    }else{
           $query = $pdoConnection->query("INSERT INTO groups (Title,place ,days, timeslot, minAge, maxAge, trainerId, sportId, seasonId, price, capacity) VALUES ('$title', '$place', '$days', '$timing', '$minAge', '$maxAge', '$trainer', '$sport', '$season', '$price', '$capacity')");
-
+    }
           if ($query) {
               echo "<script>alert('Group has been added.');</script>";
               echo "<script>window.location.href ='viewall_groups.php'</script>";
