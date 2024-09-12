@@ -94,7 +94,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
                   JOIN 
                     groups g on en.groupId=g.ID
                   WHERE
-                    en.state='on';");
+                    en.state='on' AND paymentState != 'complete';");
                   $cnt=1;
                   while ($row=$ret-> fetch(PDO:: FETCH_ASSOC)) {
                   ?>
