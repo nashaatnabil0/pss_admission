@@ -87,7 +87,7 @@
                           <span class="menu-arrow arrow_carrot-right"></span>
                       </a>
             <ul class="sub">
-              <li><a class="" href="add_payment.php">Add Payment</a></li>
+              <li><a class="" href="make_payment.php">Add Payment</a></li>
               <li><a class="" href="viewall_payments.php">Manage Payments</a></li>
             </ul>
           </li>
