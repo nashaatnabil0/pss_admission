@@ -7,8 +7,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
   }
 else {
   $errors = [];
-  $formSubmitted = $_SERVER["REQUEST_METHOD"] == "POST";
-  if ($formSubmitted) {
+  if(isset($_POST['submit'])){
     $name = $_POST['name'];
     if (empty($name)) {
       $errors['name'] = "Name cannot be empty";
@@ -28,38 +27,31 @@ else {
   }elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
           $errors['email'] = "Invalid email format";
       }
-   
-      $edudetails = $_POST['edudetails'];
-      $awarddetails = $_POST['awarddetails'];
+  $role= $_POST['role'];
+  if (empty($role)) {
+    $errors['role'] = "Please choose a role";
+}
+  $password=$_POST['password'];
+  $Confpassword=$_POST['confirmpassword'];
 
-        $img = $_FILES["images"]["name"];
-      $extension = substr($img, strlen($img) - 4, strlen($img));
-      // Allowed extensions
-      $allowed_extensions = array(".jpg", "jpeg", ".png", ".gif");
-      // Validation for allowed extensions
-      if (!in_array($extension, $allowed_extensions)) {
-          $errors['images'] = "Invalid format. Only jpg / jpeg/ png /gif format allowed";
-       }
+  $passwordPattern= '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/';
+  
+  if (!preg_match($passwordPattern, $password)) {
+    $errors['PassWeak'] = "Password must have uppercase, lowercase, number, special character, and length must be 8 or more";
+   } elseif ($Confpassword !== $password) {
+    $errors['PassMatch'] = "Passwords don't match";
+   } else {
+    $password = md5($password);
+    $query = $pdoConnection->query("INSERT INTO users (Name, MobileNumber, Email, role ,password ) VALUES ('$name', '$mobnum', '$email', '$role','$password')");
 
-      if (empty($errors)) {
-          $proimg = md5($img) . $extension;
-          move_uploaded_file($_FILES["images"]["tmp_name"], "images/" . $proimg);
-
-          $query = $pdoConnection->query("INSERT INTO tblartist(Name, MobileNumber, Email, Education, Award, Profilepic) VALUES ('$name', '$mobnum', '$email', '$edudetails', '$awarddetails', '$proimg')");
-
-          if ($query) {
-              echo "<script>alert('Artist details have been added.');</script>";
-              echo "<script>window.location.href ='manage-artist.php'</script>";
-          } else {
-              echo "<script>alert('Something Went Wrong. Please try again.');</script>";
-            }
-      }else{
-        $nameVal=$_POST['name'];
-        $emailVal=$_POST['email'];
-        $mobnumVal=$_POST['mobnum'];
-        $eduVal=$_POST['edudetails'];
-        $awdVal=$_POST['awarddetails'];
+    if ($query) {
+        echo "<script>alert('Admin/ Moderator has been added.');</script>";
+        echo "<script>window.location.href ='viewall_users.php'</script>";
+    } else {
+        echo "<script>alert('Something Went Wrong. Please try again.');</script>";
+      }
   }
+      
 }
 ?>
 <!DOCTYPE html>
@@ -107,11 +99,11 @@ else {
       <section class="wrapper">
         <div class="row">
           <div class="col-lg-12">
-            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Add Artist Detail</h3>
+            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Add Admin / Moderator</h3>
             <ol class="breadcrumb">
               <li><i class="fa fa-home"></i><a href="dashboard.php">Home</a></li>
-              <li><i class="icon_document_alt"></i>Artist</li>
-              <li><i class="fa fa-file-text-o"></i>Add Artist Detail</li>
+              <li><i class="icon_document_alt"></i>Admin / Moderator</li>
+              <li><i class="fa fa-file-text-o"></i>Add Admin / Moderator Information</li>
             </ol>
           </div>
         </div>
@@ -119,15 +111,15 @@ else {
           <div class="col-lg-12">
             <section class="panel">
               <header class="panel-heading">
-             Add Artist Detail
+             Add Admin/ Moderator Detail
               </header>
               <div class="panel-body">
                 <form class="form-horizontal " method="post" action="" enctype="multipart/form-data" novalidate>
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Name</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="name" name="name"  type="text" value = "<?php echo (isset($nameVal))?$nameVal:'';?>"/>
-                      <?php if($formSubmitted && isset($errors['name'])){ ?>
+                      <input class="form-control" id="name" name="name"  type="text" required/>
+                      <?php if(isset($_POST['submit'])&& isset($errors['name'])){ ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['name'] ?></span>
                        <?php } ?>
                     </div>
@@ -135,8 +127,8 @@ else {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Mobile Number</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="mobnum" name="mobnum"  type="text" value = "<?php echo (isset($mobnumVal))?$mobnumVal:'';?>">
-                      <?php if($formSubmitted){ if(isset($errors['mobnum'])){  ?>
+                      <input class="form-control" id="mobnum" name="mobnum"  type="text" required>
+                      <?php if(isset($_POST['submit'])){ if(isset($errors['mobnum'])){  ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['mobnum'];  ?></span>
                        <?php } elseif($errors['mobnuminvalid']!=""){ ?>
                        <span style="color:red;display:block;text-align:left"><?php echo $errors['mobnuminvalid'] ?></span>
@@ -146,35 +138,37 @@ else {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Email</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="email" name="email" type="email" value = "<?php echo (isset($emailVal))?$emailVal:'';?>">
-                      <?php if($formSubmitted && isset($errors['email'])) { ?>
+                      <input class="form-control" id="email" name="email" type="email" required>
+                      <?php if(isset($_POST['submit']) && isset($errors['email'])) { ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['email']; ?></span>
                         <?php } ?>
                       </div>
                     </div>
-                  <div class="form-group">
-                    <label class="col-sm-2 control-label">Education Details</label>
+                    <div class="form-group">
+                    <label class="col-sm-2 control-label">Role</label>
                     <div class="col-sm-10">
-                      <textarea class="form-control" name="edudetails" value = "<?php echo (isset($eduVal))?$eduVal:'';?>"></textarea>
-            
-                    </div>
+                    <input class="" id="role" name="role"  type="radio" value="admin" style="margin:7px" required > Admin <span style="margin: 35px"></span>
+                    <input class="" id="rolemod" name="role"  type="radio" value="moderator" style="margin:7px" required> Moderator  <span style="margin: 35px"></span>
+                    <input class="" id="roleAcc" name="role"  type="radio" value="accountant" style="margin:7px" required> Accountant   
+                    <?php if(isset($_POST['submit']) && isset($errors['role'])) { ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['role']; ?></span>
+                        <?php } ?>
                   </div>
-                  <div class="form-group">
-                    <label class="col-sm-2 control-label">Award Details</label>
-                    <div class="col-sm-10">
-                      <textarea class="form-control" name="awarddetails" value = "<?php echo (isset($awdVal))?$awdVal:'';?>"></textarea>
-                  
-                    </div>
                   </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Image</label>
-                    <div class="col-sm-10">
-                       <input type="file" class="form-control" name="images" id="images" value="" required="true">
-                       <?php if($formSubmitted && isset($errors['images'])){ ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['images'] ?></span>
-                       <?php } ?>
+                  <div class="form-group ">
+                      <label for="address" class="control-label col-lg-2"> Password <span class="required">*</span></label>
+                      <div class="col-lg-10">
+                        <input type="password" name="password" class="form-control" value="">
+                        <span style="color:red;display:block;text-align:left"><?php echo (isset($errors['PassWeak']))?$errors['PassWeak']:'';?></span>
                       </div>
-                  </div>
+                    </div>
+                    <div class="form-group ">
+                      <label for="username" class="control-label col-lg-2">Confirm Password <span class="required">*</span></label>
+                      <div class="col-lg-10">
+                        <input type="password" name="confirmpassword" class="form-control" value="">
+                        <span style="color:red;display:block;text-align:left"><?php echo (isset($errors['PassMatch']))?$errors['PassMatch']:'';?></span>
+                      </div>
+                    </div>
                  <p style="text-align: center;"> <button type="submit" name='submit' class="btn btn-primary">Submit</button></p>
                 </form>
               </div>
