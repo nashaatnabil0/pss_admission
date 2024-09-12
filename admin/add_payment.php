@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(0);
+//error_reporting(0);
 include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
@@ -8,19 +8,35 @@ if (strlen($_SESSION['sportadmission']==0)) {
 else {
   $errors = [];
   if(isset($_POST['submit'])){
-    $name = $_POST['name'];
+    $name = $_GET['name'];
     if (empty($name)) {
       $errors['name'] = "Name cannot be empty";
   }
+  
+      $enrollId = $_GET['editid'];
+      $fullprice = $_POST['price'];
+      $totalpaid = ['totalpaid']; //calculated
+      $remaining = ['remaining']; //calculated
+      $discount = $_POST['discount'];
+      $pymntAmount = ['amount'];
+      $pymntMethod = ['method'];
+      
+      $pymntdate = $_POST['date'];
+      
+      if ($pymntdate == "") {
+          $pymntdate = date('Y-m-d') ;
+      }else{
+        $pymntdate = $_POST['date'];
+      }
 
-      $edudetails = $_POST['edudetails'];
-      $awarddetails = $_POST['awarddetails'];
+      $addedby = $_POST['adminName'];
+      $notes = $_POST['notes'];
 
-          $query = $pdoConnection->query("INSERT INTO tblartist(Name, MobileNumber, Email, Education, Award, Profilepic) VALUES ('$name', '$mobnum', '$email', '$edudetails', '$awarddetails', '$proimg')");
+          $query = $pdoConnection->query("INSERT INTO payment ( enrollmentId, paymentAmount, paymentMethod, date, userId, notes) VALUES ('$enrollId', '$pymntAmount', '$pymntMethod', '$pymntdate', '$addedby', '$notes')");
 
           if ($query) {
-              echo "<script>alert('Artist details have been added.');</script>";
-              echo "<script>window.location.href ='manage-artist.php'</script>";
+              echo "<script>alert('Payment has been added.');</script>";
+              echo "<script>window.location.href ='make_payment.php'</script>";
           } else {
               echo "<script>alert('Something Went Wrong. Please try again.');</script>";
             }
@@ -88,13 +104,52 @@ else {
               </header>
               <div class="panel-body">
                 <form class="form-horizontal " method="post" action="" enctype="multipart/form-data" >
+                <?php
+              $traineeinfo= $pdoConnection->query(" SELECT
+                                                      t.Name , e.traineeNID, g.price , e.discount 
+                                                    from
+                                                    enrollment e
+                                                    join
+                                                    trainees t on e.traineeNID = t.NID
+                                                    join 
+                                                    'group' g on e.groupId = g.ID
+                                                    where 
+                                                    e.ID = $enrollId ;
+                                                    ");
+                              $cnt=1;
+                              while ($row2=$traineeinfo-> fetch(PDO:: FETCH_ASSOC)) { ?>
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Name</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="name" name="name"  type="text" /> 
+                      <input class="form-control" id="name" name="name"  type="text" value = "<?php echo $row2['t.Name'];?>"/> 
                       <?php if( $_POST['submit'] && isset($errors['name'])){ ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['name'] ?></span>
                        <?php } ?>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Subscription Fees</label>
+                    <div class="col-sm-10">
+                      <input class=" form-control" id="price" name="price" type="text" value = "<?php echo $row2['g.price'];?>" readonly >
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Discount</label>
+                    <div class="col-sm-10">
+                      <input class=" form-control" id="discount" name="discount" type="text" value = "<?php echo $row2['e.discount'];?>" readonly>
+                    <?php}?>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Total Paid Amount </label>
+                    <div class="col-sm-10">
+                      <input class=" form-control" id="totalpaid" name="totalpaid" type="text" readonly>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Remaining Amount</label>
+                    <div class="col-sm-10">
+                      <input class=" form-control" id="remaining" name="remaining" type="text" readonly>
                     </div>
                   </div>
                   <div class="form-group">
@@ -130,14 +185,14 @@ else {
                                 while ($row=$ret ->fetch(PDO:: FETCH_ASSOC)) {
                                 ?>
                     <div class="col-sm-10">
-                      <input class=" form-control" id="adminname" name="name" type="text" value="<?php  echo $row['name'];?>" readonly>
+                      <input class=" form-control" id="adminName" name="adminName" type="text" value="<?php  echo $row['name'];?>" readonly>
                       <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Notes</label>
                     <div class="col-sm-10">
-                      <textarea class="form-control" name="Notes"></textarea>
+                      <textarea class="form-control" name="notes"></textarea>
                     </div>
                   </div>
                  <p style="text-align: center;"> <button type="submit" name='submit' class="btn btn-primary">Submit</button></p>
