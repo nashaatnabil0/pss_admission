@@ -7,43 +7,14 @@ if (strlen($_SESSION['sportadmission']==0)) {
   }
 else {
   $errors = [];
-  $formSubmitted = $_SERVER["REQUEST_METHOD"] == "POST";
-  if ($formSubmitted) {
+  if(isset($_POST['submit'])){
     $name = $_POST['name'];
     if (empty($name)) {
       $errors['name'] = "Name cannot be empty";
   }
-    $mobnum = $_POST['mobnum'];
-    $monnumPattern='/^(011|010|015|012)[0-9]{8}$/';
-    if (empty($mobnum)) {
-      $errors['mobnum'] = "phone number cannot be empty";
-  }elseif(!preg_match($monnumPattern,$mobnum)){
-     $errors['mobnuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
- }
 
-    $email = $_POST['email'];
-
-    if (empty($email)) {
-      $errors['email'] = "Email cannot be empty";
-  }elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-          $errors['email'] = "Invalid email format";
-      }
-   
       $edudetails = $_POST['edudetails'];
       $awarddetails = $_POST['awarddetails'];
-
-        $img = $_FILES["images"]["name"];
-      $extension = substr($img, strlen($img) - 4, strlen($img));
-      // Allowed extensions
-      $allowed_extensions = array(".jpg", "jpeg", ".png", ".gif");
-      // Validation for allowed extensions
-      if (!in_array($extension, $allowed_extensions)) {
-          $errors['images'] = "Invalid format. Only jpg / jpeg/ png /gif format allowed";
-       }
-
-      if (empty($errors)) {
-          $proimg = md5($img) . $extension;
-          move_uploaded_file($_FILES["images"]["tmp_name"], "images/" . $proimg);
 
           $query = $pdoConnection->query("INSERT INTO tblartist(Name, MobileNumber, Email, Education, Award, Profilepic) VALUES ('$name', '$mobnum', '$email', '$edudetails', '$awarddetails', '$proimg')");
 
@@ -53,14 +24,8 @@ else {
           } else {
               echo "<script>alert('Something Went Wrong. Please try again.');</script>";
             }
-      }else{
-        $nameVal=$_POST['name'];
-        $emailVal=$_POST['email'];
-        $mobnumVal=$_POST['mobnum'];
-        $eduVal=$_POST['edudetails'];
-        $awdVal=$_POST['awarddetails'];
-  }
-}
+      }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -107,11 +72,11 @@ else {
       <section class="wrapper">
         <div class="row">
           <div class="col-lg-12">
-            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Add Artist Detail</h3>
+            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Add Payment </h3>
             <ol class="breadcrumb">
               <li><i class="fa fa-home"></i><a href="dashboard.php">Home</a></li>
-              <li><i class="icon_document_alt"></i>Artist</li>
-              <li><i class="fa fa-file-text-o"></i>Add Artist Detail</li>
+              <li><i class="icon_document_alt"></i>Payment</li>
+              <li><i class="fa fa-file-text-o"></i>Add Payment</li>
             </ol>
           </div>
         </div>
@@ -119,61 +84,61 @@ else {
           <div class="col-lg-12">
             <section class="panel">
               <header class="panel-heading">
-             Add Artist Detail
+             Add Payment
               </header>
               <div class="panel-body">
-                <form class="form-horizontal " method="post" action="" enctype="multipart/form-data" novalidate>
+                <form class="form-horizontal " method="post" action="" enctype="multipart/form-data" >
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Name</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="name" name="name"  type="text" value = "<?php echo (isset($nameVal))?$nameVal:'';?>"/>
-                      <?php if($formSubmitted && isset($errors['name'])){ ?>
+                      <input class="form-control" id="name" name="name"  type="text" /> 
+                      <?php if( $_POST['submit'] && isset($errors['name'])){ ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['name'] ?></span>
                        <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Mobile Number</label>
+                    <label class="col-sm-2 control-label">Payment Amount</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="mobnum" name="mobnum"  type="text" value = "<?php echo (isset($mobnumVal))?$mobnumVal:'';?>">
-                      <?php if($formSubmitted){ if(isset($errors['mobnum'])){  ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['mobnum'];  ?></span>
-                       <?php } elseif($errors['mobnuminvalid']!=""){ ?>
-                       <span style="color:red;display:block;text-align:left"><?php echo $errors['mobnuminvalid'] ?></span>
-                       <?php } }  ?>
-                    </div>
+                      <input class="form-control" id="amount" name="amount"  type="number" value=''>
+                      <?php if($_POST['submit']){ if(isset($errors['amount'])){  ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['amount']; ?></span>
+                        <?php }} ?>
+                      </div>
                   </div>
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Email</label>
+                    <label class="col-sm-2 control-label">Payment Method</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="email" name="email" type="email" value = "<?php echo (isset($emailVal))?$emailVal:'';?>">
-                      <?php if($formSubmitted && isset($errors['email'])) { ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['email']; ?></span>
+                      <input class="form-control" id="method" name="method" type="text">
+                      <?php if($_POST['submit'] && isset($errors['mothod'])) { ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['method']; ?></span>
                         <?php } ?>
                       </div>
                     </div>
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Education Details</label>
+                    <label class="col-sm-2 control-label">Payment Date</label>
                     <div class="col-sm-10">
-                      <textarea class="form-control" name="edudetails" value = "<?php echo (isset($eduVal))?$eduVal:'';?>"></textarea>
-            
+                    <input class="form-control" id="date" name="date" type="date">
                     </div>
                   </div>
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Award Details</label>
+                    <label class="col-sm-2 control-label">Payment Added by:</label>
+                    <?php
+                    $adminid=$_SESSION['sportadmission'];
+                                $ret=$pdoConnection-> query("select * from users where ID='$adminid'");
+                                $cnt=1;
+                                while ($row=$ret ->fetch(PDO:: FETCH_ASSOC)) {
+                                ?>
                     <div class="col-sm-10">
-                      <textarea class="form-control" name="awarddetails" value = "<?php echo (isset($awdVal))?$awdVal:'';?>"></textarea>
-                  
+                      <input class=" form-control" id="adminname" name="name" type="text" value="<?php  echo $row['name'];?>" readonly>
+                      <?php } ?>
                     </div>
                   </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Image</label>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Notes</label>
                     <div class="col-sm-10">
-                       <input type="file" class="form-control" name="images" id="images" value="" required="true">
-                       <?php if($formSubmitted && isset($errors['images'])){ ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['images'] ?></span>
-                       <?php } ?>
-                      </div>
+                      <textarea class="form-control" name="Notes"></textarea>
+                    </div>
                   </div>
                  <p style="text-align: center;"> <button type="submit" name='submit' class="btn btn-primary">Submit</button></p>
                 </form>
@@ -226,6 +191,21 @@ else {
   <script src="js/form-component.js"></script>
   <!-- custome script for all page -->
   <script src="js/scripts.js"></script>
+
+  <!-- get the current date -->
+  <script>
+  var dateElement = document.getElementById("date");
+  var today = new Date();
+
+  // put the date in the defult format YYYY-MM-DD
+  var formattedDate = today.getFullYear() + '-' +
+                      ('0' + (today.getMonth() + 1)).slice(-2) + '-' + 
+                      ('0' + today.getDate()).slice(-2);
+
+  // Set the value of the input as today's date
+  dateElement.value = formattedDate;  
+</script>
+
 
 
 </body>
