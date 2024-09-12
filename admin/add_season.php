@@ -142,9 +142,6 @@ echo "<script>window.location.href ='viewall_seasons.php'</script>";
         </div>
         <!-- Basic Forms & Horizontal Forms-->
 
-        
-         
-      
         <!-- page end-->
       </section>
     </section>
