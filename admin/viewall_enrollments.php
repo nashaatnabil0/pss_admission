@@ -9,16 +9,11 @@ if (strlen($_SESSION['sportadmission']==0)) {
 if(isset($_GET['delid']))
 {
 $rid=intval($_GET['delid']);
-$delete_image = $pdoConnection -> query("select Profilepic from tblartist where ID='$rid'");
-$image_data = $delete_image-> fetch(PDO:: FETCH_ASSOC);
-$image_name = $image_data['Profilepic'];
-
-$sql= $pdoConnection -> query("DELETE FROM tblartist WHERE ID='$rid'");
+$sql= $pdoConnection -> query("DELETE FROM enrollment WHERE ID='$rid'");
 
   if($sql){
-    unlink("images/$image_name");
-    echo "<script>alert('Data deleted');</script>"; 
-    echo "<script>window.location.href = 'manage-artist.php'</script>";     
+    echo "<script>alert('Enroll Data deleted');</script>"; 
+    echo "<script>window.location.href = 'viewall_enrollments.php'</script>";     
   }
 }
 ?>
@@ -58,11 +53,11 @@ $sql= $pdoConnection -> query("DELETE FROM tblartist WHERE ID='$rid'");
       <section class="wrapper">
         <div class="row">
           <div class="col-lg-12">
-            <h3 class="page-header"><i class="fa fa-table"></i> Manage Artist</h3>
+            <h3 class="page-header"><i class="fa fa-table"></i>Enrollments Management</h3>
             <ol class="breadcrumb">
               <li><i class="fa fa-home"></i><a href="dashboard.php">Home</a></li>
-              <li><i class="fa fa-table"></i>Artist</li>
-              <li><i class="fa fa-th-list"></i>Manage Artist</li>
+              <li><i class="fa fa-table"></i>Enrollments</li>
+              <li><i class="fa fa-th-list"></i>View all Enrollments</li>
             </ol>
           </div>
         </div>
@@ -71,42 +66,60 @@ $sql= $pdoConnection -> query("DELETE FROM tblartist WHERE ID='$rid'");
           <div class="col-sm-12">
             <section class="panel">
               <header class="panel-heading">
-                Manage Artist
+                Search Enrollment
+                <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search by Trainee Name, Enrol Group, Payment Plan, or State..." class="form-control" style="margin-bottom: 10px;">
               </header>
               <table class="table">
-                <thead>
-                                        
-                                            <tr>
-                  <th>S.NO</th>
-            
-                 
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Mobile Number</th>
-                    <th>Registration Date</th>
-                   
-                          <th>Action</th>
-                </tr>
-                                        </tr>
-                                        </thead>
-               <?php
-$ret= $pdoConnection-> query("SELECT * FROM tblartist");
-$cnt=1;
-while ($row=$ret-> fetch(PDO:: FETCH_ASSOC)) {
-
-?>
-              
-                <tr>
-                  <td><?php echo $cnt;?></td>
-            <td><?php  echo $row['Name'];?></td>
-                <td><?php  echo $row['Email'];?></td> 
-                  <td><?php  echo $row['MobileNumber'];?></td>
-                  <td><?php  echo $row['CreationDate'];?></td>
-                  <td><a href="edit-artist-detail.php?editid=<?php echo $row['ID'];?>" class="btn btn-success">Edit</a> || <a href="manage-artist.php?delid=<?php echo $row['ID'];?>" class="btn btn-danger confirm">Delete</a></td>
-                </tr>
+                <thead>                        
+                  <tr>
+                    <th>S.NO</th>
+                    <th>Trainee Name</th>
+                    <th>Enrol Group</th>
+                    <th>Payment Plan</th>
+                    <th>Payment State</th>
+                    <th>Enrollment State</th>
+                    <th>Discount</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                  <?php
+                  // $ret= $pdoConnection-> query("SELECT * FROM enrollment");
+                  $ret= $pdoConnection-> query("SELECT
+                    en.ID,
+                    en.traineeNID,
+                    en.groupId,
+                    en.paymentPlan,
+                    en.paymentState,
+                    en.state,
+                    en.discount,
+                    en.date,
+                    t.Name as Tname,
+                    g.Title as Gtilte,
+                    g.minAge as gminAge,
+                    g.maxAge as gmaxAge,
+                    g.Timeslot as Timing
+                  FROM 
+                    enrollment en 
+                  JOIN
+                    trainees t on en.traineeNID=t.NID 
+                  JOIN 
+                    groups g on en.groupId=g.ID;");
+                  $cnt=1;
+                  while ($row=$ret-> fetch(PDO:: FETCH_ASSOC)) {
+                  ?>
+                  <tr>
+                    <td><?php echo $cnt;?></td>
+                    <td><?php  echo $row['Tname'];?></td>
+                    <td><?php  echo $row['Gtilte'].' - '.$row['gminAge'].' to '.$row['gmaxAge'].' - '.$row['Timing'];?></td> 
+                    <td><?php  echo $row['paymentPlan'];?></td>
+                    <td><?php  echo $row['paymentState'];?></td>
+                    <td><?php  echo $row['state'];?></td>
+                    <td><?php  echo $row['discount'];?></td>
+                    <td><a href="edit_enrollment_detail.php?editid=<?php echo $row['ID'];?>" class="btn btn-success">Edit</a> || <a href="viewall_enrollments.php?delid=<?php echo $row['ID'];?>" class="btn btn-danger confirm">Delete</a></td>
+                  </tr>
                 <?php 
-$cnt=$cnt+1;
-}?>
+                    $cnt=$cnt+1;
+                    }?>
               </table>
             </section>
           </div>
@@ -128,17 +141,18 @@ $cnt=$cnt+1;
   <script src="js/jquery.nicescroll.js" type="text/javascript"></script>
   <!--custome script for all page-->
   <script src="js/scripts.js"></script>
-<script>
-  let deleteBtn = document.querySelectorAll(".confirm");
-for (let i = 0; i < deleteBtn.length; i++) {
-    deleteBtn[i].addEventListener("click", (e) => {
-        let ans = confirm("Are You Sure!!")
-        if (!ans) {
-            e.preventDefault();
-        }
-    })
-}
-</script>
+  <!-- Confirm script -->
+  <script>
+    let deleteBtn = document.querySelectorAll(".confirm");
+    for (let i = 0; i < deleteBtn.length; i++) {
+        deleteBtn[i].addEventListener("click", (e) => {
+            let ans = confirm("Are You Sure!!\nThis action will delete any payment related to it ?")
+            if (!ans) {
+                e.preventDefault();
+            }
+        })
+    }
+  </script>
 
 </body>
 
