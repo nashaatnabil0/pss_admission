@@ -8,7 +8,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
 else {
   $errors = [];
   $enrollId = $_GET['editid'];
-  if(isset($_POST['submit'])){
+  if($_SERVER['REQUEST_METHOD'] =="POST" && isset($_POST['submit'])){
 //validate enroll ID 
     $stmt = $pdoConnection->query("SELECT * FROM enrollment  WHERE ID = $enrollId;" );
     $exists = $stmt->fetch();
@@ -258,7 +258,7 @@ else {
                       <textarea class="form-control" name="notes" value=""></textarea>
                     </div>
                   </div>
-                 <p style="text-align: center;"> <button type="submit" name='submit' class="btn btn-primary">Submit</button></p>
+                 <p style="text-align: center;"> <button type="submit" name="submit" id= "submit" class="btn btn-primary">Submit</button></p>
                 </form>
               </div>
             </section>

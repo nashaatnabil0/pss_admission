@@ -169,7 +169,7 @@ else {
                         <span style="color:red;display:block;text-align:left"><?php echo (isset($errors['PassMatch']))?$errors['PassMatch']:'';?></span>
                       </div>
                     </div>
-                 <p style="text-align: center;"> <button type="submit" name='submit' class="btn btn-primary">Submit</button></p>
+                 <p style="text-align: center;"> <button type="submit" name="submit" class="btn btn-primary">Submit</button></p>
                 </form>
               </div>
             </section>

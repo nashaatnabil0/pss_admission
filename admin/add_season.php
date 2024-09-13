@@ -130,7 +130,7 @@ echo "<script>window.location.href ='viewall_seasons.php'</script>";
                   </div>
                   <div class="form-group">
                 
-                 <p style="text-align: center;"> <button type="submit" name='submit' class="btn btn-primary">Submit</button></p>
+                 <p style="text-align: center;"> <button type="submit" name="submit" class="btn btn-primary">Submit</button></p>
                 </form>
               </div>
             </section>
