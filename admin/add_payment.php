@@ -14,12 +14,12 @@ else {
       $errors['name'] = "Name cannot be empty";
   }
   
-      $fullprice = $_POST['price'];
-      $totalpaid = $_POST['totalpaid']; //calculated
-      $remaining = $_POST['remaining']; //calculated
+      $fullprice = $_POST['price']; //calculated
+      $totalpaid = ['totalpaid']; //calculated
+      $remaining = ['remaining']; //calculated
       $discount = $_POST['discount'];
-      $pymntAmount = $_POST['amount'];
-      $pymntMethod = $_POST['method'];
+      $pymntAmount = ['amount'];
+      $pymntMethod = ['method'];
       
       $pymntdate = $_POST['date'];
       
@@ -29,7 +29,7 @@ else {
         $pymntdate = $_POST['date'];
       }
 
-      $addedby = $_SESSION['sportadmission'];
+      $addedby = $_POST['adminName'];
       $notes = $_POST['notes'];
 
           $query = $pdoConnection->query("INSERT INTO payment ( enrollmentId, paymentAmount, paymentMethod, date, userId, notes) VALUES ('$enrollId', '$pymntAmount', '$pymntMethod', '$pymntdate', '$addedby', '$notes')");
@@ -111,8 +111,8 @@ else {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Name</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="name" name="name"  type="text" value = "<?php echo $row2['Name'];?>"/> 
-                      <?php if( $_POST['submit'] && isset($errors['name'])){ ?>
+                      <input class="form-control" id="name" name="name"  type="text" value = "<?php echo $row2['Name'];?>" readonly/> 
+                      <?php if( isset($_POST['submit']) && isset($errors['name'])){ ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['name'] ?></span>
                        <?php } ?>
                     </div>
@@ -120,7 +120,10 @@ else {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Subscription Fees</label>
                     <div class="col-sm-10">
-                      <input class=" form-control" id="price" name="price" type="text" value = "<?php echo $row2['price'];?>" readonly >
+                      <input class="form-control" id="price" name="name"  type="text" value = "<?php echo $row2['price'];?>" readonly/> 
+                      <?php if( isset($_POST['submit']) && isset($errors['price'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['name'] ?></span>
+                       <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">
@@ -130,6 +133,21 @@ else {
                     <?php }?>
                     </div>
                   </div>
+                  <div class="form-group">
+                  <label class="col-sm-2 control-label">Fees After Discount</label>
+                  <div class="col-sm-10">
+                    <?php 
+                      // Fetch the price after discount
+                      $pricequery = $pdoConnection->query("SELECT g.price - e.discount AS 'difference' 
+                                                          FROM enrollment e 
+                                                          JOIN groups g ON e.groupId = g.ID 
+                                                          WHERE e.ID = $enrollId;");
+                      
+                      $row3 = $pricequery->fetch(PDO::FETCH_ASSOC);  // Fetch one result
+                    ?>
+                    <input class="form-control" id="discprice" name="dicprice" type="text" value="<?php echo $row3['difference']; ?>" readonly />
+                  </div>
+                </div>
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Total Paid Amount </label>
                     <div class="col-sm-10">
@@ -158,7 +176,7 @@ else {
                       <option value="">Choose payment method</option>
                       <option value="cash">Cash</option>
                       <option value="instapay">Instapay</option>
-                      <?php if(isset($_POST['submit']) && isset($errors['mothod'])) { ?>
+                      <?php if(isset($_POST['submit']) && isset($errors['method'])) { ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['method']; ?></span>
                         <?php } ?>
                         </select>
