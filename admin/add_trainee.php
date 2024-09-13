@@ -184,7 +184,7 @@ if (isset($_POST['submit'])) {
                     <div class="col-sm-10">
                       <input class="form-control" id="Name" name="Name"  type="text" value=""/>
                       <?php if( isset($_POST['submit']) && isset($errors['Name'])){ ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['Name'] ?></span>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['Name']; ?></span>
                        <?php } ?>
                     </div>
                   </div>
@@ -205,7 +205,7 @@ if (isset($_POST['submit'])) {
                     <div class="col-sm-10">
                       <input class="form-control" id="birthdate" name="birthdate"  type="date" value="">
                       <?php if(isset($_POST['submit']) && isset($errors['birthdate'])){ ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['birthdare'] ?></span>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['birthdate']; ?></span>
                        <?php } ?>
                     </div>
                   </div>
@@ -215,7 +215,7 @@ if (isset($_POST['submit'])) {
                      <input class="" id="gender" name="gender"  type="radio" value="male" style="margin:7px"> Male <span style="margin: 35px"></span>
                       <input class="" id="gender" name="gender"  type="radio" value="Female" style="margin:7px"> Female
                       <?php if(isset($_POST['submit']) && isset($errors['gender'])){ ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['gender'] ?></span>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['gender']; ?></span>
                        <?php } ?>
                     </div>
                   </div>
@@ -237,7 +237,7 @@ if (isset($_POST['submit'])) {
                     <div class="col-sm-10">
                       <input class="form-control" id="fatherName" name="fatherName"  type="text" value=""/>
                       <?php if(isset($_POST['submit']) && isset($errors['fatherName'])){ ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherName'] ?></span>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherName']; ?></span>
                        <?php } ?>
                     </div>
                   </div>
@@ -246,7 +246,7 @@ if (isset($_POST['submit'])) {
                     <div class="col-sm-10">
                       <input class="form-control" id="fatherJob" name="fatherJob"  type="text" value=""/>
                       <?php if(isset($_POST['submit']) && isset($errors['fatherJob'])){ ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherJob'] ?></span>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherJob']; ?></span>
                        <?php } ?>
                     </div>
                   </div>
@@ -268,7 +268,7 @@ if (isset($_POST['submit'])) {
                     <div class="col-sm-10">
                       <input class="form-control" id="motherName" name="motherName"  type="text" value=""/>
                       <?php if(isset($_POST['submit']) && isset($errors['motherName'])){ ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['motherName'] ?></span>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['motherName']; ?></span>
                        <?php } ?>
                     </div>
                   </div>
@@ -277,7 +277,7 @@ if (isset($_POST['submit'])) {
                     <div class="col-sm-10">
                       <input class="form-control" id="motherJob" name="motherJob"  type="text"value=""/>
                       <?php if(isset($_POST['submit']) && isset($errors['motherJob'])){ ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['motherJob'] ?></span>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['motherJob']; ?></span>
                        <?php } ?>
                     </div>
                   </div>
