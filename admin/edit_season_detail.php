@@ -6,23 +6,49 @@ if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
   }
   else{
+    $errors = [];
+    $cid=$_GET['editid'];
+    
 
-if(isset($_POST['submit']))
-  {
-    
-    $arttype=$_POST['arttype'];
-    
-  $eid=$_GET['editid'];
-  $query=$pdoConnection-> query("update tblarttype set ArtType='$arttype' where ID='$eid'");
-    if ($query) {
-      echo "<script>alert('Art type has been updated.');  location.href='manage-art-type.php'</script>";
-  }
-  else
+    if(isset($_POST['submit']))
     {
-      echo "<script>alert('Something Went Wrong. Please try again.');</script>";
-    }
+      $delete_image = $pdoConnection -> query("select image from season where ID='$cid'");
+      $image_data = $delete_image-> fetch(PDO:: FETCH_ASSOC);
+      $image_name = $image_data['image'];
 
+      $Name=$_POST['Name'];
+      $State = $_POST['seasonstate'];
+      $stDate=$_POST['startdate'];
+      $seasonImg = $_FILES['image']['name'];
+      if($seasonImg!=""){
+        $extension = strtolower(pathinfo($seasonImg, PATHINFO_EXTENSION));
+        $allowed_extensions = array("jpg", "jpeg", "png", "gif");
+        // Validation for allowed extensions
+        if (!in_array($extension, $allowed_extensions)) {
+          $errors['image'] = "Invalid format. Only jpg / jpeg/ png /gif format allowed";
+        }
+      }
+      if (empty($errors)) {
+        if(!empty($seasonImg)){
+          $renameSeasonImg = md5($seasonImg) . '.' . $extension;
+        move_uploaded_file($_FILES["image"]["tmp_name"], "images/" . $renameSeasonImg);
+          // $query = $pdoConnection->query("INSERT INTO season (name, state, startDate, image) VALUES ('$Name', '$State', '$stDate', '$renameSeasonImg')");
+          $query = $pdoConnection->query("UPDATE season SET name='$Name',state='$State',startDate='$stDate',image='$renameSeasonImg' WHERE ID = $cid;");
+        }else{
+          $query = $pdoConnection->query("UPDATE season SET name='$Name',state='$State',startDate='$stDate' WHERE ID = $cid;");
+        }
+          if ($query) {
+            if(!empty($seasonImg)){unlink("images/$image_name");}
+            echo "<script>alert('Season Data has been Updated.');</script>";
+            echo "<script>window.location.href ='viewall_seasons.php'</script>";
+          }
+          else
+          {
+            
+            echo "<script>alert('Something Went Wrong. Please try again.');</script>";
+          }
   }
+    }
 
   ?>
 <!DOCTYPE html>
@@ -69,12 +95,12 @@ if(isset($_POST['submit']))
     <section id="main-content">
       <section class="wrapper">
         <div class="row">
-          <div class="col-lg-12">
-            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Update Art Type Detail</h3>
+        <div class="col-lg-12">
+            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Edit Season</h3>
             <ol class="breadcrumb">
               <li><i class="fa fa-home"></i><a href="dashboard.php">Home</a></li>
-              <li><i class="icon_document_alt"></i>Update Art Type</li>
-              <li><i class="fa fa-file-text-o"></i>Update Art Type Detail</li>
+              <li><i class="icon_document_alt"></i>Season</li>
+              <li><i class="fa fa-file-text-o"></i>Edit Season</li>
             </ol>
           </div>
         </div>
@@ -82,27 +108,49 @@ if(isset($_POST['submit']))
           <div class="col-lg-12">
             <section class="panel">
               <header class="panel-heading">
-               Update Art Type Detail
+               Update Season Details
               </header>
               <div class="panel-body">
-                <form class="form-horizontal " method="post" action="">
-                 
-
-  <?php
- $cid=$_GET['editid'];
-
-$query=$pdoConnection-> query("select * from tblarttype where ID='$cid'");
-     $cnt=1;
-while ($row=$query ->fetch(PDO:: FETCH_ASSOC)) {
-
-?>
+              <form class="form-horizontal " method="post" action="" enctype="multipart/form-data">
+              <?php
+                      $query=$pdoConnection-> query("select * from season where ID='$cid'");
+                      $row=$query ->fetch(PDO:: FETCH_ASSOC);
+                      if($row > 0) {
+                      ?>
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Art Type</label>
+                    <label class="col-sm-2 control-label">Season Name</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="arttype" name="arttype"  type="text" required="true" value="<?php  echo $row['ArtType'];?>">
+                      <input class="form-control" id="Name" name="Name"  type="text" required value="<?php  echo $row['name'];?>">
                     </div>
                   </div>
-                   
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Season State:</label>
+                    <div class="col-sm-10">
+                      <input class="" id="seasonstate" name="seasonstate"  type="radio" value="on" style="margin:7px" <?php if($row['state']==='on'){ echo 'checked';}?> >Active <span style="margin: 30px"></span>
+                      <input class="" id="seasonstateoff" name="seasonstate"  type="radio" value="off" style="margin:7px" <?php if($row['state']==='off'){ echo 'checked';}?> >Inactive 
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Start Date</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="startDate" name="startdate"  type="date" value="<?php  echo $row['startDate'];?>">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Season Poster</label>
+                    <div class="col-sm-10">
+                      <img src="images/<?php echo $row['image'];?>" width="150" height="200" value="<?php  echo $row['image'];?>">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Change Poster</label>
+                    <div class="col-sm-10">
+                       <input type="file" class="form-control" name="image" id="image" value="">
+                       <?php if( isset($errors['image'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['image'] ?></span>
+                       <?php } ?>
+                      </div>
+                  </div>
                 <?php } ?>
                  <p style="text-align: center;"> <button type="submit" name='submit' class="btn btn-primary">Update</button></p>
                 </form>

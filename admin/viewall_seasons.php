@@ -79,6 +79,7 @@ $sql=$pdoConnection -> query("DELETE FROM season where ID='$rid'");
                     <th>Title</th>
                     <th>State</th>
                     <th>Start Date</th>
+                    <th>Poster</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -92,6 +93,7 @@ $sql=$pdoConnection -> query("DELETE FROM season where ID='$rid'");
                   <td><?php  echo $row['name'];?></td>
                   <td><?php  if($row['state']=="on"){ echo "Active";}else{echo "Not Active";}?></td>
                   <td><?php  echo $row['startDate'];?></td>
+                  <td><img src="images/<?php echo $row['image'];?>" width="100" height="150" value="<?php  echo $row['image'];?>"></td>
                   <td><a href="edit_season_detail.php?editid=<?php echo $row['ID'];?>" class="btn btn-primary">Edit</a> || <a href="viewall_seasons.php?delid=<?php echo $row['ID'];?>" class="btn btn-danger confirm">Delete</a></td>
                 </tr>
                     <?php 
