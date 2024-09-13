@@ -6,23 +6,67 @@ if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
   }
   else{
-
-if(isset($_POST['submit']))
-  {
-    
-    $arttype=$_POST['arttype'];
-    
-  $eid=$_GET['editid'];
-  $query=$pdoConnection-> query("update tblarttype set ArtType='$arttype' where ID='$eid'");
-    if ($query) {
-      echo "<script>alert('Art type has been updated.');  location.href='manage-art-type.php'</script>";
-  }
-  else
-    {
-      echo "<script>alert('Something Went Wrong. Please try again.');</script>";
-    }
-
-  }
+    $cid=$_GET['editid'];
+    $errors = [];
+    if(isset($_POST['submit'])){
+     
+      $title = $_POST['title'];
+      if (empty($title)) {
+        $errors['title'] = "Please enter a group name";
+      }
+      $days = $_POST['days'];
+      if (empty($days)) {
+        $errors['days'] = "Please enter the training days";
+      }
+      
+      $timing = $_POST['timing'];
+  
+      if (empty($timing)) {
+        $errors['timing'] = "Please enter a Training time";
+      }
+      
+      $minAge = $_POST['minAge'];
+      if (empty($minAge)) {
+        $errors['minAge'] = "Minimum Age can't be empty";
+      }
+     
+      $maxAge = $_POST['maxAge'];
+      if (empty($maxAge)) {
+        $errors['maxAge'] = "Maximum Age can't be empty";
+      }
+      
+      $trainer = $_POST['trainer'];
+      $sport = $_POST['sport'];
+      if (empty($sport)) {
+        $errors['sport'] = "Please select a sport";
+      }
+      $season = $_POST['season'];
+      if (empty($season)) {
+        $errors['season'] = "Please select a season";
+      }
+      $price = $_POST['price'];
+      if (empty($season)) {
+        $errors['price'] = "Plese enter a price ";
+      }
+      $capacity = $_POST['capacity'];
+      if (empty($capacity)) {
+        $errors['price'] = "Capacity can't be empty";
+      }
+      $place = $_POST['place'];
+      if ($place == "") {
+        // $query = $pdoConnection->query("INSERT INTO groups (Title ,days, timeslot, minAge, maxAge, trainerId, sportId, seasonId, price, capacity) VALUES ('$title', '$days', '$timing', '$minAge', '$maxAge', '$trainer', '$sport', '$season', '$price', '$capacity')");
+        $query = $pdoConnection->query("UPDATE groups SET Title='$title',days='$days',Timeslot='$timing',minAge='$minAge',maxAge='$maxAge',trainerId='$trainer',sportId='$sport',seasonId='$season',price='$price',capacity='$capacity' WHERE ID = '$cid';");
+      }else{
+        // $query = $pdoConnection->query("INSERT INTO groups (Title,place ,days, timeslot, minAge, maxAge, trainerId, sportId, seasonId, price, capacity) VALUES ('$title', '$place', '$days', '$timing', '$minAge', '$maxAge', '$trainer', '$sport', '$season', '$price', '$capacity')");
+        $query = $pdoConnection->query("UPDATE groups SET Title='$title',days='$days',Timeslot='$timing',minAge='$minAge',maxAge='$maxAge',trainerId='$trainer',sportId='$sport',seasonId='$season',price='$price',capacity='$capacity', place = '$place' WHERE ID = '$cid';");
+      }
+            if ($query) {
+                echo "<script>alert('Group has been Updated.');</script>";
+                echo "<script>window.location.href ='viewall_groups.php'</script>";
+            } else {
+                echo "<script>alert('Something Went Wrong. Please try again.');</script>";
+              }
+        }
 
   ?>
 <!DOCTYPE html>
@@ -69,12 +113,12 @@ if(isset($_POST['submit']))
     <section id="main-content">
       <section class="wrapper">
         <div class="row">
-          <div class="col-lg-12">
-            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Update Art Type Detail</h3>
+        <div class="col-lg-12">
+            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Add Group Details</h3>
             <ol class="breadcrumb">
               <li><i class="fa fa-home"></i><a href="dashboard.php">Home</a></li>
-              <li><i class="icon_document_alt"></i>Update Art Type</li>
-              <li><i class="fa fa-file-text-o"></i>Update Art Type Detail</li>
+              <li><i class="icon_document_alt"></i>Group</li>
+              <li><i class="fa fa-file-text-o"></i>Add Groups Details</li>
             </ol>
           </div>
         </div>
@@ -82,29 +126,134 @@ if(isset($_POST['submit']))
           <div class="col-lg-12">
             <section class="panel">
               <header class="panel-heading">
-               Update Art Type Detail
+              Edit Group Details
               </header>
               <div class="panel-body">
-                <form class="form-horizontal " method="post" action="">
-                 
-
-  <?php
- $cid=$_GET['editid'];
-
-$query=$pdoConnection-> query("select * from tblarttype where ID='$cid'");
-     $cnt=1;
-while ($row=$query ->fetch(PDO:: FETCH_ASSOC)) {
-
-?>
-                  <div class="form-group">
-                    <label class="col-sm-2 control-label">Art Type</label>
+                <form class="form-horizontal " method="post" action="" enctype="multipart/form-data" >
+                      <?php
+                      $query=$pdoConnection-> query("select * from groups where ID='$cid'");
+                      $row=$query ->fetch(PDO:: FETCH_ASSOC);
+                      if($row>0){
+                      ?>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Group Title</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="arttype" name="arttype"  type="text" required="true" value="<?php  echo $row['ArtType'];?>">
+                      <input class="form-control" id="title" name="title"  type="text"  placeholder= "Group Name" value="<?php  echo $row['Title'];?>"/>
+                      <?php if(isset($_POST['submit']) && isset($errors['title'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['title'] ?></span>
+                       <?php } ?>
+                    </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Training Days</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="days" name="days"  type="text" placeholder="sat- tue" value="<?php  echo $row['days'];?>"/>
+                      <?php if(isset($_POST['submit']) && isset($errors['days'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['days'] ?></span>
+                       <?php } ?>
                     </div>
                   </div>
-                   
-                <?php } ?>
-                 <p style="text-align: center;"> <button type="submit" name='submit' class="btn btn-primary">Update</button></p>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Training Place</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="place" name="place"  type="text" value="<?php  echo $row['place'];?>">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Timing</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="timing" name="timing" type="text" value="<?php  echo $row['Timeslot'];?>" placeholder="8:00 pm">
+                      <?php if(isset($_POST['submit']) && isset($errors['timing'])) { ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['timing']; ?></span>
+                        <?php } ?>
+                      </div>
+                    </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Min Age</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="minAge" name="minAge" type="number" value="<?php  echo $row['minAge'];?>">
+                      <?php if(isset($_POST['submit']) && isset($errors['minAge'])) { ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['minAge']; ?></span>
+                        <?php } ?>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Max Age</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="maxAge" name="maxAge" type="number" value="<?php  echo $row['maxAge'];?>">
+                      <?php if(isset($_POST['submit']) && isset($errors['maxAge'])) { ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['maxAge']; ?></span>
+                        <?php } ?>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Trainer</label>
+                    <div class="col-sm-10">
+                      <select class="form-control m-bot15" name="trainer" id="trainer">
+                        <option value="">Choose a trainer</option>
+                          <?php $query=$pdoConnection-> query("select * from trainers");
+                            while($row1=$query ->fetch(PDO:: FETCH_ASSOC))
+                            {
+                            ?>    
+                            <option value="<?php echo $row1['ID'];?>" <?php if($row1['ID'] == $row['trainerId']){ echo "selected='selected'";}?>><?php echo $row1['name'];?></option>
+                            <?php } ?> 
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Sport</label>
+                    <div class="col-sm-10">
+                      <select class="form-control m-bot15" name="sport" id="sport">
+                        <option value="">Choose a sport</option>
+                          <?php $query=$pdoConnection-> query("select * from sport");
+                            while($row2=$query ->fetch(PDO:: FETCH_ASSOC))
+                            {
+                            ?>    
+                          <option value="<?php echo $row2['ID'];?>" <?php if($row2['ID'] == $row['sportId']){ echo "selected='selected'";}?>><?php echo $row2['name'];?></option>
+                            <?php } ?> 
+                      </select>
+                      <?php if(isset($_POST['submit']) && isset($errors['sport'])) { ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['sport']; ?></span>
+                        <?php } ?>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Season</label>
+                    <div class="col-sm-10">
+                      <select class="form-control m-bot15" name="season" id="season">
+                        <option value="">Choose a Season</option>
+                          <?php $query=$pdoConnection-> query("select * from season where season.state = 'on' ");
+                            while($row3=$query ->fetch(PDO:: FETCH_ASSOC))
+                            {
+                            ?>    
+                          <option value="<?php echo $row3['ID'];?>" <?php if($row3['ID'] == $row['seasonId']){ echo "selected='selected'";}?>><?php echo $row3['name'];?></option>
+                            <?php } ?> 
+                      </select>
+                      <?php if(isset($_POST['submit']) && isset($errors['season'])) { ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['season']; ?></span>
+                        <?php } ?>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Subscription Fees</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="price" name="price" type="number" value="<?php  echo $row['price'];?>" min=0>
+                      <?php if(isset($_POST['submit']) && isset($errors['price'])) { ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['price']; ?></span>
+                        <?php } ?>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                    <label class="col-sm-2 control-label">Capacity</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="capacity" name="capacity" type="number" value="<?php  echo $row['capacity'];?>">
+                      <?php if(isset($_POST['submit']) && isset($errors['capacity'])) { ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['capacity']; ?></span>
+                        <?php } ?>
+                      </div>
+                    </div>
+                    <?php } ?>
+                    <p style="text-align: center;"> <button type="submit" name='submit' class="btn btn-primary">Update</button></p>
                 </form>
               </div>
             </section>
