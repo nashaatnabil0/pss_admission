@@ -93,7 +93,6 @@ if(isset($_POST['submit']))
               <div class="panel-body">
                 <form class="form-horizontal " method="post" action="">
                   <?php
-                    $cid=$_GET['editid'];
                     $ret= $pdoConnection-> query("SELECT * FROM trainers where ID='$cid'");
                     while ($row=$ret->fetch(PDO:: FETCH_ASSOC)) {
                   ?>
@@ -106,7 +105,7 @@ if(isset($_POST['submit']))
                    <div class="form-group">
                     <label class="col-sm-2 control-label">Mobile Number</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="mobnum" maxlength="11" name="mobnum"  type="text" required="true" pattern="[0-9]+" value="<?php  echo '0'.$row['MobileNumber'];?>">
+                      <input class="form-control" id="mobnum" maxlength="11" name="mobnum"  type="text" required="true" value="<?php  echo '0'.$row['MobileNumber'];?>">
                     </div>
                   </div>
                   <div class="form-group">
