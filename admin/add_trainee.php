@@ -36,10 +36,20 @@ if (isset($_POST['submit'])) {
     if (empty($NID)) {
         $errors['NID'] = "National ID number cannot be empty";
     }
+    $nidPattern ='/^\d{3}(0[0-9]|1[0-2])([0-2][0-9]|3[01])\d{7}$/';
+    if (!preg_match($nidPattern, $NID)){
+      $errors['NIDinvalid'] = "Please enter a valid 14-digit National ID where the 4th and 5th digits form a number less than or equal to 12, and the 6th and 7th digits form a number less than or equal to 31.";
+    }
 
     // Father
     $fatherName = $_POST['fatherName'];
+    if (empty($fatherName)) {
+      $errors['fatherName'] = "Father full name can't be empty";
+    }
     $fatherJob = $_POST['fatherJob'];
+    if (empty($fatherJob)) {
+      $errors['fatherJob'] = "Father job can't be empty";
+    }
     $fathermobnum = $_POST['fatherMobNum'];
     if (empty($fathermobnum)) {
         $errors['fatherMobNum'] = "Phone number cannot be empty";
@@ -49,7 +59,13 @@ if (isset($_POST['submit'])) {
 
     // Mother
     $motherName = $_POST['motherName'];
+    if (empty($motherName)) {
+      $errors['motherName'] = "Mother full name can't be empty";
+    }
     $motherJob = $_POST['motherJob'];
+    if (empty($motherName)) {
+      $errors['motherJob'] = "Mother job can't be empty";
+    }
     $mothermobnum = $_POST['motherMobNum'];
     if (empty($mothermobnum)) {
         $errors['motherMobNum'] = "Phone number cannot be empty";
@@ -76,10 +92,17 @@ if (isset($_POST['submit'])) {
       }
 
     $traineePhoto = uploadImages($_FILES["traineePic"], $allowed_extensions, $name, $NID);
+    if (empty($traineePhoto)){
+      $errors['traineePic']= "Please upload trainee Photo.";
+    }
     $bdImage = uploadImages($_FILES["bdimg"], $allowed_extensions, $name, $NID);
+    if (empty($bdImage)){
+      $errors['bdimg']= "Please upload Birth Certificate or National ID photo. ";
+    }
   
     //notes
-  $notes =$_POST['Notes'];
+  if(empty($errors)){
+    $notes =$_POST['Notes'];
   if($notes==""){
     $query = $pdoConnection->query("INSERT INTO trainees (Name, NID, birthDate, gender, photo, birthCertificate,contactMobNum,fatherName,fatherMobNum,fatherJob,motherName,motherMobNum,motherJob) VALUES ('$name', '$NID','$birthdate', '$gender', '$traineePhoto','$bdImage','$contactmobnum','$fatherName','$fathermobnum','$fatherJob','$motherName','$mothermobnum','$motherJob')");
   }else{
@@ -92,7 +115,7 @@ if (isset($_POST['submit'])) {
           } else {
               echo "<script>alert('Something Went Wrong. Please try again.');</script>";
             }
-
+   }
 }
 ?>
 <!DOCTYPE html>
@@ -155,12 +178,12 @@ if (isset($_POST['submit'])) {
              Add Trainee Details
               </header>
               <div class="panel-body">
-                <form class="form-horizontal " method="post" action="" enctype="multipart/form-data" >
+                <form class="form-horizontal " method="post" action="" enctype="multipart/form-data" novalidate>
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Full Name</label>
                     <div class="col-sm-10">
                       <input class="form-control" id="Name" name="Name"  type="text" value=""/>
-                      <?php if( isset($errors['Name'])){ ?>
+                      <?php if( isset($_POST['submit']) && isset($errors['Name'])){ ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['Name'] ?></span>
                        <?php } ?>
                     </div>
@@ -173,7 +196,7 @@ if (isset($_POST['submit'])) {
                         if(isset($errors['NID'])){  ?>
                             <span style="color:red;display:block;text-align:left"><?php echo $errors['NID']; ?></span>
                         <?php } elseif(isset($errors['nidinvalid'])){ ?>
-                            <span style="color:red;display:block;text-align:left"><?php echo $errors['nidinvalid']; ?></span>
+                            <span style="color:red;display:block;text-align:left"><?php echo $errors['NIDinvalid']; ?></span>
                         <?php } } ?>
                     </div>
                   </div>
@@ -181,6 +204,9 @@ if (isset($_POST['submit'])) {
                     <label class="col-sm-2 control-label">Birthdate</label>
                     <div class="col-sm-10">
                       <input class="form-control" id="birthdate" name="birthdate"  type="date" value="">
+                      <?php if(isset($_POST['submit']) && isset($errors['birthdate'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['birthdare'] ?></span>
+                       <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">
@@ -188,6 +214,9 @@ if (isset($_POST['submit'])) {
                     <div class="col-sm-10">
                      <input class="" id="gender" name="gender"  type="radio" value="male" style="margin:7px"> Male <span style="margin: 35px"></span>
                       <input class="" id="gender" name="gender"  type="radio" value="Female" style="margin:7px"> Female
+                      <?php if(isset($_POST['submit']) && isset($errors['gender'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['gender'] ?></span>
+                       <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">
@@ -207,7 +236,7 @@ if (isset($_POST['submit'])) {
                     <label class="col-sm-2 control-label">Father Name</label>
                     <div class="col-sm-10">
                       <input class="form-control" id="fatherName" name="fatherName"  type="text" value=""/>
-                      <?php if(isset($errors['fatherName'])){ ?>
+                      <?php if(isset($_POST['submit']) && isset($errors['fatherName'])){ ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherName'] ?></span>
                        <?php } ?>
                     </div>
@@ -226,10 +255,10 @@ if (isset($_POST['submit'])) {
                     <div class="col-sm-10">
                       <input class="form-control" id="fatherMobNum" name="fatherMobNum"  type="text" value="">
                       <?php if(isset($_POST['submit'])){ 
-                        if(isset($errors['contactMobNum'])){ ?>
-                            <span style="color:red;display:block;text-align:left"><?php echo $errors['contactMobNum'];  ?></span>
+                        if(isset($errors['fatherMobNum'])){ ?>
+                            <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherMobNum'];  ?></span>
                         <?php } elseif(isset($errors['contactMobNuminvalid'])){ ?>
-                            <span style="color:red;display:block;text-align:left"><?php echo $errors['contactMobNuminvalid']; ?></span>
+                            <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherMobNuminvalid']; ?></span>
                         <?php } 
                         } ?>
                     </div>
@@ -257,10 +286,10 @@ if (isset($_POST['submit'])) {
                     <div class="col-sm-10">
                       <input class="form-control" id="motherMobNum" name="motherMobNum"  type="text"value="">
                       <?php if(isset($_POST['submit'])){ 
-                        if(isset($errors['contactMobNum'])){ ?>
-                            <span style="color:red;display:block;text-align:left"><?php echo $errors['contactMobNum'];  ?></span>
+                        if(isset($errors['motherMobNum'])){ ?>
+                            <span style="color:red;display:block;text-align:left"><?php echo $errors['motherMobNum'];  ?></span>
                         <?php } elseif(isset($errors['contactMobNuminvalid'])){ ?>
-                            <span style="color:red;display:block;text-align:left"><?php echo $errors['contactMobNuminvalid']; ?></span>
+                            <span style="color:red;display:block;text-align:left"><?php echo $errors['motherMobNuminvalid']; ?></span>
                         <?php } 
                         } ?>
                     </div>
@@ -269,8 +298,8 @@ if (isset($_POST['submit'])) {
                   <label class="col-sm-2 control-label">Trainee Photo</label>
                   <div class="col-sm-10">
                       <input type="file" class="form-control" name="traineePic" id="traineePic" required value="">
-                      <?php if(isset($errors['traineePhoto'])) { ?>
-                          <span style="color:red;display:block;text-align:left"><?php echo $errors['traineePhoto']; ?></span>
+                      <?php if(isset($errors['traineePic'])) { ?>
+                          <span style="color:red;display:block;text-align:left"><?php echo $errors['traineePic']; ?></span>
                       <?php } ?>
                   </div>
               </div>
