@@ -24,14 +24,21 @@ else {
 
     if (empty($email)) {
       $errors['email'] = "Email cannot be empty";
-  }elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-          $errors['email'] = "Invalid email format";
+     }
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+          $errors['emailinvalid'] = "Invalid email format";
       }
-  $role= $_POST['role'];
+  
+  $role = isset($_POST['role']) ? $_POST['role'] : '';
+     
   if (empty($role)) {
     $errors['role'] = "Please choose a role";
-}
+  }
+
   $password=$_POST['password'];
+  if(empty($password)){
+    $errors['password'] = "Password can't be empty";
+      }
   $Confpassword=$_POST['confirmpassword'];
 
   $passwordPattern= '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/';
@@ -41,14 +48,24 @@ else {
    } elseif ($Confpassword !== $password) {
     $errors['PassMatch'] = "Passwords don't match";
    } else {
+    
     $password = md5($password);
+   
+    if (empty($errors)){
     $query = $pdoConnection->query("INSERT INTO users (Name, MobileNumber, Email, role ,password ) VALUES ('$name', '$mobnum', '$email', '$role','$password')");
 
     if ($query) {
         echo "<script>alert('Admin/ Moderator has been added.');</script>";
         echo "<script>window.location.href ='viewall_users.php'</script>";
-    } else {
+        } else {
         echo "<script>alert('Something Went Wrong. Please try again.');</script>";
+        }
+      }
+    }
+    
+    if(!empty($errors)) {
+      foreach ($errors as $error) {
+        echo $error;
       }
   }
       
@@ -118,7 +135,7 @@ else {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Name</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="name" name="name"  type="text" required/>
+                      <input class="form-control" id="name" name="name"  type="text" value=""/>
                       <?php if(isset($_POST['submit'])&& isset($errors['name'])){ ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['name'] ?></span>
                        <?php } ?>
@@ -127,27 +144,30 @@ else {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Mobile Number</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="mobnum" name="mobnum"  type="text" required>
-                      <?php if(isset($_POST['submit'])){ if(isset($errors['mobnum'])){  ?>
+                      <input class="form-control" id="mobnum" name="mobnum"  type="text" value="">
+                      <?php if(isset($_POST['submit']) && isset($errors['mobnum'])){  ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['mobnum'];  ?></span>
-                       <?php } elseif($errors['mobnuminvalid']!=""){ ?>
+                       <?php } elseif($errors['mobnuminvalid']!="") { ?>
                        <span style="color:red;display:block;text-align:left"><?php echo $errors['mobnuminvalid'] ?></span>
-                       <?php } }  ?>
+                       <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Email</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="email" name="email" type="email" required>
+                      <input class="form-control" id="email" name="email" type="email" value="">
                       <?php if(isset($_POST['submit']) && isset($errors['email'])) { ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['email']; ?></span>
                         <?php } ?>
+                        <?php if (isset($_POST['submit']) && $errors['emailinvalid']!=""){ ?>
+                       <span style="color:red;display:block;text-align:left"><?php echo $errors['emailinvalid'] ?></span>
+                       <?php }  ?>
                       </div>
                     </div>
                     <div class="form-group">
                     <label class="col-sm-2 control-label">Role</label>
                     <div class="col-sm-10">
-                    <input class="" id="role" name="role"  type="radio" value="admin" style="margin:7px" required > Admin <span style="margin: 35px"></span>
+                    <input class="" id="role" name="role"  type="radio" value="admin" style="margin:7px" > Admin <span style="margin: 35px"></span>
                     <input class="" id="rolemod" name="role"  type="radio" value="moderator" style="margin:7px" required> Moderator  <span style="margin: 35px"></span>
                     <input class="" id="roleAcc" name="role"  type="radio" value="accountant" style="margin:7px" required> Accountant   
                     <?php if(isset($_POST['submit']) && isset($errors['role'])) { ?>
@@ -159,14 +179,21 @@ else {
                       <label for="address" class="control-label col-lg-2"> Password <span class="required">*</span></label>
                       <div class="col-lg-10">
                         <input type="password" name="password" class="form-control" value="">
-                        <span style="color:red;display:block;text-align:left"><?php echo (isset($errors['PassWeak']))?$errors['PassWeak']:'';?></span>
+                        <?php if(isset($_POST['submit'])&& isset($errors['password'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['password'] ?></span>
+                       <?php } ?>
+                       <?php if(isset($_POST['submit'])&& isset($errors['PassWeak'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['PassWeak'] ?></span>
+                       <?php } ?>
                       </div>
                     </div>
                     <div class="form-group ">
                       <label for="username" class="control-label col-lg-2">Confirm Password <span class="required">*</span></label>
                       <div class="col-lg-10">
                         <input type="password" name="confirmpassword" class="form-control" value="">
-                        <span style="color:red;display:block;text-align:left"><?php echo (isset($errors['PassMatch']))?$errors['PassMatch']:'';?></span>
+                        <?php if(isset($_POST['submit']) && isset($errors['PassMatch'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['PassMatch'] ?></span>
+                       <?php } ?>
                       </div>
                     </div>
                  <p style="text-align: center;"> <button type="submit" name="submit" class="btn btn-primary">Submit</button></p>

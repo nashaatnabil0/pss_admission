@@ -80,14 +80,14 @@ if ($formSubmitted) {
             }
             echo "<script>alert('Payment has been added.');</script>";
             echo "<script>window.location.href ='make_payment.php'</script>";
+        }else {
+          echo "<script>alert('Something Went Wrong. Please try again.');</script>";
         } 
      }
      if(!empty($errors)) {
       foreach ($errors as $error) {
         echo $error;
       }
-    }else {
-      echo "<script>alert('Something Went Wrong. Please try again.');</script>";
     }
 }
 ?>
