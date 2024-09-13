@@ -7,13 +7,13 @@ if (strlen($_SESSION['sportadmission']==0)) {
   }
 else {
   $errors = [];
+  $enrollId = $_GET['editid'];
   if(isset($_POST['submit'])){
     $name = $_GET['name'];
     if (empty($name)) {
       $errors['name'] = "Name cannot be empty";
   }
   
-      $enrollId = $_GET['editid'];
       $fullprice = $_POST['price'];
       $totalpaid = ['totalpaid']; //calculated
       $remaining = ['remaining']; //calculated
@@ -105,23 +105,13 @@ else {
               <div class="panel-body">
                 <form class="form-horizontal " method="post" action="" enctype="multipart/form-data" >
                 <?php
-              $traineeinfo= $pdoConnection->query(" SELECT
-                                                      t.Name , e.traineeNID, g.price , e.discount 
-                                                    from
-                                                    enrollment e
-                                                    join
-                                                    trainees t on e.traineeNID = t.NID
-                                                    join 
-                                                    'group' g on e.groupId = g.ID
-                                                    where 
-                                                    e.ID = $enrollId ;
-                                                    ");
-                              $cnt=1;
-                              while ($row2=$traineeinfo-> fetch(PDO:: FETCH_ASSOC)) { ?>
+                 $traineeinfo= $pdoConnection->query("SELECT t.Name, e.traineeNID, g.price, e.discount from enrollment e JOIN trainees t on e.traineeNID = t.NID JOIN groups g on g.ID = e.groupId WHERE e.ID = $enrollId;");
+                 $cnt=1;
+                while ($row2=$traineeinfo-> fetch(PDO:: FETCH_ASSOC)) { ?>
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Name</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="name" name="name"  type="text" value = "<?php echo $row2['t.Name'];?>"/> 
+                      <input class="form-control" id="name" name="name"  type="text" value = "<?php echo $row2['Name'];?>"/> 
                       <?php if( $_POST['submit'] && isset($errors['name'])){ ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['name'] ?></span>
                        <?php } ?>
@@ -130,14 +120,14 @@ else {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Subscription Fees</label>
                     <div class="col-sm-10">
-                      <input class=" form-control" id="price" name="price" type="text" value = "<?php echo $row2['g.price'];?>" readonly >
+                      <input class=" form-control" id="price" name="price" type="text" value = "<?php echo $row2['price'];?>" readonly >
                     </div>
                   </div>
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Discount</label>
                     <div class="col-sm-10">
-                      <input class=" form-control" id="discount" name="discount" type="text" value = "<?php echo $row2['e.discount'];?>" readonly>
-                    <?php}?>
+                      <input class=" form-control" id="discount" name="discount" type="text" value = "<?php if ($row2['discount']==NULL)echo 0;else echo $row2['discount'];?>" readonly>
+                    <?php }?>
                     </div>
                   </div>
                   <div class="form-group">
