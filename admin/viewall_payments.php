@@ -62,7 +62,7 @@ if(isset($_GET['delid']))
             <ol class="breadcrumb">
               <li><i class="fa fa-home"></i><a href="dashboard.php">Home</a></li>
               <li><i class="fa fa-table"></i>Payment</li>
-              <li><i class="fa fa-th-list"></i>View all payment</li>
+              <!-- <li><i class="fa fa-th-list"></i>View all payment</li> -->
             </ol>
           </div>
         </div>
