@@ -29,6 +29,7 @@ $message = '';
 $nationalId = $_SESSION['user_id'];
 
         // Extract birth date from the ID (assuming a specific format)
+        $gen = substr($nationalId, 0, 1);
         $birthDate = substr($nationalId, 1, 6);
         $birthYear = substr($birthDate, 0, 2);
         $birthMonth = substr($birthDate, 2, 2);
@@ -42,9 +43,11 @@ $nationalId = $_SESSION['user_id'];
 
         // Calculate the age in years
         $age = $currentDate->diff($birthDate)->y;
-
-        $dateOfBirthFormatted = "20$birthYear-$birthMonth-$birthDay";
-        
+        if($gen ==2){
+            $dateOfBirthFormatted = "19$birthYear-$birthMonth-$birthDay";
+        }else{
+            $dateOfBirthFormatted = "20$birthYear-$birthMonth-$birthDay";
+        }
 
         $genderDigit = $nationalId[12]; // Get the 13th digit (index 12)
 
