@@ -8,7 +8,9 @@ if (strlen($_SESSION['sportadmission']==0)) {
 else {
   $errors = [];
   $enrollId = $_GET['editid'];
-  if($_SERVER['REQUEST_METHOD'] =="POST" && isset($_POST['submit'])){
+  
+  $formSubmitted = $_SERVER["REQUEST_METHOD"] == "POST";
+  if($formSubmitted){
 //validate enroll ID 
     $stmt = $pdoConnection->query("SELECT * FROM enrollment  WHERE ID = $enrollId;" );
     $exists = $stmt->fetch();
@@ -141,7 +143,7 @@ else {
              Add Payment
               </header>
               <div class="panel-body">
-                <form class="form-horizontal " method="post" action="" enctype="multipart/form-data" >
+                <form class="form-horizontal " method="POST" action="" enctype="multipart/form-data" >
                 <?php
                  $traineeinfo= $pdoConnection->query("SELECT t.Name, e.traineeNID, g.price, e.discount from enrollment e JOIN trainees t on e.traineeNID = t.NID JOIN groups g on g.ID = e.groupId WHERE e.ID = $enrollId;");
                  $cnt=1;
@@ -150,7 +152,7 @@ else {
                     <label class="col-sm-2 control-label">Name</label>
                     <div class="col-sm-10">
                       <input class="form-control" id="name" name="name"  type="text" value = "<?php echo $row2['Name'];?>" readonly/> 
-                      <?php if( isset($_POST['submit']) && isset($errors['name'])){ ?>
+                      <?php if( $formSubmitted && isset($errors['name'])){ ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['name'] ?></span>
                        <?php } ?>
                     </div>
@@ -159,7 +161,7 @@ else {
                     <label class="col-sm-2 control-label">Subscription Fees</label>
                     <div class="col-sm-10">
                       <input class="form-control" id="price" name="price"  type="text" value = "<?php echo $row2['price'];?>" readonly/> 
-                      <?php if( isset($_POST['submit']) && isset($errors['price'])){ ?>
+                      <?php if( $formSubmitted && isset($errors['price'])){ ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['price'] ?></span>
                        <?php } ?>
                     </div>
@@ -215,9 +217,9 @@ else {
                     <label class="col-sm-2 control-label">Payment Amount</label>
                     <div class="col-sm-10">
                       <input class="form-control" id="amount" name="amount"  type="number" value="max= <?php echo number_format($remainingAmount,3); ?>" placeholder="Enter the amount of payment">
-                      <?php if(isset($_POST['submit'])){ if(isset($errors['amount'])){  ?>
+                      <?php if($formSubmittedif && isset($errors['amount'])){  ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['amount']; ?></span>
-                        <?php }} ?>
+                        <?php } ?>
                       </div>
                   </div>
                   <div class="form-group">
@@ -227,7 +229,7 @@ else {
                       <option value="">Choose payment method</option>
                       <option value="cash">Cash</option>
                       <option value="instapay">Instapay</option>
-                      <?php if(isset($_POST['submit']) && isset($errors['method'])) { ?>
+                      <?php if($formSubmitted && isset($errors['method'])) { ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['method']; ?></span>
                         <?php } ?>
                         </select>
@@ -250,6 +252,9 @@ else {
                     <div class="col-sm-10">
                       <input class=" form-control" id="adminName" name="adminName" type="text" value="<?php  echo $row['name'];?>" readonly>
                       <?php } ?>
+                      <?php if( $formSubmitted && isset($errors['addedby'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['addedby'] ?></span>
+                       <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">
