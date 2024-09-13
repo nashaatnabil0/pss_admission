@@ -1,6 +1,6 @@
 <?php
 session_start();
-//error_reporting(0);
+error_reporting(0);
 include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
@@ -18,7 +18,10 @@ else {
     $exists = $stmt->fetchColumn();
     
     if (!$exists) {
-        $errors['traineeNID'] = "Trainee NID not found, please add the trainee first.";
+        $errors['traineeNIDinvalid'] = "Trainee NID not found, please add the trainee first.";
+    }
+    if (empty($traineeNID)){
+      $errors['traineeNID'] = "Trainee NID can't be empty";
     }
 
     $group = $_POST['group'];
@@ -35,6 +38,7 @@ else {
     if (empty($enrollstate)) {
       $errors['enrollstate'] = "Please select an enrollment state";
     }
+
     $enrolldate = $_POST['enrolldate'];
     if ($enrolldate == "") {
         $enrolldate = date('Y-m-d') ;
@@ -43,6 +47,8 @@ else {
     }
     
     $discount = $_POST['discount'];
+    
+    if (empty($errors)){
     if ($discount == "") {
     $query2 = $pdoConnection->query("INSERT INTO enrollment(traineeNID, groupId, paymentPlan, state, date) VALUES ('$traineeNID', '$group', '$pymntPlan', '$enrollstate', '$enrolldate')");
     }else{
@@ -55,7 +61,7 @@ else {
               echo "<script>alert('Something Went Wrong. Please try again.');</script>";
             }
       }
-
+ }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -117,22 +123,25 @@ else {
              Add Enrollment Details
               </header>
               <div class="panel-body">
-                <form class="form-horizontal " method="post" action="" enctype="multipart/form-data">
+                <form class="form-horizontal " method="post" action="" enctype="multipart/form-data" novalidate>
                 <!-- Trainee National ID input with datalist -->
                 <div class="form-group">
                 <label class="col-sm-2 control-label">Trainee National ID</label>
                 <div class="col-sm-10">
                   <input class="form-control" id="searchTrainee" name="traineeNID" type="text" placeholder="Type the national ID number" list="traineeListOptions" value=""/>
                   <datalist id="traineeListOptions">
-                    <?php foreach ($trainees as $trainee): ?>
+                    <?php foreach ($trainees as $trainee) { ?>
                       <option value="<?php echo $trainee['NID']; ?>">
                         <?php echo $trainee['NID'] . " - " . $trainee['Name']; ?>
                       </option>
-                    <?php endforeach; ?>
+                    <?php } ?>
                   </datalist>
-                  <?php if (isset($_POST['submit']) && isset($errors['traineeNID'])): ?>
+                  <?php if (isset($_POST['submit']) && isset($errors['traineeNID'])){ ?>
                     <span style="color:red;display:block;text-align:left"><?php echo $errors['traineeNID']; ?></span>
-                  <?php endif; ?>
+                  <?php } ?>
+                  <?php if (isset($_POST['submit']) && isset($errors['traineeNIDnotvalid'])) { ?>
+                    <span style="color:red;display:block;text-align:left"><?php echo $errors['traineeNIDnotvalid']; ?></span>
+                  <?php } ?>
                 </div>
                 </div>
                   <div class="form-group">
@@ -147,6 +156,9 @@ else {
                           <option value="<?php echo $row['ID'];?>"><?php echo $row['Title'];?></option>
                             <?php } ?> 
                       </select>
+                      <?php if (isset($_POST['submit']) && isset($errors['group'])){ ?>
+                    <span style="color:red;display:block;text-align:left"><?php echo $errors['group']; ?></span>
+                  <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">
@@ -154,6 +166,9 @@ else {
                     <div class="col-sm-10">
                       <input class="" id="paymentPlan" name="pymntplan"  type="radio" value="full" style="margin:7px" required> Full <span style="margin: 35px"></span>
                       <input class="" id="paymentPlan" name="pymntplan"  type="radio" value="Installment" style="margin:7px" required > Installments
+                     <?php if (isset($_POST['submit']) && isset($errors['pymntplan'])){ ?>
+                     <span style="color:red;display:block;text-align:left"><?php echo $errors['pymntplan']; ?></span>
+                     <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">
@@ -168,6 +183,9 @@ else {
                     <input class="" id="enrolltate" name="enrollstate"  type="radio" value="on" style="margin:7px" required > Active <span style="margin: 35px"></span>
                     <input class="" id="enrollstateoff" name="enrollstate"  type="radio" value="off" style="margin:7px" required> Inactive  <span style="margin: 35px"></span>
                     <input class="" id="enrollstatewait" name="enrollstate"  type="radio" value="waiting" style="margin:7px" required> Waiting   
+                    <?php if (isset($_POST['submit']) && isset($errors['enrollstate'])){ ?>
+                    <span style="color:red;display:block;text-align:left"><?php echo $errors['enrollstate']; ?></span>
+                  <?php } ?>
                   </div>
                   </div>
                   <div class="form-group">
