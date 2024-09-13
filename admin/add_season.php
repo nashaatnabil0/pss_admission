@@ -6,20 +6,34 @@ if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
   }
   else{
-
+$errors = [];
 if(isset($_POST['submit']))
   {
    
     $Name=$_POST['Name'];
+    if (empty($name)){
+      $errors['Name'] = "Please enter a season name";
+    }
     $State = $_POST['seasonstate'];
+    if (empty($State)){
+      $errors['seasonstate'] = "Please choose state for the season";
+    }
+    
     $stDate=$_POST['startdate'];
-    $seasonImg = $_FILES['image']['name'];
+    if(empty($stDate)){
+      $stDate = null;
+    }
 
+    $seasonImg = $_FILES['image']['name'];
+    if (empty($seasonImg)){
+      $errors['seasonImg'] = "Please upload season image";
+    }
+    
     $extension = strtolower(pathinfo($seasonImg, PATHINFO_EXTENSION));
     $allowed_extensions = array("jpg", "jpeg", "png", "gif");
       // Validation for allowed extensions
       if (!in_array($extension, $allowed_extensions)) {
-        $errors['image'] = "Invalid format. Only jpg / jpeg/ png /gif format allowed";
+        $errors['imageinvalid'] = "Invalid format. Only jpg / jpeg/ png /gif format allowed";
      }
 
     if (empty($errors)) {
@@ -28,16 +42,21 @@ if(isset($_POST['submit']))
     
         $query = $pdoConnection->query("INSERT INTO season (name, state, startDate, image) VALUES ('$Name', '$State', '$stDate', '$renameSeasonImg')");
         if ($query) {
-echo "<script>alert('New season has been added.');</script>";
-echo "<script>window.location.href ='viewall_seasons.php'</script>";
+           echo "<script>alert('New season has been added.');</script>";
+           echo "<script>window.location.href ='viewall_seasons.php'</script>";
+            }
+            else
+              {
+                
+                echo "<script>alert('Something Went Wrong. Please try again.');</script>";
+              }
+        }
+    if(!empty($errors)) {
+      foreach ($errors as $error) {
+        echo $error;
+      }
   }
-  else
-    {
-      
-      echo "<script>alert('Something Went Wrong. Please try again.');</script>";
-    }
 }
-  }
   ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -103,7 +122,10 @@ echo "<script>window.location.href ='viewall_seasons.php'</script>";
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Season Name</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="Name" name="Name"  type="text" required="true">
+                      <input class="form-control" id="Name" name="Name"  type="text">
+                      <?php if( isset($errors['Name'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['Name'] ?></span>
+                       <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">
@@ -111,6 +133,9 @@ echo "<script>window.location.href ='viewall_seasons.php'</script>";
                     <div class="col-sm-10">
                       <input class="" id="seasonstate" name="seasonstate"  type="radio" value="on" style="margin:7px">Active <span style="margin: 30px"></span>
                       <input class="" id="seasonstateoff" name="seasonstate"  type="radio" value="off" style="margin:7px">Inactive 
+                      <?php if( isset($errors['seasonstate'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['seasonstate'] ?></span>
+                       <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">
@@ -122,9 +147,12 @@ echo "<script>window.location.href ='viewall_seasons.php'</script>";
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Image</label>
                     <div class="col-sm-10">
-                       <input type="file" class="form-control" name="image" id="image" value="" required="true">
+                       <input type="file" class="form-control" name="image" id="image" value="">
                        <?php if( isset($errors['image'])){ ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['image'] ?></span>
+                       <?php } ?>
+                       <?php if( isset($errors['imageinvalid'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['imageinvalid'] ?></span>
                        <?php } ?>
                       </div>
                   </div>
