@@ -1,6 +1,6 @@
 <?php
 session_start();
-//error_reporting(0);
+error_reporting(0);
 include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
@@ -9,17 +9,27 @@ else {
   $errors = [];
   $enrollId = $_GET['editid'];
   if(isset($_POST['submit'])){
-    $name = $_GET['name'];
+//validate enroll ID 
+    $stmt = $pdoConnection->query("SELECT * FROM enrollment  WHERE ID = $enrollId;" );
+    $exists = $stmt->fetch();
+
+    if (!$exists) {
+      echo $errors['enrollID'] = "Enrollmen not found";
+  }
+
+    $name = $_POST['name'];
     if (empty($name)) {
       $errors['name'] = "Name cannot be empty";
   }
-  
-      $fullprice = $_POST['price']; //calculated
-      $totalpaid = ['totalpaid']; //calculated
-      $remaining = ['remaining']; //calculated
-      $discount = $_POST['discount'];
-      $pymntAmount = ['amount'];
-      $pymntMethod = ['method'];
+      $pymntAmount = $_POST ['amount'];
+    if (empty($pymntAmount)) {
+        $errors['amount'] = "Payment amount cannot be empty";
+    }
+
+      $pymntMethod = $_POST['method'];
+      if (empty($pymntMethod)) {
+        $errors['method'] = "Payment method is required";
+    }
       
       $pymntdate = $_POST['date'];
       
@@ -30,9 +40,19 @@ else {
       }
 
       $addedby = $_POST['adminName'];
-      $notes = $_POST['notes'];
+      //validate admin ID 
+    $adminid = $_SESSION['sportadmission'];
+    $stmt2 = $pdoConnection->query("SELECT * FROM users  WHERE ID = $adminid;" );
+    $exists = $stmt2->fetchall();
+    if (!$exists) {
+      echo $errors['addedby'] = "Admin not found";
+       }
+    $notes = $_POST['notes'];
+    if ($notes == "") {
+      $notes = null ;
+  }
 
-          $query = $pdoConnection->query("INSERT INTO payment ( enrollmentId, paymentAmount, paymentMethod, date, userId, notes) VALUES ('$enrollId', '$pymntAmount', '$pymntMethod', '$pymntdate', '$addedby', '$notes')");
+    $query = $pdoConnection->query("INSERT INTO payment (enrollmentId, paymentAmount, paymentMethod, date, userId, notes) VALUES ('$enrollId', '$pymntAmount', '$pymntMethod', '$pymntdate', '$adminid', '$notes')");
 
           if ($query) {
               echo "<script>alert('Payment has been added.');</script>";
@@ -120,9 +140,9 @@ else {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Subscription Fees</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="price" name="name"  type="text" value = "<?php echo $row2['price'];?>" readonly/> 
+                      <input class="form-control" id="price" name="price"  type="text" value = "<?php echo $row2['price'];?>" readonly/> 
                       <?php if( isset($_POST['submit']) && isset($errors['price'])){ ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['name'] ?></span>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['price'] ?></span>
                        <?php } ?>
                     </div>
                   </div>
@@ -137,12 +157,11 @@ else {
                   <label class="col-sm-2 control-label">Fees After Discount</label>
                   <div class="col-sm-10">
                     <?php 
-                      // Fetch the price after discount
-                      $pricequery = $pdoConnection->query("SELECT g.price - e.discount AS 'difference' 
+                      // Fetch the price after discount with default discount as 0 if it's NULL
+                      $pricequery = $pdoConnection->query("SELECT g.price - COALESCE(e.discount, 0) AS 'difference' 
                                                           FROM enrollment e 
                                                           JOIN groups g ON e.groupId = g.ID 
                                                           WHERE e.ID = $enrollId;");
-                      
                       $row3 = $pricequery->fetch(PDO::FETCH_ASSOC);  // Fetch one result
                     ?>
                     <input class="form-control" id="discprice" name="dicprice" type="text" value="<?php echo $row3['difference']; ?>" readonly />
@@ -151,19 +170,33 @@ else {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Total Paid Amount </label>
                     <div class="col-sm-10">
-                      <input class=" form-control" id="totalpaid" name="totalpaid" type="text" readonly>
+                    <?php 
+                      $paidquery = $pdoConnection->query("SELECT SUM(paymentAmount) AS totalamntpaid
+                                                          FROM payment
+                                                          WHERE enrollmentId = $enrollId;");
+                      
+                      $row4 = $paidquery->fetch(PDO::FETCH_ASSOC);
+                            // Default to 0 if no amount is paid
+                      $totalPaidAmount = $row4['totalamntpaid'] ? $row4['totalamntpaid'] : 0;
+                    ?>
+                      <input class=" form-control" id="totalpaid" name="totalpaid" type="text"  value="<?php echo $row4['totalamntpaid']; ?>" readonly>
                     </div>
                   </div>
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Remaining Amount</label>
                     <div class="col-sm-10">
-                      <input class=" form-control" id="remaining" name="remaining" type="text" readonly>
+                      <?php
+                      // Calculate the remaining amount
+                        $feesAfterDiscount = $row3['difference'] ? $row3['difference'] : 0;
+                        $remainingAmount = $feesAfterDiscount - $totalPaidAmount;
+                      ?>
+                      <input class=" form-control" id="remaining" name="remaining" type="text" value="<?php echo $remainingAmount; ?>" readonly>
                     </div>
                   </div>
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Payment Amount</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="amount" name="amount"  type="number" value=''>
+                      <input class="form-control" id="amount" name="amount"  type="number" value="max= <?php echo number_format($remainingAmount,3); ?>" placeholder="Enter the amount of payment">
                       <?php if(isset($_POST['submit'])){ if(isset($errors['amount'])){  ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['amount']; ?></span>
                         <?php }} ?>
@@ -185,7 +218,7 @@ else {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Payment Date</label>
                     <div class="col-sm-10">
-                    <input class="form-control" id="date" name="date" type="date">
+                    <input class="form-control" id="date" name="date" type="date" value="">
                     </div>
                   </div>
                   <div class="form-group">
@@ -204,7 +237,7 @@ else {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Notes</label>
                     <div class="col-sm-10">
-                      <textarea class="form-control" name="notes"></textarea>
+                      <textarea class="form-control" name="notes" value=""></textarea>
                     </div>
                   </div>
                  <p style="text-align: center;"> <button type="submit" name='submit' class="btn btn-primary">Submit</button></p>
