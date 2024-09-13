@@ -146,7 +146,7 @@ else {
                     <label class="col-sm-2 control-label">Payment Amount</label>
                     <div class="col-sm-10">
                       <input class="form-control" id="amount" name="amount"  type="number" value=''>
-                      <?php if($_POST['submit']){ if(isset($errors['amount'])){  ?>
+                      <?php if(isset($_POST['submit'])){ if(isset($errors['amount'])){  ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['amount']; ?></span>
                         <?php }} ?>
                       </div>
@@ -154,10 +154,14 @@ else {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Payment Method</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="method" name="method" type="text">
-                      <?php if($_POST['submit'] && isset($errors['mothod'])) { ?>
+                      <select class="form-control m-bot15" id="method" name="method">
+                      <option value="">Choose payment method</option>
+                      <option value="cash">Cash</option>
+                      <option value="instapay">Instapay</option>
+                      <?php if(isset($_POST['submit']) && isset($errors['mothod'])) { ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['method']; ?></span>
                         <?php } ?>
+                        </select>
                       </div>
                     </div>
                   <div class="form-group">
