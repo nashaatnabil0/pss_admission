@@ -159,7 +159,7 @@ if (isset($_POST['submit'])) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Full Name</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="Name" name="Name"  type="text" />
+                      <input class="form-control" id="Name" name="Name"  type="text" value=""/>
                       <?php if( isset($errors['Name'])){ ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['Name'] ?></span>
                        <?php } ?>
@@ -168,7 +168,7 @@ if (isset($_POST['submit'])) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">National ID</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="NID" name="NID"  type="text" >
+                      <input class="form-control" id="NID" name="NID"  type="text" value="" >
                       <?php if(isset($_POST['submit'])){ 
                         if(isset($errors['NID'])){  ?>
                             <span style="color:red;display:block;text-align:left"><?php echo $errors['NID']; ?></span>
@@ -180,7 +180,7 @@ if (isset($_POST['submit'])) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Birthdate</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="birthdate" name="birthdate"  type="date">
+                      <input class="form-control" id="birthdate" name="birthdate"  type="date" value="">
                     </div>
                   </div>
                   <div class="form-group">
@@ -193,7 +193,7 @@ if (isset($_POST['submit'])) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Contact Mobile Number</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="contactMobNum" name="contactMobNum"  type="text">
+                      <input class="form-control" id="contactMobNum" name="contactMobNum"  type="text" value="">
                       <?php if(isset($_POST['submit'])){ 
                         if(isset($errors['contactMobNum'])){ ?>
                             <span style="color:red;display:block;text-align:left"><?php echo $errors['contactMobNum'];  ?></span>
@@ -206,7 +206,7 @@ if (isset($_POST['submit'])) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Father Name</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="fatherName" name="fatherName"  type="text"/>
+                      <input class="form-control" id="fatherName" name="fatherName"  type="text" value=""/>
                       <?php if(isset($errors['fatherName'])){ ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherName'] ?></span>
                        <?php } ?>
@@ -215,7 +215,7 @@ if (isset($_POST['submit'])) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Father Job</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="fatherJob" name="fatherJob"  type="text" />
+                      <input class="form-control" id="fatherJob" name="fatherJob"  type="text" value=""/>
                       <?php if(isset($_POST['submit']) && isset($errors['fatherJob'])){ ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherJob'] ?></span>
                        <?php } ?>
@@ -224,7 +224,7 @@ if (isset($_POST['submit'])) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Father Mobile Number</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="fatherMobNum" name="fatherMobNum"  type="text">
+                      <input class="form-control" id="fatherMobNum" name="fatherMobNum"  type="text" value="">
                       <?php if(isset($_POST['submit'])){ 
                         if(isset($errors['contactMobNum'])){ ?>
                             <span style="color:red;display:block;text-align:left"><?php echo $errors['contactMobNum'];  ?></span>
@@ -237,7 +237,7 @@ if (isset($_POST['submit'])) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Mother Name</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="motherName" name="motherName"  type="text"/>
+                      <input class="form-control" id="motherName" name="motherName"  type="text" value=""/>
                       <?php if(isset($_POST['submit']) && isset($errors['motherName'])){ ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['motherName'] ?></span>
                        <?php } ?>
@@ -246,7 +246,7 @@ if (isset($_POST['submit'])) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Mother Job</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="motherJob" name="motherJob"  type="text"/>
+                      <input class="form-control" id="motherJob" name="motherJob"  type="text"value=""/>
                       <?php if(isset($_POST['submit']) && isset($errors['motherJob'])){ ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['motherJob'] ?></span>
                        <?php } ?>
@@ -255,7 +255,7 @@ if (isset($_POST['submit'])) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Mother Mobile Number</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="motherMobNum" name="motherMobNum"  type="text">
+                      <input class="form-control" id="motherMobNum" name="motherMobNum"  type="text"value="">
                       <?php if(isset($_POST['submit'])){ 
                         if(isset($errors['contactMobNum'])){ ?>
                             <span style="color:red;display:block;text-align:left"><?php echo $errors['contactMobNum'];  ?></span>
@@ -268,7 +268,7 @@ if (isset($_POST['submit'])) {
                   <div class="form-group">
                   <label class="col-sm-2 control-label">Trainee Photo</label>
                   <div class="col-sm-10">
-                      <input type="file" class="form-control" name="traineePic" id="traineePic" required>
+                      <input type="file" class="form-control" name="traineePic" id="traineePic" required value="">
                       <?php if(isset($errors['traineePhoto'])) { ?>
                           <span style="color:red;display:block;text-align:left"><?php echo $errors['traineePhoto']; ?></span>
                       <?php } ?>
@@ -277,7 +277,7 @@ if (isset($_POST['submit'])) {
               <div class="form-group">
                   <label class="col-sm-2 control-label">Birthday Certificate / National ID Image</label>
                   <div class="col-sm-10">
-                      <input type="file" class="form-control" name="bdimg" id="bdimg" required>
+                      <input type="file" class="form-control" name="bdimg" id="bdimg" required value="">
                       <?php if(isset($errors['bdimg'])) { ?>
                           <span style="color:red;display:block;text-align:left"><?php echo $errors['bdimg']; ?></span>
                       <?php } ?>
@@ -286,7 +286,7 @@ if (isset($_POST['submit'])) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Notes</label>
                     <div class="col-sm-10">
-                      <textarea class="form-control" name="Notes"></textarea>
+                      <textarea class="form-control" name="Notes" value=""></textarea>
                     </div>
                   </div>
                  <p style="text-align: center;"> <button type="submit" name='submit' class="btn btn-primary">Submit</button></p>
