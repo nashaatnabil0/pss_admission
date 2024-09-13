@@ -9,17 +9,17 @@ else {
   $errors = [];
   $enrollId = $_GET['editid'];
   if(isset($_POST['submit'])){
-    $name = $_GET['name'];
+    $name = $_POST['name'];
     if (empty($name)) {
       $errors['name'] = "Name cannot be empty";
   }
   
       $fullprice = $_POST['price'];
-      $totalpaid = ['totalpaid']; //calculated
-      $remaining = ['remaining']; //calculated
+      $totalpaid = $_POST['totalpaid']; //calculated
+      $remaining = $_POST['remaining']; //calculated
       $discount = $_POST['discount'];
-      $pymntAmount = ['amount'];
-      $pymntMethod = ['method'];
+      $pymntAmount = $_POST['amount'];
+      $pymntMethod = $_POST['method'];
       
       $pymntdate = $_POST['date'];
       
@@ -29,7 +29,7 @@ else {
         $pymntdate = $_POST['date'];
       }
 
-      $addedby = $_POST['adminName'];
+      $addedby = $_SESSION['sportadmission'];
       $notes = $_POST['notes'];
 
           $query = $pdoConnection->query("INSERT INTO payment ( enrollmentId, paymentAmount, paymentMethod, date, userId, notes) VALUES ('$enrollId', '$pymntAmount', '$pymntMethod', '$pymntdate', '$addedby', '$notes')");
