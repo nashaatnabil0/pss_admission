@@ -35,6 +35,9 @@ else {
     }
     
     $trainer = $_POST['trainer'];
+    if (empty($trainer)) {
+      $errors['trainer'] = "Please select a trainer";
+    }
     $sport = $_POST['sport'];
     if (empty($sport)) {
       $errors['sport'] = "Please select a sport";
@@ -49,9 +52,10 @@ else {
     }
     $capacity = $_POST['capacity'];
     if (empty($capacity)) {
-      $errors['price'] = "Capacity can't be empty";
+      $errors['capacity'] = "Capacity can't be empty";
     }
     $place = $_POST['place'];
+   if(empty($errors)){
     if ($place == "") {
       $query = $pdoConnection->query("INSERT INTO groups (Title ,days, timeslot, minAge, maxAge, trainerId, sportId, seasonId, price, capacity) VALUES ('$title', '$days', '$timing', '$minAge', '$maxAge', '$trainer', '$sport', '$season', '$price', '$capacity')");
     }else{
@@ -64,6 +68,8 @@ else {
               echo "<script>alert('Something Went Wrong. Please try again.');</script>";
             }
       }
+
+  }     
 
 ?>
 <!DOCTYPE html>
@@ -190,6 +196,9 @@ else {
                           <option value="<?php echo $row['ID'];?>"><?php echo $row['name'];?></option>
                             <?php } ?> 
                       </select>
+                      <?php if(isset($_POST['submit']) && isset($errors['trainer'])) { ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['trainer']; ?></span>
+                        <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">

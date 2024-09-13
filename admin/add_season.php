@@ -51,13 +51,9 @@ if(isset($_POST['submit']))
                 echo "<script>alert('Something Went Wrong. Please try again.');</script>";
               }
         }
-    if(!empty($errors)) {
-      foreach ($errors as $error) {
-        echo $error;
-      }
-  }
 }
   ?>
+  
 <!DOCTYPE html>
 <html lang="en">
 

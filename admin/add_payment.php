@@ -84,11 +84,6 @@ if ($formSubmitted) {
           echo "<script>alert('Something Went Wrong. Please try again.');</script>";
         } 
      }
-     if(!empty($errors)) {
-      foreach ($errors as $error) {
-        echo $error;
-      }
-    }
 }
 ?>
 <!DOCTYPE html>

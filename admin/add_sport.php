@@ -32,11 +32,6 @@ if (strlen($_SESSION['sportadmission']==0)) {
     }
   }
 
-  if (!empty($errors)) {
-    foreach ($errors as $error) {
-      echo $error ;
-    }
-  }
 ?>
 
 <!DOCTYPE html>

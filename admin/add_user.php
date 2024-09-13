@@ -62,15 +62,10 @@ else {
         }
       }
     }
-    
-    if(!empty($errors)) {
-      foreach ($errors as $error) {
-        echo $error;
-      }
-  }
       
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
