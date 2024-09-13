@@ -4,30 +4,41 @@ error_reporting(0);
 include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
-  }
-  else{
-
-if(isset($_POST['submit']))
-  {
-   
-    $sportName=$_POST['sportname'];
-    $supervisor=$_POST['supervisorID'];
-    if($supervisor==""){
-      $query = $pdoConnection->query("INSERT INTO sport (name) VALUES ('$sportName')");
-    }else{
-      $query = $pdoConnection->query("INSERT INTO sport (name , supervisorID) VALUES ('$sportName', '$supervisor')");
+} else {
+  $errors = [];
+  
+  if(isset($_POST['submit'])) {
+    $sportName = $_POST['sportname'];
+    
+    if (empty($sportName)) {
+      $errors['sportname'] = "sport name cannot be empty";
     }
-    if ($query) {
-echo "<script>alert('sport has been added.');</script>";
-echo "<script>window.location.href ='viewall_sports.php'</script>";
-  }
-  else
-    {
+    
+    $supervisor = $_POST['supervisorID'];
+    
+    if (empty($errors)) {
+      if ($supervisor == "") {
+        $query = $pdoConnection->query("INSERT INTO sport (name) VALUES ('$sportName')");
+      } else {
+        $query = $pdoConnection->query("INSERT INTO sport (name, supervisorID) VALUES ('$sportName', '$supervisor')");
+      }
       
-      echo "<script>alert('Something Went Wrong. Please try again.');</script>";
+      if ($query) {
+        echo "<script>alert('Sport has been added.');</script>";
+        echo "<script>window.location.href ='viewall_sports.php'</script>";
+      } else {
+        echo "<script>alert('Something Went Wrong. Please try again.');</script>";
+      }
     }
-}
-  ?>
+  }
+
+  if (!empty($errors)) {
+    foreach ($errors as $error) {
+      echo $error ;
+    }
+  }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -91,7 +102,10 @@ echo "<script>window.location.href ='viewall_sports.php'</script>";
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Sport Name</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="sportname" name="sportname"  type="text" required="true">
+                      <input class="form-control" id="sportname" name="sportname"  type="text">
+                      <?php if( isset($_POST['submit']) && isset($errors['sportname'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['sportname'] ?></span>
+                       <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">
