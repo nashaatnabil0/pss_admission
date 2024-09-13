@@ -10,78 +10,86 @@ else {
   $enrollId = $_GET['editid'];
   
   $formSubmitted = $_SERVER["REQUEST_METHOD"] == "POST";
-  if($formSubmitted){
-//validate enroll ID 
-    $stmt = $pdoConnection->query("SELECT * FROM enrollment  WHERE ID = $enrollId;" );
+if ($formSubmitted) {
+    // Validate enroll ID
+    $stmt = $pdoConnection->query("SELECT * FROM enrollment WHERE ID = $enrollId;" );
     $exists = $stmt->fetch();
 
     if (!$exists) {
-      echo $errors['enrollID'] = "Enrollmen not found";
-  }
+        $errors['enrollID'] = "Enrollment not found";
+    }
 
     $name = $_POST['name'];
     if (empty($name)) {
-      $errors['name'] = "Name cannot be empty";
-  }
-      $pymntAmount = $_POST ['amount'];
+        $errors['name'] = "Name cannot be empty";
+    }
+
+    $pymntAmount = $_POST['amount'];
     if (empty($pymntAmount)) {
         $errors['amount'] = "Payment amount cannot be empty";
     }
+
     $remainingAmount = $_POST['remaining'];
     if ($pymntAmount > $remainingAmount) {
-      $errors['amount'] = "Payment amount cannot exceed the remaining amount ";
-     }
-      $pymntMethod = $_POST['method'];
-      if (empty($pymntMethod)) {
+        $errors['amount'] = "Payment amount cannot exceed the remaining amount";
+    }
+
+    $pymntMethod = $_POST['method'];
+    if (empty($pymntMethod)) {
         $errors['method'] = "Payment method is required";
     }
-      
-      $pymntdate = $_POST['date'];
-      
-      if ($pymntdate == "") {
-          $pymntdate = date('Y-m-d') ;
-      }else{
-        $pymntdate = $_POST['date'];
-      }
+    
 
-      $addedby = $_POST['adminName'];
-      //validate admin ID 
+    $pymntdate = $_POST['date'];
+    if (empty($pymntdate)) {
+        $pymntdate = date('Y-m-d');
+    }
+
+    $addedby = $_POST['adminName'];
     $adminid = $_SESSION['sportadmission'];
-    $stmt2 = $pdoConnection->query("SELECT * FROM users  WHERE ID = $adminid;" );
+    $stmt2 = $pdoConnection->query("SELECT * FROM users WHERE ID = $adminid;" );
     $exists = $stmt2->fetchall();
     if (!$exists) {
-      echo $errors['addedby'] = "Admin not found";
-       }
+        $errors['addedby'] = "Admin not found";
+    }
+
     $notes = $_POST['notes'];
-    if ($notes == "") {
-      $notes = null ;
-  }
+    if (empty($notes)) {
+        $notes = null;
+    }
 
-    $query = $pdoConnection->query("INSERT INTO payment (enrollmentId, paymentAmount, paymentMethod, date, userId, notes) VALUES ('$enrollId', '$pymntAmount', '$pymntMethod', '$pymntdate', '$adminid', '$notes')");
+    // Only proceed with inserting into the database if there are no errors
+    if (empty($errors)) {
+        $query = $pdoConnection->query("INSERT INTO payment (enrollmentId, paymentAmount, paymentMethod, date, userId, notes) VALUES ('$enrollId', '$pymntAmount', '$pymntMethod', '$pymntdate', '$adminid', '$notes')");
 
-          if ($query) {
-               // Calculate remaining amount after the new payment
-              $paidquery = $pdoConnection->query("SELECT SUM(paymentAmount) AS totalPaidAmount FROM payment WHERE enrollmentId = $enrollId;");
-              $row4 = $paidquery->fetch(PDO::FETCH_ASSOC);
-              $totalPaidAmount = $row4['totalPaidAmount'] ? $row4['totalPaidAmount'] : 0;
+        if ($query) {
+            // Calculate remaining amount after the new payment
+            $paidquery = $pdoConnection->query("SELECT SUM(paymentAmount) AS totalPaidAmount FROM payment WHERE enrollmentId = $enrollId;");
+            $row4 = $paidquery->fetch(PDO::FETCH_ASSOC);
+            $totalPaidAmount = $row4['totalPaidAmount'] ? $row4['totalPaidAmount'] : 0;
 
-              $feesAfterDiscountQuery = $pdoConnection->query("SELECT g.price - COALESCE(e.discount, 0) AS feesAfterDiscount FROM enrollment e JOIN groups g ON e.groupId = g.ID WHERE e.ID = $enrollId;");
-              $row3 = $feesAfterDiscountQuery->fetch(PDO::FETCH_ASSOC);
-              $feesAfterDiscount = $row3['feesAfterDiscount'] ? $row3['feesAfterDiscount'] : 0;
+            $feesAfterDiscountQuery = $pdoConnection->query("SELECT g.price - COALESCE(e.discount, 0) AS feesAfterDiscount FROM enrollment e JOIN groups g ON e.groupId = g.ID WHERE e.ID = $enrollId;");
+            $row3 = $feesAfterDiscountQuery->fetch(PDO::FETCH_ASSOC);
+            $feesAfterDiscount = $row3['feesAfterDiscount'] ? $row3['feesAfterDiscount'] : 0;
 
-              $remainingAmount = $feesAfterDiscount - $totalPaidAmount;
+            $remainingAmount = $feesAfterDiscount - $totalPaidAmount;
 
-              // If remaining amount is 0, update the payment state to "complete"
-              if ($remainingAmount <= 0) {
+            // If remaining amount is 0, update the payment state to "complete"
+            if ($remainingAmount <= 0) {
                 $pdoConnection->query("UPDATE enrollment SET paymentState = 'complete' WHERE ID = $enrollId;");
-              }
-              echo "<script>alert('Payment has been added.');</script>";
-              echo "<script>window.location.href ='make_payment.php'</script>";
-          } else {
-              echo "<script>alert('Something Went Wrong. Please try again.');</script>";
             }
+            echo "<script>alert('Payment has been added.');</script>";
+            echo "<script>window.location.href ='make_payment.php'</script>";
+        } 
+     }
+     if(!empty($errors)) {
+      foreach ($errors as $error) {
+        echo $error;
       }
-
+    }else {
+      echo "<script>alert('Something Went Wrong. Please try again.');</script>";
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -217,7 +225,7 @@ else {
                     <label class="col-sm-2 control-label">Payment Amount</label>
                     <div class="col-sm-10">
                       <input class="form-control" id="amount" name="amount"  type="number" value="max= <?php echo number_format($remainingAmount,3); ?>" placeholder="Enter the amount of payment">
-                      <?php if($formSubmittedif && isset($errors['amount'])){  ?>
+                      <?php if($formSubmitted && isset($errors['amount'])){  ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['amount']; ?></span>
                         <?php } ?>
                       </div>
@@ -229,10 +237,10 @@ else {
                       <option value="">Choose payment method</option>
                       <option value="cash">Cash</option>
                       <option value="instapay">Instapay</option>
-                      <?php if($formSubmitted && isset($errors['method'])) { ?>
+                        </select>
+                        <?php if($formSubmitted && isset($errors['method'])) { ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['method']; ?></span>
                         <?php } ?>
-                        </select>
                       </div>
                     </div>
                   <div class="form-group">
