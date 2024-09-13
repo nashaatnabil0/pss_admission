@@ -26,6 +26,7 @@ else {
       $errors['sport'] = "Please choose a sport";
     }
 
+    if (empty($errors)) {
   $query = $pdoConnection->query("INSERT INTO trainers (name, MobileNumber, sportId) VALUES ('$name', '$mobnum', '$sport')");
 
  if ($query) {
@@ -34,7 +35,17 @@ else {
     } else {
          echo "<script>alert('Something Went Wrong. Please try again.');</script>";
            }
+    }
+    
+    if (!empty($errors)) {
+      foreach ($errors as $error) {
+        echo $error ;
+      }
+    }
+
+
   }
+  
 
 
 ?>
