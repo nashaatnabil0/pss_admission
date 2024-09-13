@@ -6,28 +6,44 @@ if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
   }
   else{
-
-if(isset($_POST['submit']))
-  {
-    
-    $name=$_POST['name'];
-    $mobnum=$_POST['mobnum'];
-    $email=$_POST['email'];
-    $edudetails=$_POST['edudetails'];
-    $awarddetails=$_POST['awarddetails'];
-  $eid=$_GET['editid'];
-   
-    $query = $pdoConnection -> query("UPDATE tblartist SET Name='$name', MobileNumber='$mobnum', Email= '$email', Education='$edudetails', Award= '$awarddetails' where ID='$eid'");
-    if ($query) {
-      echo "<script>alert('Artist details has been updated.');  location.href='manage-artist.php'</script>";
-  }
-  else
-    {
-      echo "<script>alert('Something Went Wrong. Please try again.');</script>";
+    $cid=$_GET['editid'];
+    $errors = [];
+    if(isset($_POST['submit'])){
+      $name = $_POST['name'];
+      if (empty($name)) {
+        $errors['name'] = "Name cannot be empty";
     }
-
+      $mobnum = $_POST['mobnum'];
+      $monnumPattern='/^(011|010|015|012)[0-9]{8}$/';
+      if (empty($mobnum)) {
+        $errors['mobnum'] = "phone number cannot be empty";
+    }elseif(!preg_match($monnumPattern,$mobnum)){
+       $errors['mobnuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
+   }
+  
+      $email = $_POST['email'];
+  
+      if (empty($email)) {
+        $errors['email'] = "Email cannot be empty";
+    }elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors['email'] = "Invalid email format";
+        }
+    $role= $_POST['role'];
+    if (empty($role)) {
+      $errors['role'] = "Please choose a role";
   }
-
+    if(empty($errors)){
+      // $query = $pdoConnection->query("INSERT INTO users (Name, MobileNumber, Email, role ,password ) VALUES ('$name', '$mobnum', '$email', '$role','$password')");
+      $query = $pdoConnection->query("UPDATE users SET name='$name',MobileNumber='0$mobnum',Email='$email',role='$role' WHERE ID = $cid;");
+  
+      if ($query) {
+          echo "<script>alert('Admin/ Moderator Data has been Updated.');</script>";
+          echo "<script>window.location.href ='viewall_users.php'</script>";
+      } else {
+          echo "<script>alert('Something Went Wrong. Please try again.');</script>";
+        }
+      }    
+  }
   ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -74,11 +90,11 @@ if(isset($_POST['submit']))
       <section class="wrapper">
         <div class="row">
           <div class="col-lg-12">
-            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Update Artist Detail</h3>
+            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Edit User</h3>
             <ol class="breadcrumb">
               <li><i class="fa fa-home"></i><a href="dashboard.php">Home</a></li>
-              <li><i class="icon_document_alt"></i>Artist</li>
-              <li><i class="fa fa-file-text-o"></i>Artist Detail</li>
+              <li><i class="icon_document_alt"></i>Users</li>
+              <li><i class="fa fa-file-text-o"></i>Edit User Information</li>
             </ol>
           </div>
         </div>
@@ -86,58 +102,55 @@ if(isset($_POST['submit']))
           <div class="col-lg-12">
             <section class="panel">
               <header class="panel-heading">
-               Update Company Detail
+              Edit Admin/ Moderator Detail
               </header>
               <div class="panel-body">
                 <form class="form-horizontal " method="post" action="">
-                  <p style="font-size:16px; color:red" align="left"> <?php if($msg){
-    echo $msg;
-  }  ?> </p>
-
-  <?php
- $cid=$_GET['editid'];
-$ret= $pdoConnection-> query("SELECT * FROM tblartist where ID='$cid'");
-$cnt=1;
-while ($row=$ret->fetch(PDO:: FETCH_ASSOC)) {
-?>
+                  <p style="font-size:16px; color:red" align="left"> <?php if($msg){echo $msg;}  ?> </p>
+                    <?php
+                    $ret= $pdoConnection-> query("SELECT * FROM users where ID='$cid'");
+                    $cnt=1;
+                    while ($row=$ret->fetch(PDO:: FETCH_ASSOC)) {
+                    ?>
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Name</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="name" name="name"  type="text" required="true" value="<?php  echo $row['Name'];?>">
+                      <input class="form-control" id="name" name="name"  type="text" value="<?php  echo $row['name'];?>" required/>
+                      <?php if(isset($_POST['submit'])&& isset($errors['name'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['name'] ?></span>
+                       <?php } ?>
                     </div>
                   </div>
-                   <div class="form-group">
+                  <div class="form-group">
                     <label class="col-sm-2 control-label">Mobile Number</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="mobnum" maxlength="10" name="mobnum"  type="text" required="true" pattern="[0-9]+" value="<?php  echo $row['MobileNumber'];?>">
+                      <input class="form-control" id="mobnum" name="mobnum"  type="text" value="<?php  echo '0'.$row['MobileNumber'];?>" required>
+                      <?php if(isset($_POST['submit'])){ if(isset($errors['mobnum'])){  ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['mobnum'];?></span>
+                       <?php } elseif($errors['mobnuminvalid']!=""){ ?>
+                       <span style="color:red;display:block;text-align:left"><?php echo $errors['mobnuminvalid'] ?></span>
+                       <?php } }  ?>
                     </div>
                   </div>
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Email</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="email" name="email"  type="email" required="true" value="<?php  echo $row['Email'];?>">
+                      <input class="form-control" id="email" name="email" type="email" value="<?php  echo $row['Email'];?>" required>
+                      <?php if(isset($_POST['submit']) && isset($errors['email'])) { ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['email']; ?></span>
+                        <?php } ?>
+                      </div>
                     </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="col-sm-2 control-label">Education Details</label>
+                    <div class="form-group">
+                    <label class="col-sm-2 control-label">Role</label>
                     <div class="col-sm-10">
-                     
-                      <textarea class="form-control" name="edudetails" required="true"><?php  echo $row['Education'];?></textarea>
-                    </div>
+                    <input class="" id="role" name="role"  type="radio" value="admin" style="margin:7px" <?php if($row['role']==='admin'){ echo 'checked';}?> required > Admin <span style="margin: 35px"></span>
+                    <input class="" id="rolemod" name="role"  type="radio" value="moderator" style="margin:7px" <?php if($row['role']==='moderator'){ echo 'checked';}?> required> Moderator  <span style="margin: 35px"></span>
+                    <input class="" id="roleAcc" name="role"  type="radio" value="accountant" style="margin:7px" <?php if($row['role']==='accountant'){ echo 'checked';}?> required> Accountant   
+                    <?php if(isset($_POST['submit']) && isset($errors['role'])) { ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['role']; ?></span>
+                        <?php } ?>
                   </div>
-                  <div class="form-group">
-                    <label class="col-sm-2 control-label">Award Details</label>
-                    <div class="col-sm-10">
-                    
-                      <textarea class="form-control" name="awarddetails" required="true"><?php  echo $row['Award'];?></textarea>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="col-sm-2 control-label">Profile Pics</label>
-                    <div class="col-sm-10">
-                      <img src="images/<?php echo $row['Profilepic'];?>" width="200" height="150" value="<?php  echo $row['Profilepic'];?>"><a href="changepropic.php?imageid=<?php echo $row['ID'];?>" class="btn btn-success">  Edit Image</a>
-                    </div>
-                   
                   </div>
                 <?php } ?>
                  <p style="text-align: center;"> <button type="submit" name='submit' class="btn btn-primary">Update</button></p>

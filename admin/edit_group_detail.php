@@ -53,21 +53,21 @@ if (strlen($_SESSION['sportadmission']==0)) {
         $errors['price'] = "Capacity can't be empty";
       }
       $place = $_POST['place'];
-      if ($place == "") {
-        // $query = $pdoConnection->query("INSERT INTO groups (Title ,days, timeslot, minAge, maxAge, trainerId, sportId, seasonId, price, capacity) VALUES ('$title', '$days', '$timing', '$minAge', '$maxAge', '$trainer', '$sport', '$season', '$price', '$capacity')");
-        $query = $pdoConnection->query("UPDATE groups SET Title='$title',days='$days',Timeslot='$timing',minAge='$minAge',maxAge='$maxAge',trainerId='$trainer',sportId='$sport',seasonId='$season',price='$price',capacity='$capacity' WHERE ID = '$cid';");
-      }else{
-        // $query = $pdoConnection->query("INSERT INTO groups (Title,place ,days, timeslot, minAge, maxAge, trainerId, sportId, seasonId, price, capacity) VALUES ('$title', '$place', '$days', '$timing', '$minAge', '$maxAge', '$trainer', '$sport', '$season', '$price', '$capacity')");
-        $query = $pdoConnection->query("UPDATE groups SET Title='$title',days='$days',Timeslot='$timing',minAge='$minAge',maxAge='$maxAge',trainerId='$trainer',sportId='$sport',seasonId='$season',price='$price',capacity='$capacity', place = '$place' WHERE ID = '$cid';");
-      }
-            if ($query) {
-                echo "<script>alert('Group has been Updated.');</script>";
-                echo "<script>window.location.href ='viewall_groups.php'</script>";
-            } else {
-                echo "<script>alert('Something Went Wrong. Please try again.');</script>";
-              }
-        }
 
+      if (empty($errors)) {
+        if ($place == "") {
+          $query = $pdoConnection->query("UPDATE groups SET Title='$title',days='$days',Timeslot='$timing',minAge='$minAge',maxAge='$maxAge',trainerId='$trainer',sportId='$sport',seasonId='$season',price='$price',capacity='$capacity' WHERE ID = '$cid';");
+        }else{
+          $query = $pdoConnection->query("UPDATE groups SET Title='$title',days='$days',Timeslot='$timing',minAge='$minAge',maxAge='$maxAge',trainerId='$trainer',sportId='$sport',seasonId='$season',price='$price',capacity='$capacity', place = '$place' WHERE ID = '$cid';");
+        }
+              if ($query) {
+                  echo "<script>alert('Group has been Updated.');</script>";
+                  echo "<script>window.location.href ='viewall_groups.php'</script>";
+              } else {
+                  echo "<script>alert('Something Went Wrong. Please try again.');</script>";
+                }
+          }
+      }
   ?>
 <!DOCTYPE html>
 <html lang="en">
