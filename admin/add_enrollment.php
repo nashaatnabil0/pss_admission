@@ -5,20 +5,12 @@ include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
   }
-else {
-  $searchQuery = '';
-  $trainees = [];
-  
-  if (isset($_GET['search'])) {
-      $searchQuery = $_POST['search'];
-  
-      // Fetch trainees matching the user's input
-      $stmt = $pdoConnection->prepare("SELECT NID, name FROM trainees WHERE NID LIKE ? ");
-      $stmt->execute(["%$searchQuery%"]);
-      $trainees = $stmt->fetchAll(PDO::FETCH_ASSOC);
-  }
+else {  
+  $errors = [];
+   // Fetch all trainee NIDs from the database
+   $stmt = $pdoConnection->query("SELECT NID, Name FROM trainees");
+   $trainees = $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetch all NIDs and names
 
-   $errors = [];
   if(isset($_POST['submit'])){
     $traineeNID = $_POST['traineeNID'];
     // Validate traineeNID
@@ -126,23 +118,23 @@ else {
               </header>
               <div class="panel-body">
                 <form class="form-horizontal " method="post" action="" enctype="multipart/form-data">
+                <!-- Trainee National ID input with datalist -->
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Trainee National ID</label>
-                    <div class="col-sm-10">
-                      <input class="form-control" id="searchTrainee" name="traineeNID" type="text" placeholder="Type the national ID number" value="<?php echo htmlspecialchars($searchQuery); ?>" />
-                      <input class="form-control m-bot15" id="traineeList" list="traineeListOptions" />
-                      <datalist id="traineeListOptions">
-                        <?php foreach ($trainees as $trainee): ?>
-                          <option value="<?php echo htmlspecialchars($trainee['NID']); ?>">
-                            <?php echo ($trainee['NID']) . " - " . ($trainee['name']); ?>
-                          </option>
-                        <?php endforeach; ?>
-                      </datalist>
-                      <?php if (isset($_POST['submit']) && isset($errors['traineeNID'])): ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['traineeNID'] ?></span>
-                      <?php endif; ?>
-                    </div>
-                  </div>
+                <label class="col-sm-2 control-label">Trainee National ID</label>
+                <div class="col-sm-10">
+                  <input class="form-control" id="searchTrainee" name="traineeNID" type="text" placeholder="Type the national ID number" list="traineeListOptions" value=""/>
+                  <datalist id="traineeListOptions">
+                    <?php foreach ($trainees as $trainee): ?>
+                      <option value="<?php echo $trainee['NID']; ?>">
+                        <?php echo $trainee['NID'] . " - " . $trainee['Name']; ?>
+                      </option>
+                    <?php endforeach; ?>
+                  </datalist>
+                  <?php if (isset($_POST['submit']) && isset($errors['traineeNID'])): ?>
+                    <span style="color:red;display:block;text-align:left"><?php echo $errors['traineeNID']; ?></span>
+                  <?php endif; ?>
+                </div>
+                </div>
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Group</label>
                     <div class="col-sm-10">
@@ -167,7 +159,7 @@ else {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Discount</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="discount" name="discount"  type="text">
+                      <input class="form-control" id="discount" name="discount"  type="text" value="">
                     </div>
                   </div>
                   <div class="form-group">
@@ -181,7 +173,7 @@ else {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Enrollment Date</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="enrolldate" name="enrolldate" type="date" >
+                      <input class="form-control" id="enrolldate" name="enrolldate" type="date" value="">
                       </div>
                     </div>
                  <p style="text-align: center;"> <button type="submit" name='submit' class="btn btn-primary">Submit</button></p>
@@ -233,7 +225,20 @@ else {
   <script src="js/form-component.js"></script>
   <!-- custome script for all page -->
   <script src="js/scripts.js"></script>
+ 
+  <!-- get the current date -->
+  <script>
+  var dateElement = document.getElementById("enrolldate");
+  var today = new Date();
 
+  // put the date in the defult format YYYY-MM-DD
+  var formattedDate = today.getFullYear() + '-' +
+                      ('0' + (today.getMonth() + 1)).slice(-2) + '-' + 
+                      ('0' + today.getDate()).slice(-2);
+
+  // Set the value of the input as today's date
+  dateElement.value = formattedDate;  
+</script>
 </body>
 
 </html>
