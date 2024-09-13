@@ -25,7 +25,10 @@ else {
     if (empty($pymntAmount)) {
         $errors['amount'] = "Payment amount cannot be empty";
     }
-
+    $remainingAmount = $_POST['remaining'];
+    if ($pymntAmount > $remainingAmount) {
+      $errors['amount'] = "Payment amount cannot exceed the remaining amount ";
+     }
       $pymntMethod = $_POST['method'];
       if (empty($pymntMethod)) {
         $errors['method'] = "Payment method is required";
@@ -55,6 +58,21 @@ else {
     $query = $pdoConnection->query("INSERT INTO payment (enrollmentId, paymentAmount, paymentMethod, date, userId, notes) VALUES ('$enrollId', '$pymntAmount', '$pymntMethod', '$pymntdate', '$adminid', '$notes')");
 
           if ($query) {
+               // Calculate remaining amount after the new payment
+              $paidquery = $pdoConnection->query("SELECT SUM(paymentAmount) AS totalPaidAmount FROM payment WHERE enrollmentId = $enrollId;");
+              $row4 = $paidquery->fetch(PDO::FETCH_ASSOC);
+              $totalPaidAmount = $row4['totalPaidAmount'] ? $row4['totalPaidAmount'] : 0;
+
+              $feesAfterDiscountQuery = $pdoConnection->query("SELECT g.price - COALESCE(e.discount, 0) AS feesAfterDiscount FROM enrollment e JOIN groups g ON e.groupId = g.ID WHERE e.ID = $enrollId;");
+              $row3 = $feesAfterDiscountQuery->fetch(PDO::FETCH_ASSOC);
+              $feesAfterDiscount = $row3['feesAfterDiscount'] ? $row3['feesAfterDiscount'] : 0;
+
+              $remainingAmount = $feesAfterDiscount - $totalPaidAmount;
+
+              // If remaining amount is 0, update the payment state to "complete"
+              if ($remainingAmount <= 0) {
+                $pdoConnection->query("UPDATE enrollment SET paymentState = 'complete' WHERE ID = $enrollId;");
+              }
               echo "<script>alert('Payment has been added.');</script>";
               echo "<script>window.location.href ='make_payment.php'</script>";
           } else {
