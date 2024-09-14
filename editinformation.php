@@ -110,20 +110,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 VALUES ('$name', '$nid','$dob', '$gender', '$personalPhoto', '$idPhoto', '$contactMobNum', '$fatherName', '$fatherNum', '$fatherJob', '$motherName', '$motherNum', '$motherJob', '$notes')";
         
         $query = $pdoConnection->query($sql);
-       /* $query->bindParam(':name', $name, PDO::PARAM_STR);
-        $query->bindParam(':nid', $nid, PDO::PARAM_STR);
-        $query->bindParam(':birthDate', $birthDate, PDO::PARAM_STR);
-        $query->bindParam(':gender', $gender, PDO::PARAM_STR);
-        $query->bindParam(':photo', $personalPhoto, PDO::PARAM_STR);
-        $query->bindParam(':birthCertificate', $idPhoto, PDO::PARAM_STR);
-        $query->bindParam(':contactMobNum', $contactMobNum, PDO::PARAM_STR);
-        $query->bindParam(':fatherName', $fatherName, PDO::PARAM_STR);
-        $query->bindParam(':fatherMobNum', $fatherNum, PDO::PARAM_STR);
-        $query->bindParam(':fatherJob', $fatherJob, PDO::PARAM_STR);
-        $query->bindParam(':motherName', $motherName, PDO::PARAM_STR);
-        $query->bindParam(':motherMobNum', $motherNum, PDO::PARAM_STR);
-        $query->bindParam(':motherJob', $motherJob, PDO::PARAM_STR);
-        $query->bindParam(':notes', $notes, PDO::PARAM_STR);*/
 
         // Execute query
         if ($query) {
@@ -225,16 +211,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="navbar-nav m-auto py-0">
                     <a href="index.php" class="nav-item nav-link active">Home</a>
                     <a href="about.php" class="nav-item nav-link">About</a>
-                    <!-- <a href="login.php" class="nav-item nav-link">Login</a>
-                    <a href="account.php" class="nav-item nav-link">Account</a> -->
-                    
-                    <!-- <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
-                        <div class="dropdown-menu rounded-0 m-0">
-                            <a href="blog.html" class="dropdown-item">Blog Grid</a>
-                            <a href="single.html" class="dropdown-item">Blog Detail</a>
-                        </div>
-                    </div> -->
                     <a href="contact.php" class="nav-item nav-link">Contact</a>
         </nav>
     </div>    <!-- header section end -->
@@ -244,7 +220,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     while ($row=$ret->fetch(PDO:: FETCH_ASSOC)) {
                   ?>
     <div class="container">
-        <h1 class="about_text_2"><strong>Update Information</strong></h1>
+        <h1 class="center-text text-center mb-4"><strong>Update Information</strong></h1>
+        <h4 class="text-primary">Personal Information</h4>
         <section class="login_register_section layout_padding">
             <div class="container">
                 <div class="heading_container heading_center">
@@ -304,6 +281,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <label class="control-label">National ID/Birth Certificate Photo</label>
                                     <input type="file" class="form-control" name="idPhoto" id="idPhoto" value="<?php  echo $row['birthCertificate'];?>" required>
                                 </div>
+                                
+                                <h4 class="text-primary">Personal Information</h4>
+
                                 <div class="form-group">
                                     <label for="fatherName">Father Name</label>
                                     <input type="text" class="form-control" name="fatherName" id="fatherName" placeholder="Enter father name" value="<?php  echo $row['fatherName'];?>" required>
