@@ -190,7 +190,7 @@ if ($formSubmitted) {
                                                           WHERE e.ID = $enrollId;");
                       $row3 = $pricequery->fetch(PDO::FETCH_ASSOC);  // Fetch one result
                     ?>
-                    <input class="form-control" id="discprice" name="dicprice" type="text" value="<?php echo $row3['difference']; ?>" readonly />
+                    <input class="form-control" id="discprice" name="discprice" type="text" value="<?php echo $row3['difference']; ?>" readonly />
                   </div>
                 </div>
                   <div class="form-group">
