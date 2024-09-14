@@ -6,14 +6,12 @@ if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
   }
   else{
-
+    $eid=$_GET['editid'];
 if(isset($_POST['submit']))
   {
-    
     $name=$_POST['name'];
     $mobnum=$_POST['mobnum'];
     $spID=$_POST['SportID'];
-    $eid=$_GET['editid'];
     if($spID==""){
       $query = $pdoConnection -> query("update trainers SET name='$name', MobileNumber='$mobnum', sportId= NULL where ID='$eid'");
     }else{
@@ -93,7 +91,7 @@ if(isset($_POST['submit']))
               <div class="panel-body">
                 <form class="form-horizontal " method="post" action="">
                   <?php
-                    $ret= $pdoConnection-> query("SELECT * FROM trainers where ID='$cid'");
+                    $ret= $pdoConnection-> query("SELECT * FROM trainers where ID='$eid'");
                     while ($row=$ret->fetch(PDO:: FETCH_ASSOC)) {
                   ?>
                   <div class="form-group">
