@@ -102,7 +102,6 @@ try {
     <!-- Header End -->
 
     <!-- New Content Section Start -->
-    <div class="content-section d-flex flex-column flex-md-row align-items-center justify-content-between">
     <?php
     try {
         $query = "SELECT * FROM season WHERE state = 'on' ORDER BY startDate DESC LIMIT 1";
@@ -110,6 +109,8 @@ try {
 
         if ($row = $stmt->fetch()) {
     ?>
+    <div class="content-section d-flex flex-column flex-md-row align-items-center justify-content-between">
+
     <div class="photo-section mb-4 mb-md-0">
     <img src="admin/images/<?php echo htmlspecialchars($row['image']); ?>" alt="Season Image" class="img-fluid" style="max-width: 100%; height: auto;">
     </div>
@@ -122,7 +123,7 @@ try {
     </div>
     <?php
         } else {
-            echo "<p>No seasons available at the moment.</p>";
+            // echo "<p>No seasons available at the moment.</p>";
         }
     } catch (PDOException $e) {
         echo "Error: " . $e->getMessage();
