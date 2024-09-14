@@ -84,7 +84,7 @@ if (isset($_POST['submit'])) {
                 move_uploaded_file($imageFile["tmp_name"], "images/" . $newImageName);
                 return $newImageName;
             } else {
-              echo "<script>alert('Image " . $imageFile["name"] . " Invalid format. Only jpg / jpeg/ png /gif format allowed');</script>";
+              $errors[$fileInputName] = "Invalid format. Only jpg / jpeg / png / gif format allowed.";
               return null;
             }
         }
@@ -93,16 +93,16 @@ if (isset($_POST['submit'])) {
 
     $traineePhoto = uploadImages($_FILES["traineePic"], $allowed_extensions, $name, $NID);
     if (empty($traineePhoto)){
-      $errors['traineePic']= "Please upload trainee Photo.";
+      $errors['traineePicempty']= "Please upload trainee Photo.";
     }
     $bdImage = uploadImages($_FILES["bdimg"], $allowed_extensions, $name, $NID);
     if (empty($bdImage)){
-      $errors['bdimg']= "Please upload Birth Certificate or National ID photo. ";
+      $errors['bdimgempty']= "Please upload Birth Certificate or National ID photo. ";
     }
   
     //notes
+  $notes =$_POST['Notes'];
   if(empty($errors)){
-    $notes =$_POST['Notes'];
   if($notes==""){
     $query = $pdoConnection->query("INSERT INTO trainees (Name, NID, birthDate, gender, photo, birthCertificate,contactMobNum,fatherName,fatherMobNum,fatherJob,motherName,motherMobNum,motherJob) VALUES ('$name', '$NID','$birthdate', '$gender', '$traineePhoto','$bdImage','$contactmobnum','$fatherName','$fathermobnum','$fatherJob','$motherName','$mothermobnum','$motherJob')");
   }else{
@@ -192,12 +192,12 @@ if (isset($_POST['submit'])) {
                     <label class="col-sm-2 control-label">National ID</label>
                     <div class="col-sm-10">
                       <input class="form-control" id="NID" name="NID"  type="text" value="" >
-                      <?php if(isset($_POST['submit'])){ 
-                        if(isset($errors['NID'])){  ?>
+                      <?php if(isset($_POST['submit']) && isset($errors['NID'])) { ?>
                             <span style="color:red;display:block;text-align:left"><?php echo $errors['NID']; ?></span>
-                        <?php } elseif(isset($errors['nidinvalid'])){ ?>
+                        <?php } ?>
+                        <?php if( isset($_POST['submit']) && isset($errors['nidinvalid'])){ ?>
                             <span style="color:red;display:block;text-align:left"><?php echo $errors['NIDinvalid']; ?></span>
-                        <?php } } ?>
+                        <?php }  ?>
                     </div>
                   </div>
                   <div class="form-group">
@@ -213,7 +213,7 @@ if (isset($_POST['submit'])) {
                     <label class="col-sm-2 control-label">Gender</label>
                     <div class="col-sm-10">
                      <input class="" id="gender" name="gender"  type="radio" value="male" style="margin:7px"> Male <span style="margin: 35px"></span>
-                      <input class="" id="gender" name="gender"  type="radio" value="Female" style="margin:7px"> Female
+                      <input class="" id="gender" name="gender"  type="radio" value="female" style="margin:7px"> Female
                       <?php if(isset($_POST['submit']) && isset($errors['gender'])){ ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['gender']; ?></span>
                        <?php } ?>
@@ -222,14 +222,13 @@ if (isset($_POST['submit'])) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Contact Mobile Number</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="contactMobNum" name="contactMobNum"  type="text" value="">
-                      <?php if(isset($_POST['submit'])){ 
-                        if(isset($errors['contactMobNum'])){ ?>
-                            <span style="color:red;display:block;text-align:left"><?php echo $errors['contactMobNum'];  ?></span>
-                        <?php } elseif(isset($errors['contactMobNuminvalid'])){ ?>
+                      <input class="form-control" id="contactMobNum" name="contactMobNum" maxlength="11" type="text" value="">
+                      <?php if(isset($_POST['submit']) && isset($errors['contactMobNum'])) { ?>
+                            <span style="color:red;display:block;text-align:left"><?php echo $errors['contactMobNum']; ?></span>
+                        <?php } ?>
+                       <?php if( isset($_POST['submit']) && isset($errors['contactMobNuminvalid'])) { ?>
                             <span style="color:red;display:block;text-align:left"><?php echo $errors['contactMobNuminvalid']; ?></span>
-                        <?php } 
-                        } ?>
+                        <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">
@@ -253,14 +252,13 @@ if (isset($_POST['submit'])) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Father Mobile Number</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="fatherMobNum" name="fatherMobNum"  type="text" value="">
-                      <?php if(isset($_POST['submit'])){ 
-                        if(isset($errors['fatherMobNum'])){ ?>
-                            <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherMobNum'];  ?></span>
-                        <?php } elseif(isset($errors['contactMobNuminvalid'])){ ?>
-                            <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherMobNuminvalid']; ?></span>
-                        <?php } 
-                        } ?>
+                      <input class="form-control" id="fatherMobNum" name="fatherMobNum" maxlength="11" type="text" value="">
+                      <?php if(isset($_POST['submit']) && isset($errors['fatherMobNum'])){  ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherMobNum'];  ?></span>
+                       <?php } ?>
+                       <?php if(isset($_POST['submit']) && isset($errors['fatherMobNuminvalid'])){ ?>
+                       <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherMobNuminvalid'] ?></span>
+                       <?php }   ?>
                     </div>
                   </div>
                   <div class="form-group">
@@ -284,7 +282,7 @@ if (isset($_POST['submit'])) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Mother Mobile Number</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="motherMobNum" name="motherMobNum"  type="text"value="">
+                      <input class="form-control" id="motherMobNum" maxlength="11" name="motherMobNum"  type="text"value="">
                       <?php if(isset($_POST['submit'])){ 
                         if(isset($errors['motherMobNum'])){ ?>
                             <span style="color:red;display:block;text-align:left"><?php echo $errors['motherMobNum'];  ?></span>
@@ -301,14 +299,20 @@ if (isset($_POST['submit'])) {
                       <?php if(isset($errors['traineePic'])) { ?>
                           <span style="color:red;display:block;text-align:left"><?php echo $errors['traineePic']; ?></span>
                       <?php } ?>
+                      <?php if(isset($errors['traineePicempty'])) { ?>
+                          <span style="color:red;display:block;text-align:left"><?php echo $errors['traineePicempty']; ?></span>
+                      <?php } ?>
                   </div>
               </div>
               <div class="form-group">
-                  <label class="col-sm-2 control-label">Birthday Certificate / National ID Image</label>
+                  <label class="col-sm-2 control-label">Birth Certificate / National ID Image</label>
                   <div class="col-sm-10">
                       <input type="file" class="form-control" name="bdimg" id="bdimg" required value="">
                       <?php if(isset($errors['bdimg'])) { ?>
                           <span style="color:red;display:block;text-align:left"><?php echo $errors['bdimg']; ?></span>
+                      <?php } ?>
+                      <?php if(isset($errors['bdimgempty'])) { ?>
+                          <span style="color:red;display:block;text-align:left"><?php echo $errors['bdimgempty']; ?></span>
                       <?php } ?>
                   </div>
               </div>

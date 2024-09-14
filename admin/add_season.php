@@ -11,7 +11,7 @@ if(isset($_POST['submit']))
   {
    
     $Name=$_POST['Name'];
-    if (empty($name)){
+    if (empty($Name)){
       $errors['Name'] = "Please enter a season name";
     }
     $State = $_POST['seasonstate'];

@@ -78,6 +78,9 @@ if ($formSubmitted) {
             if ($remainingAmount <= 0) {
                 $pdoConnection->query("UPDATE enrollment SET paymentState = 'complete' WHERE ID = $enrollId;");
             }
+            if ($remainingAmount !=0 && $totalPaidAmount !=$feesAfterDiscount ) {
+              $pdoConnection->query("UPDATE enrollment SET paymentState = 'partial' WHERE ID = $enrollId;");
+          }
             echo "<script>alert('Payment has been added.');</script>";
             echo "<script>window.location.href ='make_payment.php'</script>";
         }else {

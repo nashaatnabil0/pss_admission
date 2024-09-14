@@ -16,7 +16,8 @@ else {
     $monnumPattern='/^(011|010|015|012)[0-9]{8}$/';
     if (empty($mobnum)) {
       $errors['mobnum'] = "phone number cannot be empty";
-  }elseif(!preg_match($monnumPattern,$mobnum)){
+  }
+  if(!preg_match($monnumPattern,$mobnum)){
      $errors['mobnuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
  }
 
@@ -45,7 +46,9 @@ else {
   
   if (!preg_match($passwordPattern, $password)) {
     $errors['PassWeak'] = "Password must have uppercase, lowercase, number, special character, and length must be 8 or more";
-   } elseif ($Confpassword !== $password) {
+   } 
+   
+   if ($Confpassword !== $password) {
     $errors['PassMatch'] = "Passwords don't match";
    } else {
     
@@ -139,12 +142,13 @@ else {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Mobile Number</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="mobnum" name="mobnum"  type="text" value="">
+                      <input class="form-control" id="mobnum" name="mobnum" maxlength="11" type="text" value="">
                       <?php if(isset($_POST['submit']) && isset($errors['mobnum'])){  ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['mobnum'];  ?></span>
-                       <?php } elseif($errors['mobnuminvalid']!="") { ?>
-                       <span style="color:red;display:block;text-align:left"><?php echo $errors['mobnuminvalid'] ?></span>
                        <?php } ?>
+                       <?php if(isset($_POST['submit']) && isset($errors['mobnuminvalid'])){ ?>
+                       <span style="color:red;display:block;text-align:left"><?php echo $errors['mobnuminvalid'] ?></span>
+                       <?php }   ?>
                     </div>
                   </div>
                   <div class="form-group">

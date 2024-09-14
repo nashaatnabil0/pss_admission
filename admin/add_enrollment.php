@@ -128,7 +128,7 @@ else {
                 <div class="form-group">
                 <label class="col-sm-2 control-label">Trainee National ID</label>
                 <div class="col-sm-10">
-                  <input class="form-control" id="searchTrainee" name="traineeNID" type="text" placeholder="Type the national ID number" list="traineeListOptions" value=""/>
+                  <input class="form-control" id="searchTrainee" name="traineeNID" type="text" maxlength="14" placeholder="Type the national ID number" list="traineeListOptions" value=""/>
                   <datalist id="traineeListOptions">
                     <?php foreach ($trainees as $trainee) { ?>
                       <option value="<?php echo $trainee['NID']; ?>">
@@ -139,8 +139,8 @@ else {
                   <?php if (isset($_POST['submit']) && isset($errors['traineeNID'])){ ?>
                     <span style="color:red;display:block;text-align:left"><?php echo $errors['traineeNID']; ?></span>
                   <?php } ?>
-                  <?php if (isset($_POST['submit']) && isset($errors['traineeNIDnotvalid'])) { ?>
-                    <span style="color:red;display:block;text-align:left"><?php echo $errors['traineeNIDnotvalid']; ?></span>
+                  <?php if (isset($_POST['submit']) && isset($errors['traineeNIDinvalid'])) { ?>
+                    <span style="color:red;display:block;text-align:left"><?php echo $errors['traineeNIDinvalid']; ?></span>
                   <?php } ?>
                 </div>
                 </div>
