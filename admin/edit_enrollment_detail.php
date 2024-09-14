@@ -51,7 +51,7 @@ else {
     
     if (empty($errors)){
       
-    $query2 = $pdoConnection->query("UPDATE enrollment SET groupId ='$group', paymentPlan'= $pymntPlan', state='$enrollstate', date='$enrolldate', discount='$discount' where ID = '$cid';");
+    $query2 = $pdoConnection->query("UPDATE enrollment SET groupId ='$group', paymentPlan ='$pymntPlan', state='$enrollstate', date='$enrolldate', discount='$discount' where ID = '$cid'");
     
           if ($query2) {
               echo "<script>alert('Enrollment details have been updated.');</script>";
