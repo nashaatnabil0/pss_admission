@@ -1,4 +1,8 @@
-    <!-- Topbar Start -->
+<?php 
+$url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+
+?>
+<!-- Topbar Start -->
     <div class="container-fluid bg-dark">
         <div class="row py-2 px-lg-5">
             <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
@@ -43,19 +47,9 @@
             </button>
             <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
                 <div class="navbar-nav m-auto py-0">
-                    <a href="index.php" class="nav-item nav-link ">Home</a>
-                    <a href="about.php" class="nav-item nav-link">About</a>
-                    <!-- <a href="login.php" class="nav-item nav-link">Login</a>
-                    <a href="account.php" class="nav-item nav-link">Account</a> -->
-                    
-                    <!-- <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
-                        <div class="dropdown-menu rounded-0 m-0">
-                            <a href="blog.html" class="dropdown-item">Blog Grid</a>
-                            <a href="single.html" class="dropdown-item">Blog Detail</a>
-                        </div>
-                    </div> -->
-                    <a href="contact.php" class="nav-item nav-link">Contact</a>
+                    <a href="index.php" class="nav-item nav-link <?php if (strpos($url,'index') == true) { echo ' active'; } ?>">Home</a>
+                    <a href="about.php" class="nav-item nav-link <?php if (strpos($url,'about') == true) { echo ' active'; } ?>" >About</a>
+                    <a href="contact.php" class="nav-item nav-link <?php if (strpos($url,'contact') == true) { echo ' active'; } ?>">Contact</a>
                 </div>
                 <a href="login.php" class="btn btn-primary py-2 px-4 d-none d-lg-block ">Register / Enroll</a>
                 <a href="login.php" class="btn btn-primary py-2 px-4 d-block d-lg-none">Register / Enroll</a>
