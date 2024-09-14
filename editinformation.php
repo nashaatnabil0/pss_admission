@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(0);
+// error_reporting(0);
 
 include('includes/dbconnection.php');  
 
@@ -23,11 +23,44 @@ function uploadImages($imageFile, $allowed_extensions) {
     return null;
 }
 
+
+if(isset($_POST['update']))
+  {
+    
+    $name = $_POST['registerName'];
+    $nid = $_POST['NID'];
+    $gender = $_POST['gender'];
+    $dob = $_POST['dob'];
+    $fatherName = $_POST['fatherName'];
+    $fatherNum = $_POST['fatherNum'];
+    $fatherJob = $_POST['fatherJob'];
+    $motherName = $_POST['motherName'];
+    $motherNum = $_POST['motherNum'];
+    $motherJob = $_POST['motherJob'];
+    $notes = isset($_POST['notes']) ? $_POST['notes'] : '';  // Assuming 'notes' is an optional field
+    $contactMobNum = $_POST['contactMobNum'];  // Add a new field if it is in the form
+
+    // Upload the images
+    $personalPhoto = uploadImages($_FILES['personalPhoto'], $allowed_extensions);
+    $idPhoto = uploadImages($_FILES['idPhoto'], $allowed_extensions);
+   
+    $query = $pdoConnection -> query("UPDATE INTO trainees (Name, NID, birthDate, gender, photo, birthCertificate, contactMobNum, fatherName, fatherMobNum, fatherJob, motherName, motherMobNum, motherJob, Notes) 
+                VALUES ('$name', '$nid','$dob', '$gender', '$personalPhoto', '$idPhoto', '$contactMobNum', '$fatherName', '$fatherNum', '$fatherJob', '$motherName', '$motherNum', '$motherJob', '$notes')");
+    if ($query) {
+      echo "<script>alert('Artist details has been updated.');  location.href='manage-artist.php'</script>";
+  }
+  else
+    {
+      echo "<script>alert('Something Went Wrong. Please try again.');</script>";
+    }
+
+  }
+
 // Initialize message variable
 $message = '';
 
-$nationalId = $_SESSION['user_id'];
-
+// $nationalId = $_SESSION['user_id'];
+$nationalId=$_GET['editid'];
         // Extract birth date from the ID (assuming a specific format)
         $gen = substr($nationalId, 0, 1);
         $birthDate = substr($nationalId, 1, 6);
@@ -157,7 +190,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div class="col-lg-6 text-center text-lg-right">
                 <div class="d-inline-flex align-items-center">
-                    <a class="text-white px-2" href="https://www.facebook.com/people/Peace-Sports-School-Assuit/100091623236982/" target="_blank">
+                    <a class="text-white px-2" href="https://www.facebook.com/people/Peace-Sports-School-Assuit/100091623236982/">
                         <i class="fab fa-facebook-f"></i>
                     </a>
                     <!-- <a class="text-white px-2" href="">
@@ -166,12 +199,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <a class="text-white px-2" href="">
                         <i class="fab fa-linkedin-in"></i>
                     </a> -->
-                    <a class="text-white px-2" href="https://www.instagram.com/pss_assuit/" target="_blank">
+                    <a class="text-white px-2" href="https://www.instagram.com/pss_assuit/">
                         <i class="fab fa-instagram"></i>
                     </a>
-                    <a class="text-white pl-2" href="https://wa.me/201205557683" target="_blank">
-                        <i class="fab fa-whatsapp"></i>
-                    </a>
+                    <!-- <a class="text-white pl-2" href="">
+                        <i class="fab fa-youtube"></i>
+                    </a> -->
                 </div>
             </div>
         </div>
@@ -205,9 +238,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <a href="contact.php" class="nav-item nav-link">Contact</a>
         </nav>
     </div>    <!-- header section end -->
-
+                    <?php
+                    $eid=$_GET['editid'];
+                    $ret= $pdoConnection-> query("SELECT * FROM trainees where NID='$eid'");
+                    while ($row=$ret->fetch(PDO:: FETCH_ASSOC)) {
+                  ?>
     <div class="container">
-        <h2 class="about_text_2"><strong>In order to enroll, please register first!</strong></h2>
+        <h1 class="about_text_2"><strong>Update Information</strong></h1>
         <section class="login_register_section layout_padding">
             <div class="container">
                 <div class="heading_container heading_center">
@@ -220,77 +257,87 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="register_form">
                             <form id="registerForm" method="POST" enctype="multipart/form-data">
                                 <div class="form-group">
-                                    <label for="registerName">*Full Name</label>
-                                    <input type="text" class="form-control" name="registerName" id="registerName" placeholder="Enter full name" required>
+                                    <label for="registerName">Full Name</label>
+                                    <input type="text" class="form-control" name="registerName" id="registerName" placeholder="Enter full name" value="<?php  echo $row['Name'];?>" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="NID">*National ID</label>
+                                    <label for="NID">National ID</label>
                                     <input
                                     type="text"
                                     class="form-control"
                                     name="NID"
                                     id="NID"
-                                    value=<?php echo $_SESSION['user_id'];?>
+                                    value=<?php  echo $row['NID'];?>
                                     disabled
                                     required>
                                     <!-- Error message placeholder -->
                                      <span id="nidError" style="color: red; display: none;">Please enter a valid 14-digit National ID where the 4th and 5th digits form a number less than or equal to 12, and the 6th and 7th digits form a number less than or equal to 31.</span>
                                     </div>
-                                    <?php echo "Your age is: " . $age;?>
+                                     <?php echo "Your age is: " . $age;?> 
 
                                 <div class="form-control">
                                     <label for="gender" class="form-label">Gender</label> 
-                                    <input type="radio" name="gender" value="male" required>Male
-                                    <input type="radio" name="gender" value="female" required>Female
+                                    <input type="radio" name="gender" value="male" required <?php 
+                                    if ($genderDigit % 2 != 0) {
+                                        echo "checked";
+                                    } 
+                                    ?> disabled >Male
+                                    <input type="radio" name="gender" value="female" required <?php 
+                                    if ($genderDigit % 2 == 0) {
+                                        echo "checked";
+                                    } 
+                                    ?> disabled >Female
                                 </div> <br>
                                 <div class="form-group">
-                                    <label for="phoneNum">*Enter phone number that has WhatsApp</label>
-                                    <input type="text" class="form-control" name="contactMobNum" id="contactMobNum" placeholder="Enter phone number" required>
+                                    <label for="phoneNum">Enter phone number that has WhatsApp</label>
+                                    <input type="text" class="form-control" name="contactMobNum" id="contactMobNum" placeholder="Enter phone number" value="<?php  echo $row['contactMobNum'];?>" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="dob">Date of Birth</label>
-                                    <input type="date" class="form-control" name="dob" id="dob" required>
+                                    <input type="date" class="form-control"  id="dob" value="<?php  echo $row['birthDate'];?>" disabled required>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label">*Personal Photo</label>
-                                    <input type="file" class="form-control" name="personalPhoto" id="personalPhoto" required>
+                                    <label class="control-label">Personal Photo</label>
+                                    <input type="file" class="form-control" name="personalPhoto" id="personalPhoto" value="<?php  echo $row['photo'];?>" required>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label">*National ID/Birth Certificate Photo</label>
-                                    <input type="file" class="form-control" name="idPhoto" id="idPhoto" required>
+                                    <label class="control-label">National ID/Birth Certificate Photo</label>
+                                    <input type="file" class="form-control" name="idPhoto" id="idPhoto" value="<?php  echo $row['birthCertificate'];?>" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="fatherName">*Father Name</label>
-                                    <input type="text" class="form-control" name="fatherName" id="fatherName" placeholder="Enter father name" required>
+                                    <label for="fatherName">Father Name</label>
+                                    <input type="text" class="form-control" name="fatherName" id="fatherName" placeholder="Enter father name" value="<?php  echo $row['fatherName'];?>" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="fatherNum">*Father Phone Number</label>
-                                    <input type="text" class="form-control" name="fatherNum" id="fatherNum" placeholder="Enter father phone number" required>
+                                    <label for="fatherNum">Father Phone Number</label>
+                                    <input type="text" class="form-control" name="fatherNum" id="fatherNum" placeholder="Enter father phone number" value="<?php  echo $row['fatherMobNum'];?>" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="fatherJob">*Father Job</label>
-                                    <input type="text" class="form-control" name="fatherJob" id="fatherJob" placeholder="Enter father job" required>
+                                    <label for="fatherJob">Father Job</label>
+                                    <input type="text" class="form-control" name="fatherJob" id="fatherJob" placeholder="Enter father job" value="<?php  echo $row['fatherJob'];?>" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="motherName">*Mother Name</label>
-                                    <input type="text" class="form-control" name="motherName" id="motherName" placeholder="Enter mother name" required>
+                                    <label for="motherName">Mother Name</label>
+                                    <input type="text" class="form-control" name="motherName" id="motherName" placeholder="Enter mother name" value="<?php  echo $row['motherName'];?>" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="motherNum">*Mother Phone Number</label>
-                                    <input type="text" class="form-control" name="motherNum" id="motherNum" placeholder="Enter mother phone number" required>
+                                    <label for="motherNum">Mother Phone Number</label>
+                                    <input type="text" class="form-control" name="motherNum" id="motherNum" placeholder="Enter mother phone number" value="<?php  echo $row['motherMobNum'];?>" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="motherJob">*Mother Job</label>
-                                    <input type="text" class="form-control" name="motherJob" id="motherJob" placeholder="Enter mother job" required>
+                                    <label for="motherJob">Mother Job</label>
+                                    <input type="text" class="form-control" name="motherJob" id="motherJob" placeholder="Enter mother job" value="<?php  echo $row['motherJob'];?>" required>
                                 </div>
                                 <div class="control-group">
                                 <textarea class="form-control border-1 py-3 px-4" rows="3" id="Notes" name ="notes" placeholder="Notes"
-                                    
+                                value="<?php  echo $row['Notes'];?>"   
+                                required="required"
                                     data-validation-required-message="If you have notes regarding health or any thing, please write it here."></textarea>
                                 <p class="help-block text-danger"></p>
                             </div>
+                            <?php } ?>
                                 <div>
-                                <button type="submit" style="background-color: #063547" class="btn btn-primary">Register</button>
+                                <button type="update" style="background-color: #063547" class="btn btn-primary">Update</button>
                             </form>
                             <br>
                         </div>

@@ -105,13 +105,13 @@ try {
     <div class="content-section">
     <?php
     try {
-        $query = "SELECT * FROM season ORDER BY startDate DESC LIMIT 1";
+        $query = "SELECT * FROM season WHERE state = 'on' ORDER BY startDate DESC LIMIT 1";
         $stmt = $pdo->query($query);
 
         if ($row = $stmt->fetch()) {
     ?>
     <div class="photo-section">
-        <img src=".../images/<?php echo htmlspecialchars($row['image']); ?>" alt="Season Image">
+        <img src="admin/images/<?php echo htmlspecialchars($row['image']); ?>" alt="Season Image" style="width:250px; hight:370px;">
     </div>
     <div class="text-section">
         <h1>Season Announcement</h1>

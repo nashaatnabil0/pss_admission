@@ -94,7 +94,7 @@ $conn = null;
             </div>
             <div class="col-lg-6 text-center text-lg-right">
                 <div class="d-inline-flex align-items-center">
-                    <a class="text-white px-2" href="https://www.facebook.com/people/Peace-Sports-School-Assuit/100091623236982/">
+                    <a class="text-white px-2" href="https://www.facebook.com/people/Peace-Sports-School-Assuit/100091623236982/" target="_blank">
                         <i class="fab fa-facebook-f"></i>
                     </a>
                     <!-- <a class="text-white px-2" href="">
@@ -103,10 +103,10 @@ $conn = null;
                     <a class="text-white px-2" href="">
                         <i class="fab fa-linkedin-in"></i>
                     </a> -->
-                    <a class="text-white px-2" href="https://www.instagram.com/pss_assuit/">
+                    <a class="text-white px-2" href="https://www.instagram.com/pss_assuit/" target="_blank">
                         <i class="fab fa-instagram"></i>
                     </a>
-                    <a class="text-white pl-2" href="https://wa.me/201205557683">
+                    <a class="text-white pl-2" href="https://wa.me/201205557683" target="_blank">
                         <i class="fab fa-whatsapp"></i>
                     </a>
                 </div>
@@ -173,7 +173,7 @@ $conn = null;
             </div>
         </div>
         </div>
-        <a href="editinfo.php" class="btn btn-primary py-2 px-3" style="position: absolute; left: 50px;">Edit</a> 
+        <a href="editinformation.php?editid=<?php echo $user['NID']; ?>" class="btn btn-primary py-2 px-3" style="position: absolute; left: 50px;">Edit</a> 
                 <a href="forms.php" class="btn btn-primary py-2 px-3" style="position: absolute; right: 50px;">Forms</a> </br>
 
         </div>

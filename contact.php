@@ -72,13 +72,13 @@ include('includes/dbconnection.php');
                         <h4 class="m-0"><i class="fa fa-map-marker-alt text-white mr-2"></i>Get In Touch</h4>
                     </div> </br>
                     <div class="col-md-6 mb-5">
-                    <a href="https://maps.app.goo.gl/VyMNrRsB7VuPTFGF8">
+                    <a href="https://maps.app.goo.gl/VyMNrRsB7VuPTFGF8" target="_blank">
                         <p><i class="fa fa-map-marker-alt mr-2"></i>شارع الجمهوريه أمام ميدان ام البطل , Asyut, Egypt</p>
                     </a>
-                    <a href="https://wa.me/201205557683">
+                    <a href="https://wa.me/201205557683" target="_blank">
                         <p><i class="fa fa-phone-alt mr-2"></i>+01205557683</p>
                     </a>
-                    <a href="mailto:pssassiut1@gmail.com">
+                    <a href="mailto:pssassiut1@gmail.com" target="_blank">
                         <p><i class="fa fa-envelope mr-2"></i>pssassiut1@gmail.com</p>
                     </a>
                     </div>
