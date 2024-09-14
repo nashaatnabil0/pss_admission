@@ -55,14 +55,17 @@ if ($formSubmitted) {
 
     $notes = $_POST['notes'];
     if (empty($notes)) {
-        $notes = null;
+        $notes = NULL;
     }
 
     // Only proceed with inserting into the database if there are no errors
     if (empty($errors)) {
-        $query = $pdoConnection->query("INSERT INTO payment (enrollmentId, paymentAmount, paymentMethod, date, userId, notes) VALUES ('$enrollId', '$pymntAmount', '$pymntMethod', '$pymntdate', '$adminid', '$notes')");
+        // $query = $pdoConnection->query("INSERT INTO payment (enrollmentId, paymentAmount, paymentMethod, date, userId, notes) VALUES ('$enrollId', '$pymntAmount', '$pymntMethod', '$pymntdate', '$adminid', '$notes')");
+        $sql = "INSERT INTO payment (enrollmentId, paymentAmount, paymentMethod, date, userId, notes) VALUES ('$enrollId', '$pymntAmount', '$pymntMethod', '$pymntdate', '$adminid', ?)";
+        $stmt = $pdoConnection->prepare($sql);
+        $stmt->execute([$notes]);
 
-        if ($query) {
+        if ($stmt) {
             // Calculate remaining amount after the new payment
             $paidquery = $pdoConnection->query("SELECT SUM(paymentAmount) AS totalPaidAmount FROM payment WHERE enrollmentId = $enrollId;");
             $row4 = $paidquery->fetch(PDO::FETCH_ASSOC);

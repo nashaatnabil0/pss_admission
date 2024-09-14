@@ -143,6 +143,18 @@ $conn = null;
                     </div>
                 </div>
             </div>
+            <div class="row  justify-content-center"> 
+                <div class="col-md-4 ml-auto">
+                    <a href="admin/images/<?php echo $user['photo'];?>" target="_blank" id="imageproLink">
+                        <img src="admin/images/<?php echo $user['photo'];?>" width='150' height="150" id="modalpropic" style="margin-bottom: 15px;">
+                    </a>
+                </div>
+                <div class="col-md-4 ml-auto">
+                    <a href="admin/images/<?php echo $user['birthCertificate'];?>" target="_blank" id="imageproLink">
+                        <img src="admin/images/<?php echo $user['birthCertificate'];?>" width='150' height="150" id="modalpropic" style="margin-bottom: 15px;">
+                    </a>
+                </div>
+            </div>
             <a href="editinformation.php?editid=<?php echo $user['NID']; ?>" class="btn btn-primary py-2 px-3" style="position: absolute; left: 50px;">Edit</a> 
             <?php
                 try {

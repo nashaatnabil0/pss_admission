@@ -76,11 +76,11 @@ if (isset($_POST['submit'])) {
     // Photo & Birth Certificate/NID
     $allowed_extensions = ["jpg", "jpeg", "png", "gif"];
 
-    function uploadImages($imageFile, $allowed_extensions, $name, $NID) {
+    function uploadImages($imageFile, $allowed_extensions, $name, $NID,$fileInputName) {
         if ($imageFile["name"] != "") {
             $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
             if (in_array($extension, $allowed_extensions)) {
-                $newImageName = $NID .'-'. md5($imageFile["name"]) . '.' . $extension;
+                $newImageName = $NID .'-'. $name . '.' . $extension;
                 move_uploaded_file($imageFile["tmp_name"], "images/" . $newImageName);
                 return $newImageName;
             } else {
@@ -91,18 +91,19 @@ if (isset($_POST['submit'])) {
         return null;
       }
 
-    $traineePhoto = uploadImages($_FILES["traineePic"], $allowed_extensions, $name, $NID);
-    if (empty($traineePhoto)){
+    if (empty($_FILES["traineePic"])){
       $errors['traineePicempty']= "Please upload trainee Photo.";
     }
-    $bdImage = uploadImages($_FILES["bdimg"], $allowed_extensions, $name, $NID);
-    if (empty($bdImage)){
+    if (empty($_FILES["bdimg"])){
       $errors['bdimgempty']= "Please upload Birth Certificate or National ID photo. ";
     }
   
     //notes
   $notes =$_POST['Notes'];
   if(empty($errors)){
+    $bdImage = uploadImages($_FILES["bdimg"], $allowed_extensions, "certimg", $NID."bdimg");
+    $traineePhoto = uploadImages($_FILES["traineePic"], $allowed_extensions, "proimg", $NID,"traineePic");
+
   if($notes==""){
     $query = $pdoConnection->query("INSERT INTO trainees (Name, NID, birthDate, gender, photo, birthCertificate,contactMobNum,fatherName,fatherMobNum,fatherJob,motherName,motherMobNum,motherJob) VALUES ('$name', '$NID','$birthdate', '$gender', '$traineePhoto','$bdImage','$contactmobnum','$fatherName','$fathermobnum','$fatherJob','$motherName','$mothermobnum','$motherJob')");
   }else{
