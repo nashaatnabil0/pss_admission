@@ -1,32 +1,43 @@
 <?php
 session_start();
-error_reporting(0);
-
+// error_reporting(0);
 include('includes/dbconnection.php');  
 
-// Allowed extensions
-$allowed_extensions = array (".jpg", "jpeg", ".png", ".gif");
+try {
+    $user_id = $_GET['nid'];
+    $sql = "SELECT * FROM trainees WHERE NID = ?";
+    $stmt = $pdoConnection->prepare($sql);
+    $stmt->execute([$user_id]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Function to handle image uploads
-function uploadImages($imageFile, $allowed_extensions) {
-    if ($imageFile["name"] != "") {
-        $extension = strtolower(substr($imageFile["name"], strrpos($imageFile["name"], '.')));
-        if (in_array($extension, $allowed_extensions)) {
-            $newImageName = md5($imageFile["name"]) . time() . $extension;
-            move_uploaded_file($imageFile["tmp_name"], "images/" . $newImageName);
-            return $newImageName;
-        } else {
-            echo "<script>alert('Image " . $imageFile["name"] . " has an invalid format. Only jpg / jpeg / png / gif formats are allowed.');</script>";
-            return null;
-        }
+    if ($user) {
+        // Handle case where no user is found (e.g., user does not exist)
+        echo "<script>alert('There is a ready account for you can enroll if it available or you can edit your profile');  location.href='login.php'</script>";
+        exit();
     }
-    return null;
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
+    exit();
 }
+    // Allowed extensions
+    $allowed_extensions = array ("jpg", "jpeg", "png", "gif");
+    // Function to handle image uploads
+    function uploadImages($imageFile, $allowed_extensions, $name, $NID,$fileInputName) {
+        if ($imageFile["name"] != "") {
+            $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
+            if (in_array($extension, $allowed_extensions)) {
+                $newImageName = $NID .'-'. $name . '.' . $extension;
+                move_uploaded_file($imageFile["tmp_name"], "admin/images/" . $newImageName);
+                return $newImageName;
+            } else {
+            $errors[$fileInputName] = "Invalid format. Only jpg / jpeg / png / gif format allowed.";
+            return null;
+            }
+        }
+        return null;
+    }
 
-// Initialize message variable
-$message = '';
-
-$nationalId = $_SESSION['user_id'];
+        $nationalId = $_GET['nid'];
 
         // Extract birth date from the ID (assuming a specific format)
         $gen = substr($nationalId, 0, 1);
@@ -54,53 +65,84 @@ $nationalId = $_SESSION['user_id'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Retrieve form data
+    $errors = [];
+    $mobnumPattern = '/^(011|010|015|012)[0-9]{8}$/';
     $name = $_POST['registerName'];
-    $nid = $_POST['NID'];
-    $gender = $_POST['gender'];
-    $dob = $_POST['dob'];
-    $fatherName = $_POST['fatherName'];
-    $fatherNum = $_POST['fatherNum'];
-    $fatherJob = $_POST['fatherJob'];
-    $motherName = $_POST['motherName'];
-    $motherNum = $_POST['motherNum'];
-    $motherJob = $_POST['motherJob'];
-    $notes = isset($_POST['notes']) ? $_POST['notes'] : '';  // Assuming 'notes' is an optional field
-    $contactMobNum = $_POST['contactMobNum'];  // Add a new field if it is in the form
-
-    // Upload the images
-    $personalPhoto = uploadImages($_FILES['personalPhoto'], $allowed_extensions);
-    $idPhoto = uploadImages($_FILES['idPhoto'], $allowed_extensions);
-
-    // Check if all required fields are filled
-    if (!empty($name) && !empty($nid) && !empty($gender) && !empty($dob) && !empty($fatherName) && !empty($fatherNum) && !empty($fatherJob) && !empty($motherName) && !empty($motherNum) && !empty($motherJob) && $personalPhoto !== null && $idPhoto !== null) {
-        $sql = "INSERT INTO trainees (Name, NID, birthDate, gender, photo, birthCertificate, contactMobNum, fatherName, fatherMobNum, fatherJob, motherName, motherMobNum, motherJob, Notes) 
-                VALUES ('$name', '$nid','$dob', '$gender', '$personalPhoto', '$idPhoto', '$contactMobNum', '$fatherName', '$fatherNum', '$fatherJob', '$motherName', '$motherNum', '$motherJob', '$notes')";
-        
-        $query = $pdoConnection->query($sql);
-       /* $query->bindParam(':name', $name, PDO::PARAM_STR);
-        $query->bindParam(':nid', $nid, PDO::PARAM_STR);
-        $query->bindParam(':birthDate', $birthDate, PDO::PARAM_STR);
-        $query->bindParam(':gender', $gender, PDO::PARAM_STR);
-        $query->bindParam(':photo', $personalPhoto, PDO::PARAM_STR);
-        $query->bindParam(':birthCertificate', $idPhoto, PDO::PARAM_STR);
-        $query->bindParam(':contactMobNum', $contactMobNum, PDO::PARAM_STR);
-        $query->bindParam(':fatherName', $fatherName, PDO::PARAM_STR);
-        $query->bindParam(':fatherMobNum', $fatherNum, PDO::PARAM_STR);
-        $query->bindParam(':fatherJob', $fatherJob, PDO::PARAM_STR);
-        $query->bindParam(':motherName', $motherName, PDO::PARAM_STR);
-        $query->bindParam(':motherMobNum', $motherNum, PDO::PARAM_STR);
-        $query->bindParam(':motherJob', $motherJob, PDO::PARAM_STR);
-        $query->bindParam(':notes', $notes, PDO::PARAM_STR);*/
-
-        // Execute query
-        if ($query) {
-            echo "<script>alert('Registration successful!');</script>";
-        } else {
-            echo "<script>alert('Something went wrong. Please try again.');</script>";
-        }
-    } else {
-        echo "<script>alert('Please fill all the fields correctly and upload all required images.');</script>";
+    if (empty($name)) {
+        $errors['Name'] = "Name cannot be empty";
     }
+
+    $nid = $nationalId;
+    if ($genderDigit % 2 == 0) { $gender = "female"; }else $gender="male";
+    $dob = $_POST['dob'];
+
+    $contactMobNum = $_POST['contactMobNum'];  
+    if (empty($contactMobNum)) {
+        $errors['contactMobNum'] = "Phone number cannot be empty";
+    } elseif (!preg_match($mobnumPattern, $contactMobNum)) {
+        $errors['contactMobNuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
+    }
+
+    // Father
+    $fatherName = $_POST['fatherName'];
+    if (empty($fatherName)) {
+    $errors['fatherName'] = "Father full name can't be empty";
+    }
+    $fatherJob = $_POST['fatherJob'];
+    if (empty($fatherJob)) {
+    $errors['fatherJob'] = "Father job can't be empty";
+    }
+    $fatherNum = $_POST['fatherNum'];
+    if (empty($fatherNum)) {
+        $errors['fatherMobNum'] = "Phone number cannot be empty";
+    } elseif (!preg_match($mobnumPattern, $fatherNum)) {
+        $errors['fatherMobNuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
+    }
+
+    // Mother
+    $motherName = $_POST['motherName'];
+    if (empty($motherName)) {
+    $errors['motherName'] = "Mother full name can't be empty";
+    }
+    $motherJob = $_POST['motherJob'];
+    if (empty($motherName)) {
+    $errors['motherJob'] = "Mother job can't be empty";
+    }
+    $motherNum = $_POST['motherNum'];
+    if (empty($motherNum)) {
+        $errors['motherMobNum'] = "Phone number cannot be empty";
+    } elseif (!preg_match($mobnumPattern, $motherNum)) {
+        $errors['motherMobNuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
+    }
+    
+    if (empty($_FILES["personalPhoto"])){
+        $errors['traineePicempty']= "Please upload trainee Photo.";
+    }
+    if (empty($_FILES["idPhoto"])){
+        $errors['bdimgempty']= "Please upload Birth Certificate or National ID photo. ";
+    }
+
+    $notes =$_POST['notes'];
+    // var_dump($_FILES['idPhoto']);
+    var_dump($errors);
+
+    if(empty($errors)){
+        $personalPhoto = uploadImages($_FILES['personalPhoto'], $allowed_extensions, "proimg", $nid,"traineePic");
+        $idPhoto = uploadImages($_FILES['idPhoto'], $allowed_extensions, "certimg", $nid,"bdimg");
+        if(empty($notes)){
+            $query = $pdoConnection->query("INSERT INTO trainees (Name, NID, birthDate, gender, photo, birthCertificate,contactMobNum,fatherName,fatherMobNum,fatherJob,motherName,motherMobNum,motherJob) VALUES ('$name', '$nationalId','$dob', '$gender', '$personalPhoto','$idPhoto','$contactMobNum','$fatherName','$fatherNum','$fatherJob','$motherName','$motherNum','$motherJob')");
+
+        }else{
+            $query = $pdoConnection->query("INSERT INTO trainees (Name, NID, birthDate, gender, photo, birthCertificate,contactMobNum,fatherName,fatherMobNum,fatherJob,motherName,motherMobNum,motherJob,Notes) VALUES ('$name', '$nationalId','$dob', '$gender', '$personalPhoto','$idPhoto','$contactMobNum','$fatherName','$fatherNum','$fatherJob','$motherName','$motherNum','$motherJob','$notes')");
+        }
+                if ($query) {
+                    echo "<script>alert('Profile Created Successfully\n.');</script>";
+                    echo "<script>window.location.href ='account.php?nid=$nid'</script>";
+                } else {
+                    echo "<script>alert('Something Went Wrong. Please try again.');</script>";
+                }
+    }
+
 }
 ?>
 
@@ -160,12 +202,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <a class="text-white px-2" href="https://www.facebook.com/people/Peace-Sports-School-Assuit/100091623236982/" target="_blank">
                         <i class="fab fa-facebook-f"></i>
                     </a>
-                    <!-- <a class="text-white px-2" href="">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a class="text-white px-2" href="">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a> -->
+                    
                     <a class="text-white px-2" href="https://www.instagram.com/pss_assuit/" target="_blank">
                         <i class="fab fa-instagram"></i>
                     </a>
@@ -190,24 +227,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </button>
             <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
                 <div class="navbar-nav m-auto py-0">
-                    <a href="index.php" class="nav-item nav-link active">Home</a>
-                    <a href="about.php" class="nav-item nav-link">About</a>
-                    <!-- <a href="login.php" class="nav-item nav-link">Login</a>
-                    <a href="account.php" class="nav-item nav-link">Account</a> -->
-                    
-                    <!-- <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
-                        <div class="dropdown-menu rounded-0 m-0">
-                            <a href="blog.html" class="dropdown-item">Blog Grid</a>
-                            <a href="single.html" class="dropdown-item">Blog Detail</a>
-                        </div>
-                    </div> -->
+                    <a href="index.php" class="nav-item nav-link ">Home</a>
+                    <a href="about.php" class="nav-item nav-link">About</a>                    
                     <a href="contact.php" class="nav-item nav-link">Contact</a>
         </nav>
-    </div>    <!-- header section end -->
-
+    </div>
     <div class="container">
-        <h2 class="about_text_2"><strong>In order to enroll, please register first!</strong></h2>
+        <h2 class="about_text_2"><strong>In order to enroll, please Create Yor Profile first!</strong></h2>
         <section class="login_register_section layout_padding">
             <div class="container">
                 <div class="heading_container heading_center">
@@ -222,6 +248,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="form-group">
                                     <label for="registerName">*Full Name</label>
                                     <input type="text" class="form-control" name="registerName" id="registerName" placeholder="Enter full name" required>
+                                    <?php if( isset($_POST['submit']) && isset($errors['Name'])){ ?>
+                                        <span style="color:red;display:block;text-align:left"><?php echo $errors['Name']; ?></span>
+                                    <?php } ?>
                                 </div>
                                 <div class="form-group">
                                     <label for="NID">*National ID</label>
@@ -230,38 +259,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     class="form-control"
                                     name="NID"
                                     id="NID"
-                                    value=<?php echo $_SESSION['user_id'];?>
+                                    value=<?php echo $nationalId; ?>
                                     disabled
                                     required>
-                                    <!-- Error message placeholder -->
-                                     <span id="nidError" style="color: red; display: none;">Please enter a valid 14-digit National ID where the 4th and 5th digits form a number less than or equal to 12, and the 6th and 7th digits form a number less than or equal to 31.</span>
-                                    </div>
                                     <?php echo "Your age is: " . $age;?>
+                                    </div>
 
                                 <div class="form-control">
-                                    <label for="gender" class="form-label">Gender</label> 
-                                    <input type="radio" name="gender" value="male" required>Male
-                                    <input type="radio" name="gender" value="female" required>Female
+                                    <label for="gender" class="form-label">*Gender</label> 
+                                    <input type="radio" name="genderele" value="male" required 
+                                    <?php if ($genderDigit % 2 != 0) { echo "checked"; } ?> disabled > Male
+                                    <input type="radio" name="genderele" value="female" required
+                                    <?php if ($genderDigit % 2 == 0) { echo "checked"; } ?> disabled > Female
                                 </div> <br>
                                 <div class="form-group">
                                     <label for="phoneNum">*Enter phone number that has WhatsApp</label>
-                                    <input type="text" class="form-control" name="contactMobNum" id="contactMobNum" placeholder="Enter phone number" required>
+                                    <input type="text" class="form-control" name="contactMobNum" id="contactMobNum" placeholder="Enter phone number">
+                                    <?php if(isset($_POST['submit']) && isset($errors['contactMobNum'])) { ?>
+                                        <span style="color:red;display:block;text-align:left"><?php echo $errors['contactMobNum']; ?></span>
+                                    <?php } ?>
+                                    <?php if( isset($_POST['submit']) && isset($errors['contactMobNuminvalid'])) { ?>
+                                        <span style="color:red;display:block;text-align:left"><?php echo $errors['contactMobNuminvalid']; ?></span>
+                                    <?php } ?>
                                 </div>
                                 <div class="form-group">
                                     <label for="dob">Date of Birth</label>
-                                    <input type="date" class="form-control" name="dob" id="dob" required>
+                                    <input type="date" class="form-control"  id="dob" name="dob" value=<?php echo  $dateOfBirthFormatted;?> required  readonly>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">*Personal Photo</label>
                                     <input type="file" class="form-control" name="personalPhoto" id="personalPhoto" required>
+                                    <?php if(isset($errors['traineePic'])) { ?>
+                                        <span style="color:red;display:block;text-align:left"><?php echo $errors['traineePic']; ?></span>
+                                    <?php } ?>
+                                    <?php if(isset($errors['traineePicempty'])) { ?>
+                                        <span style="color:red;display:block;text-align:left"><?php echo $errors['traineePicempty']; ?></span>
+                                    <?php } ?>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">*National ID/Birth Certificate Photo</label>
                                     <input type="file" class="form-control" name="idPhoto" id="idPhoto" required>
+                                    <?php if(isset($errors['bdimg'])) { ?>
+                                        <span style="color:red;display:block;text-align:left"><?php echo $errors['bdimg']; ?></span>
+                                    <?php } ?>
+                                    <?php if(isset($errors['bdimgempty'])) { ?>
+                                        <span style="color:red;display:block;text-align:left"><?php echo $errors['bdimgempty']; ?></span>
+                                    <?php } ?>
                                 </div>
                                 <div class="form-group">
                                     <label for="fatherName">*Father Name</label>
                                     <input type="text" class="form-control" name="fatherName" id="fatherName" placeholder="Enter father name" required>
+                                    <?php if(isset($_POST['submit']) && isset($errors['fatherName'])){ ?>
+                                        <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherName']; ?></span>
+                                    <?php } ?>
                                 </div>
                                 <div class="form-group">
                                     <label for="fatherNum">*Father Phone Number</label>
@@ -284,9 +334,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <input type="text" class="form-control" name="motherJob" id="motherJob" placeholder="Enter mother job" required>
                                 </div>
                                 <div class="control-group">
-                                <textarea class="form-control border-1 py-3 px-4" rows="3" id="Notes" name ="notes" placeholder="Notes"
-                                    
-                                    data-validation-required-message="If you have notes regarding health or any thing, please write it here."></textarea>
+                                <textarea class="form-control border-1 py-3 px-4" rows="3" id="Notes" name ="notes" 
+                                placeholder="If you have notes regarding health or any thing, please write it here."></textarea>
                                 <p class="help-block text-danger"></p>
                             </div>
                                 <div>
@@ -320,26 +369,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <!-- Template Javascript -->
         <script src="js/main.js"></script>
-
         <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const nidInput = document.getElementById("NID");
-        const nidError = document.getElementById("nidError");
-
-        // Regular expression for validating National ID
-        const nidPattern = /^\d{3}(0[0-9]|1[0-2])([0-2][0-9]|3[01])\d{7}$/;
-
-        nidInput.addEventListener("input", function () {
-            // Check if the input value matches the pattern
-            if (!nidPattern.test(nidInput.value)) {
-                nidError.style.display = "block"; // Show error message
-            } else {
-                nidError.style.display = "none"; // Hide error message
-            }
-        });
-    });
-</script>
-
+            alert(document.getElementsByName('gender')[0].value);
+        </script>
 </body>
 
 </html>
