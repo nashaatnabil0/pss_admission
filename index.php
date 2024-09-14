@@ -102,7 +102,7 @@ try {
     <!-- Header End -->
 
     <!-- New Content Section Start -->
-    <div class="content-section">
+    <div class="content-section d-flex flex-column flex-md-row align-items-center justify-content-between">
     <?php
     try {
         $query = "SELECT * FROM season WHERE state = 'on' ORDER BY startDate DESC LIMIT 1";
@@ -110,10 +110,10 @@ try {
 
         if ($row = $stmt->fetch()) {
     ?>
-    <div class="photo-section">
-        <img src="admin/images/<?php echo htmlspecialchars($row['image']); ?>" alt="Season Image" style="width:250px; hight:370px;">
+    <div class="photo-section mb-4 mb-md-0">
+    <img src="admin/images/<?php echo htmlspecialchars($row['image']); ?>" alt="Season Image" class="img-fluid" style="max-width: 100%; height: auto;">
     </div>
-    <div class="text-section">
+    <div class="text-section text-center text-md-left">
         <h1>Season Announcement</h1>
         <h2><?php echo htmlspecialchars($row['name']); ?></h2>
         <p><strong>Start Date:</strong> <?php echo date('F d, Y', strtotime($row['startDate'])); ?></p>
