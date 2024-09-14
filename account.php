@@ -4,35 +4,21 @@ error_reporting(0);
 include('includes/dbconnection.php');
 
 // Check if the user is logged in. If not, redirect to the login page.
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_GET['nid'])) {
     header('Location: login.php');
     exit();
-}
-
-$user_id = $_SESSION['user_id'];
-
-// Establish a PDO connection to db
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "sportadmission";
-
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
-}
+}else{
+$user_id = $_GET['nid'];
 
 try {
     $sql = "SELECT * FROM trainees WHERE NID = ?";
-    $stmt = $conn->prepare($sql);
+    $stmt = $pdoConnection->prepare($sql);
     $stmt->execute([$user_id]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$user) {
         // Handle case where no user is found (e.g., user does not exist)
-        echo "No user data found.";
+        echo "<script>alert('No user data found.');  location.href='login.php'</script>";
         exit();
     }
 } catch (PDOException $e) {
@@ -97,12 +83,7 @@ $conn = null;
                     <a class="text-white px-2" href="https://www.facebook.com/people/Peace-Sports-School-Assuit/100091623236982/" target="_blank">
                         <i class="fab fa-facebook-f"></i>
                     </a>
-                    <!-- <a class="text-white px-2" href="">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a class="text-white px-2" href="">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a> -->
+                    
                     <a class="text-white px-2" href="https://www.instagram.com/pss_assuit/" target="_blank">
                         <i class="fab fa-instagram"></i>
                     </a>
@@ -129,16 +110,7 @@ $conn = null;
                 <div class="navbar-nav m-auto py-0">
                     <a href="index.php" class="nav-item nav-link active">Home</a>
                     <a href="about.php" class="nav-item nav-link">About</a>
-                    <!-- <a href="login.php" class="nav-item nav-link">Login</a>
-                    <a href="account.php" class="nav-item nav-link">Account</a> -->
                     
-                    <!-- <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
-                        <div class="dropdown-menu rounded-0 m-0">
-                            <a href="blog.html" class="dropdown-item">Blog Grid</a>
-                            <a href="single.html" class="dropdown-item">Blog Detail</a>
-                        </div>
-                    </div> -->
                     <a href="contact.php" class="nav-item nav-link">Contact</a>
 
         </nav>
@@ -148,34 +120,46 @@ $conn = null;
     <div class="container-fluid py-5">
         <div class="container">
             <h2 class="text-center mb-4">User Account</h2>
-            <div class="row">
-                <div class="col-lg-4">
+            <div class="row  justify-content-center">
+                <div class="col">
                     <div class="bg-light p-4 rounded">
                         <h4 class="text-primary">Personal Information</h4>
                         <p><strong>Name:</strong> <?php echo htmlspecialchars($user['Name']); ?></p>
                         <p><strong>Birth Date:</strong> <?php echo htmlspecialchars($user['birthDate']); ?></p>
                         <p><strong>Gender:</strong> <?php echo htmlspecialchars($user['gender']); ?></p>
-                        <p><strong>Contact Mobile Number:</strong> <?php echo htmlspecialchars($user['contactMobNum']); ?></p>
+                        <p><strong>Contact Mobile Number:</strong> <?php echo '0'.htmlspecialchars($user['contactMobNum']); ?></p>
                     </div>
                 </div>
-                <div class="col-lg-8">
+                <div class="col">
                     <div class="bg-light p-4 rounded">
                         <h4 class="text-primary">Family Information</h4>
                         <p><strong>Father's Name:</strong> <?php echo htmlspecialchars($user['fatherName']); ?></p>
-                        <p><strong>Father's Mobile Number:</strong> <?php echo htmlspecialchars($user['fatherMobNum']); ?></p>
+                        <p><strong>Father's Mobile Number:</strong> <?php echo '0'.htmlspecialchars($user['fatherMobNum']); ?></p>
                         <p><strong>Father's Job:</strong> <?php echo htmlspecialchars($user['fatherJob']); ?></p>
                         <p><strong>Mother's Name:</strong> <?php echo htmlspecialchars($user['motherName']); ?></p>
-                        <p><strong>Mother's Mobile Number:</strong> <?php echo htmlspecialchars($user['motherMobNum']); ?></p>
+                        <p><strong>Mother's Mobile Number:</strong> <?php echo '0'.htmlspecialchars($user['motherMobNum']); ?></p>
                         <p><strong>Mother's Job:</strong> <?php echo htmlspecialchars($user['motherJob']); ?></p>
                         <p><strong>Notes:</strong> <?php echo htmlspecialchars($user['Notes']); ?></p>
                     </div>
                 </div>
             </div>
-        </div>
-        </div>
-        <a href="editinformation.php?editid=<?php echo $user['NID']; ?>" class="btn btn-primary py-2 px-3" style="position: absolute; left: 50px;">Edit</a> 
-                <a href="forms.php" class="btn btn-primary py-2 px-3" style="position: absolute; right: 50px;">Forms</a> </br>
+            <a href="editinformation.php?editid=<?php echo $user['NID']; ?>" class="btn btn-primary py-2 px-3" style="position: absolute; left: 50px;">Edit</a> 
+            <?php
+                try {
+                $query = "SELECT * FROM season WHERE state = 'on' ORDER BY startDate DESC LIMIT 1";
+                $stmt = $pdoConnection->query($query);
 
+                if ($row = $stmt->fetch()) {
+            ?>        
+            <a href="forms.php?nid=<?php echo $user_id; ?>" class="btn btn-primary py-2 px-3" style="position: absolute; right: 50px;">Enroll Now</a> </br>
+            <?php
+                } else {
+                    echo "<p>No seasons available at the moment.</p>";
+                }
+                } catch (PDOException $e) {
+                    echo "Error: " . $e->getMessage();
+                }
+            ?>
         </div>
     </div>
     <!-- User Account Section End -->
@@ -204,3 +188,4 @@ $conn = null;
 </body>
 
 </html>
+<?php } ?>
