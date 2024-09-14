@@ -26,6 +26,32 @@ function uploadImages($imageFile, $allowed_extensions) {
 // Initialize message variable
 $message = '';
 
+$nationalId = $_SESSION['user_id'];
+
+        // Extract birth date from the ID (assuming a specific format)
+        $gen = substr($nationalId, 0, 1);
+        $birthDate = substr($nationalId, 1, 6);
+        $birthYear = substr($birthDate, 0, 2);
+        $birthMonth = substr($birthDate, 2, 2);
+        $birthDay = substr($birthDate, 4, 2);
+
+        // Calculate the birth date as a DateTime object
+        $birthDate = new DateTime("$birthYear-$birthMonth-$birthDay");
+
+        // Get the current date
+        $currentDate = new DateTime();
+
+        // Calculate the age in years
+        $age = $currentDate->diff($birthDate)->y;
+        if($gen ==2){
+            $dateOfBirthFormatted = "19$birthYear-$birthMonth-$birthDay";
+        }else{
+            $dateOfBirthFormatted = "20$birthYear-$birthMonth-$birthDay";
+        }
+
+        $genderDigit = $nationalId[12]; // Get the 13th digit (index 12)
+
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Retrieve form data
     $name = $_POST['registerName'];
@@ -204,16 +230,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     class="form-control"
                                     name="NID"
                                     id="NID"
-                                    placeholder="Enter your National ID"
+                                    value=<?php echo $_SESSION['user_id'];?>
+                                    disabled
                                     required>
                                     <!-- Error message placeholder -->
                                      <span id="nidError" style="color: red; display: none;">Please enter a valid 14-digit National ID where the 4th and 5th digits form a number less than or equal to 12, and the 6th and 7th digits form a number less than or equal to 31.</span>
                                     </div>
+                                    <?php echo "Your age is: " . $age;?>
 
                                 <div class="form-control">
                                     <label for="gender" class="form-label">Gender</label> 
-                                    <input type="radio" name="gender" value="male" required>Male
-                                    <input type="radio" name="gender" value="female" required>Female
+                                    <input type="radio" name="gender" value="male" required <?php 
+                                    if ($genderDigit % 2 != 0) {
+                                        echo "checked";
+                                    } 
+                                    ?> disabled >Male
+                                    <input type="radio" name="gender" value="female" required <?php 
+                                    if ($genderDigit % 2 == 0) {
+                                        echo "checked";
+                                    } 
+                                    ?> disabled >Female
                                 </div> <br>
                                 <div class="form-group">
                                     <label for="phoneNum">Enter phone number that has WhatsApp</label>
@@ -221,7 +257,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
                                 <div class="form-group">
                                     <label for="dob">Date of Birth</label>
-                                    <input type="date" class="form-control" name="dob" id="dob" required>
+                                    <input type="date" class="form-control"  id="dob" value=<?php echo  $dateOfBirthFormatted;?> disabled required>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">Personal Photo</label>
