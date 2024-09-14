@@ -220,7 +220,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">National ID</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="NID" name="NID" maxlength="14" type="text" value="<?php  echo $row['NID'];?>" >
+                      <input class="form-control" id="NID" name="NID"  type="text" value="<?php  echo $row['NID'];?>" >
                       <?php if(isset($_POST['submit']) && isset($errors['NID'])) { ?>
                             <span style="color:red;display:block;text-align:left"><?php echo $errors['NID']; ?></span>
                         <?php } ?>
@@ -248,7 +248,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Contact Mobile Number</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="contactMobNum" name="contactMobNum" maxlength="11" type="text" value="<?php echo '0'.$row['contactMobNum']; ?>">
+                      <input class="form-control" id="contactMobNum" name="contactMobNum" type="text" value="<?php echo '0'.$row['contactMobNum']; ?>">
                       <?php if(isset($_POST['submit']) && isset($errors['contactMobNum'])) { ?>
                             <span style="color:red;display:block;text-align:left"><?php echo $errors['contactMobNum']; ?></span>
                         <?php } ?>
@@ -278,7 +278,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Father Mobile Number</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="fatherMobNum" name="fatherMobNum" maxlength="11" type="text" value="<?php echo '0'.$row['fatherMobNum']; ?>">
+                      <input class="form-control" id="fatherMobNum" name="fatherMobNum" type="text" value="<?php echo '0'.$row['fatherMobNum']; ?>">
                       <?php if(isset($_POST['submit']) && isset($errors['fatherMobNum'])){  ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherMobNum'];  ?></span>
                        <?php } ?>
@@ -308,7 +308,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Mother Mobile Number</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="motherMobNum" name="motherMobNum" maxlength="11" type="text"value="<?php echo '0'.$row['motherMobNum']; ?>">
+                      <input class="form-control" id="motherMobNum" name="motherMobNum" type="text"value="<?php echo '0'.$row['motherMobNum']; ?>">
                       <?php if(isset($_POST['submit']) && isset($errors['motherMobNum'])){  ?>
                         <span style="color:red;display:block;text-align:left"><?php echo '0'.$errors['motherMobNum'];  ?></span>
                        <?php } ?>

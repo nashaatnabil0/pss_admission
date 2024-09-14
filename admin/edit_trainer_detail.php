@@ -103,7 +103,7 @@ if(isset($_POST['submit']))
                    <div class="form-group">
                     <label class="col-sm-2 control-label">Mobile Number</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="mobnum" maxlength="11" name="mobnum"  type="text" required="true" value="<?php  echo '0'.$row['MobileNumber'];?>">
+                      <input class="form-control" id="mobnum" name="mobnum"  type="text" required="true" value="<?php  echo '0'.$row['MobileNumber'];?>">
                     </div>
                   </div>
                   <div class="form-group">

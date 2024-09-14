@@ -222,7 +222,7 @@ if (isset($_POST['submit'])) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Contact Mobile Number</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="contactMobNum" name="contactMobNum" maxlength="11" type="text" value="">
+                      <input class="form-control" id="contactMobNum" name="contactMobNum" type="text" value="">
                       <?php if(isset($_POST['submit']) && isset($errors['contactMobNum'])) { ?>
                             <span style="color:red;display:block;text-align:left"><?php echo $errors['contactMobNum']; ?></span>
                         <?php } ?>
@@ -252,7 +252,7 @@ if (isset($_POST['submit'])) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Father Mobile Number</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="fatherMobNum" name="fatherMobNum" maxlength="11" type="text" value="">
+                      <input class="form-control" id="fatherMobNum" name="fatherMobNum"  type="text" value="">
                       <?php if(isset($_POST['submit']) && isset($errors['fatherMobNum'])){  ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherMobNum'];  ?></span>
                        <?php } ?>
@@ -282,7 +282,7 @@ if (isset($_POST['submit'])) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Mother Mobile Number</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="motherMobNum" maxlength="11" name="motherMobNum"  type="text"value="">
+                      <input class="form-control" id="motherMobNum"  name="motherMobNum"  type="text"value="">
                       <?php if(isset($_POST['submit'])){ 
                         if(isset($errors['motherMobNum'])){ ?>
                             <span style="color:red;display:block;text-align:left"><?php echo $errors['motherMobNum'];  ?></span>

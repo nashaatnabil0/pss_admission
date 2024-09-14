@@ -113,7 +113,7 @@ else {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Mobile Number</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="mobnum" name="mobnum" maxlength="11" type="text">
+                      <input class="form-control" id="mobnum" name="mobnum" type="text">
                       <?php if(isset($_POST['submit']) && isset($errors['mobnum'])) {  ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['mobnum'];  ?></span>
                        <?php } ?>
