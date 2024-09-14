@@ -14,8 +14,12 @@ else {
   if(isset($_POST['submit'])){
     $traineeNID = $_POST['traineeNID'];
     // Validate traineeNID
-    $stmt = $pdoConnection->query("SELECT COUNT(*) FROM trainees join enrollment on trainees.NID= enrollment.traineeNID WHERE NID = '$traineeNID' AND enrollment.state in ('off',' waiting')" );
+    // Check if the trainee exists in the 'trainees' table and has no existing enrollment
+    $stmt = $pdoConnection->query(" SELECT COUNT(*) FROM trainees 
+                                      LEFT JOIN enrollment ON trainees.NID = enrollment.traineeNID 
+                                      WHERE trainees.NID = $traineeNID AND (enrollment.state IS NULL OR enrollment.state IN ('off', 'waiting'))");
     $exists = $stmt->fetchColumn();
+
     
     if (!$exists) {
         $errors['traineeNIDinvalid'] = "Trainee NID not found, please add the trainee first.";
