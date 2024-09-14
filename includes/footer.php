@@ -9,9 +9,9 @@
                         <p><i class="fa fa-envelope mr-2"></i>pssassiut1@gmail.com</p>
                         <div class="d-flex justify-content-start mt-4">
                             <!-- <a class="btn btn-outline-light btn-social mr-2" href="#"><i class="fab fa-twitter"></i></a> -->
-                            <a class="btn btn-outline-light btn-social mr-2" href="https://www.facebook.com/people/Peace-Sports-School-Assuit/100091623236982/"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-outline-light btn-social mr-2"  href="https://www.instagram.com/pss_assuit"><i class="fab fa-instagram"></i></a>
-                            <a class="btn btn-outline-light btn-social" href="https://wa.me/201205557683"><i class="fab fa-whatsapp"></i></a>
+                            <a class="btn btn-outline-light btn-social mr-2" href="https://www.facebook.com/people/Peace-Sports-School-Assuit/100091623236982/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-outline-light btn-social mr-2"  href="https://www.instagram.com/pss_assuit" target="_blank"><i class="fab fa-instagram"></i></a>
+                            <a class="btn btn-outline-light btn-social" href="https://wa.me/201205557683" target="_blank"><i class="fab fa-whatsapp"></i></a>
                         </div>  
                     </div>
                     <div class="col-md-6 mb-5">
