@@ -69,11 +69,19 @@ include('includes/dbconnection.php');
             <div class="row">
                 <div class="col-lg-5 pb-4 pb-lg-0">
                     <div class="bg-primary text-dark text-center p-4">
-                        <h4 class="m-0"><i class="fa fa-map-marker-alt text-white mr-2"></i>123 Street, New York, USA</h4>
+                        <h4 class="m-0"><i class="fa fa-map-marker-alt text-white mr-2"></i>Get In Touch</h4>
+                    </div> </br>
+                    <div class="col-md-6 mb-5">
+                    <a href="https://maps.app.goo.gl/VyMNrRsB7VuPTFGF8">
+                        <p><i class="fa fa-map-marker-alt mr-2"></i>شارع الجمهوريه أمام ميدان ام البطل , Asyut, Egypt</p>
+                    </a>
+                    <a href="https://wa.me/201205557683">
+                        <p><i class="fa fa-phone-alt mr-2"></i>+01205557683</p>
+                    </a>
+                    <a href="mailto:pssassiut1@gmail.com">
+                        <p><i class="fa fa-envelope mr-2"></i>pssassiut1@gmail.com</p>
+                    </a>
                     </div>
-                    <iframe style="width: 100%; height: 470px;"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3001156.4288297426!2d-78.01371936852176!3d42.72876761954724!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4ccc4bf0f123a5a9%3A0xddcfc6c1de189567!2sNew%20York%2C%20USA!5e0!3m2!1sen!2sbd!4v1603794290143!5m2!1sen!2sbd"
-                        frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
                 </div>
                 <div class="col-lg-7">
                     <h6 class="text-primary text-uppercase font-weight-bold">Contact Us</h6>
@@ -84,6 +92,11 @@ include('includes/dbconnection.php');
                             <div class="control-group">
                                 <input type="text" class="form-control border-0 p-4" id="name" placeholder="Your Name"
                                     required="required" data-validation-required-message="Please enter your name" />
+                                <p class="help-block text-danger"></p>
+                            </div>
+                            <div class="control-group">
+                                <input type="email" class="form-control border-0 p-4" id="phoneNumber" placeholder="Your Phone Number"
+                                    required="required" data-validation-required-message="Please enter your phone number" />
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="control-group">

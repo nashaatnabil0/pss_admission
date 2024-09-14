@@ -22,9 +22,9 @@
                     <a class="text-white px-2" href="https://www.instagram.com/pss_assuit/">
                         <i class="fab fa-instagram"></i>
                     </a>
-                    <!-- <a class="text-white pl-2" href="">
-                        <i class="fab fa-youtube"></i>
-                    </a> -->
+                    <a class="text-white pl-2" href="https://wa.me/201205557683">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
                 </div>
             </div>
         </div>
@@ -36,14 +36,14 @@
     <div class="container-fluid p-0">
         <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-lg-5">
             <a href="index.php" class="navbar-brand ml-lg-3">
-            <img src="img/aabout.jpg" alt="P.S.S Logo" class="img-fluid" style="max-height: 130px;"> 
+            <img src="img/aabout.jpg" alt="P.S.S Logo" class="img-fluid" style="max-height: 150px;"> 
             </a>
             <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
                 <div class="navbar-nav m-auto py-0">
-                    <a href="index.php" class="nav-item nav-link active">Home</a>
+                    <a href="index.php" class="nav-item nav-link ">Home</a>
                     <a href="about.php" class="nav-item nav-link">About</a>
                     <!-- <a href="login.php" class="nav-item nav-link">Login</a>
                     <a href="account.php" class="nav-item nav-link">Account</a> -->

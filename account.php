@@ -106,9 +106,9 @@ $conn = null;
                     <a class="text-white px-2" href="https://www.instagram.com/pss_assuit/">
                         <i class="fab fa-instagram"></i>
                     </a>
-                    <!-- <a class="text-white pl-2" href="">
-                        <i class="fab fa-youtube"></i>
-                    </a> -->
+                    <a class="text-white pl-2" href="https://wa.me/201205557683">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
                 </div>
             </div>
         </div>
@@ -171,6 +171,11 @@ $conn = null;
                     </div>
                 </div>
             </div>
+        </div>
+        </div>
+        <a href="editinfo.php" class="btn btn-primary py-2 px-3" style="position: absolute; left: 50px;">Edit</a> 
+                <a href="forms.php" class="btn btn-primary py-2 px-3" style="position: absolute; right: 50px;">Forms</a> </br>
+
         </div>
     </div>
     <!-- User Account Section End -->
