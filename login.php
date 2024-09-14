@@ -27,18 +27,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute();
 
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $_SESSION['user_id'] = $entered_nid;
             // Check if the NID is already available in the database
             if ($row) { // If a row is found, the NID exists
-                // Set the session for the logged-in user
-                $_SESSION['user_id'] = $entered_nid;
-
                 // Redirect to account.php if NID is registered
-                header("Location: account.php");
+                header("Location: account.php?nid=$entered_nid");
                 exit(); // Stop further script execution
             } else {
                 // Redirect to register.php if NID is not registered
-                header("Location: register.php");
+                header("Location: register.php?nid=$entered_nid");
                 exit(); // Stop further script execution
             }
         } catch (PDOException $e) {
@@ -95,7 +91,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             text-align: center;
             flex-direction: column; /* Stack elements vertically */
         }
-        </style>
+    </style>
+        <!-- check NID Validation -->
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const nidInput = document.getElementById("NID");
+                const nidError = document.getElementById("nidError");
+                const submitBtn = document.getElementById("subBtn");
+
+                // Regular expression for validating National ID
+                const nidPattern = /^\d{3}(0[0-9]|1[0-2])([0-2][0-9]|3[01])\d{7}$/;
+
+                nidInput.addEventListener("keyup", function () {
+                    // Check if the input value matches the pattern
+                    if (!nidPattern.test(nidInput.value)) {
+                        submitBtn.disabled = true;
+                        nidError.style.display = "block"; // Show error message
+                    } else {
+                        submitBtn.disabled = false;
+                        nidError.style.display = "none"; // Hide error message
+                    }
+                });
+            });
+        </script>
 </head>
 
 <body>
@@ -104,21 +122,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php include('includes/header.php'); ?>
     <!-- Header End -->
 
-    <!-- <div class="jumbotron jumbotron-fluid mb-5"> -->
-        <!-- <div class="container text-center py-5"> -->
-        <div class="center-text">
-        <h1 class="text-primary mb-4">To enroll / register:</h1>
-        <h1 class="text-white display-3 mb-5" style="color: black !important;">Enter Your National ID Number</h1>
-    </div>
+            <div class="center-text">
+                <h1 class="text-primary mb-4">Enroll / Register</h1>
+                <h1 class="text-white display-3 mb-5" style="color: black !important;">Enter Your National ID Number</h1>
+            </div>
             <div class="mx-auto" style="width: 100%; max-width: 600px;">
                 <form method="post" action="">
                     <div class="input-group">
-                        <input type="text" name="nid" class="form-control border-light" style="padding: 30px;" placeholder="Enter NID">
+                        <input type="text" id="NID" name="nid" class="form-control border-light" style="padding: 30px;" placeholder="Enter NID" >
                         <div class="input-group-append">
-                            <button type="submit" class="btn btn-primary px-3">Submit</button>
+                            <button type="submit" id="subBtn" class="btn btn-primary px-3">Submit</button>
                         </div>
                     </div>
                 </form>
+                <!-- Error message placeholder -->
+                <div class="alert alert-info mt-3" id="nidError" style="color: red; display: none;" ><span  >Please enter a valid 14-digit National ID</span></div>
                 <?php if ($message): ?>
                     <div class="alert alert-info mt-3"><?php echo $message; ?></div>
                 <?php endif; ?>
