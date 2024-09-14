@@ -122,13 +122,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php include('includes/header.php'); ?>
     <!-- Header End -->
 
-            <div class="center-text">
-                <h1 class="text-primary mb-4">Enroll / Register</h1>
+        <div class="center-text text-center pt-5">
+        <h1 class="text-primary mb-4">Enroll / Register</h1>
                 <h1 class="text-white display-3 mb-5" style="color: black !important;">Enter Your National ID Number</h1>
             </div>
             <div class="mx-auto" style="width: 100%; max-width: 600px;">
                 <form method="post" action="">
-                    <div class="input-group">
+                    <div class="input-group pt-5" >
                         <input type="text" id="NID" name="nid" class="form-control border-light" style="padding: 30px;" placeholder="Enter NID" >
                         <div class="input-group-append">
                             <button type="submit" id="subBtn" class="btn btn-primary px-3">Submit</button>
@@ -141,8 +141,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="alert alert-info mt-3"><?php echo $message; ?></div>
                 <?php endif; ?>
             </div>
-        <!-- </div>
-    </div> -->
 
     <!-- Footer Start -->
     <?php include('includes/footer.php'); ?>
