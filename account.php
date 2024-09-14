@@ -173,7 +173,7 @@ $conn = null;
             </div>
         </div>
         </div>
-        <a href="editinfo.php" class="btn btn-primary py-2 px-3" style="position: absolute; left: 50px;">Edit</a> 
+        <a href="editinformation.php?editid=<?php echo $user['NID']; ?>" class="btn btn-primary py-2 px-3" style="position: absolute; left: 50px;">Edit</a> 
                 <a href="forms.php" class="btn btn-primary py-2 px-3" style="position: absolute; right: 50px;">Forms</a> </br>
 
         </div>
