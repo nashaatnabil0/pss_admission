@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(0);
+// error_reporting(0);
 include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
@@ -8,17 +8,28 @@ if (strlen($_SESSION['sportadmission']==0)) {
 // لسه محتاجين نشوف هنعمل ايه ف الحوار ده هيمسح ولا هنعمله refund
 if(isset($_GET['delid']))
 {
-    $rid=intval($_GET['delid']);
-    $delete_image = $pdoConnection -> query("select Profilepic from tblartist where ID='$rid'");
-    $image_data = $delete_image-> fetch(PDO:: FETCH_ASSOC);
-    $image_name = $image_data['Profilepic'];
+    $paymentid=intval($_GET['delid']);
+    $enID=intval($_GET['enID']);
+    
+    $deletquery = $pdoConnection->query("DELETE FROM payment WHERE ID = $paymentid;");
 
-    $sql= $pdoConnection -> query("DELETE FROM tblartist WHERE ID='$rid'");
+      if($deletquery){
 
-      if($sql){
-        unlink("images/$image_name");
-        echo "<script>alert('Data deleted');</script>"; 
-        echo "<script>window.location.href = 'manage-artist.php'</script>";     
+        $paidquery = $pdoConnection->query("SELECT SUM(paymentAmount) AS totalPaidAmount FROM payment WHERE enrollmentId = $enID;");
+        $row4 = $paidquery->fetch(PDO::FETCH_ASSOC);
+        $totalPaidAmount = $row4['totalPaidAmount'] ? $row4['totalPaidAmount'] : 0;
+
+        $feesAfterDiscountQuery = $pdoConnection->query("SELECT g.price - COALESCE(e.discount, 0) AS feesAfterDiscount FROM enrollment e JOIN groups g ON e.groupId = g.ID WHERE e.ID = $enID;");
+        $row3 = $feesAfterDiscountQuery->fetch(PDO::FETCH_ASSOC);
+        $feesAfterDiscount = $row3['feesAfterDiscount'] ? $row3['feesAfterDiscount'] : 0;
+        if($totalPaidAmount<$feesAfterDiscount && $totalPaidAmount !=0){
+          $pdoConnection->query("UPDATE enrollment SET paymentState = 'partial' WHERE ID = $enID;");
+        }else{
+          $pdoConnection->query("UPDATE enrollment SET paymentState = NULL WHERE ID = $enID;");
+        }
+
+        echo "<script>alert('Payment Data deleted');</script>"; 
+        echo "<script>window.location.href = 'viewall_payments.php'</script>";     
       }
     }
 ?>
@@ -73,7 +84,6 @@ if(isset($_GET['delid']))
               <header class="panel-heading">
                 Search Payment
                 <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search for names, groups, etc." class="form-control" style="margin-bottom: 10px;">
-                <!-- <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search by Trainee Name, Group, Amount, Payment Method, Date, User, or Notes..." class="form-control" > -->
                 <div style="margin-bottom: 10px;">
                   <label for="stateFilter">Filter by Enrollment State: </label>
                   <select id="stateFilter" onchange="filterTable()">
@@ -113,7 +123,8 @@ if(isset($_GET['delid']))
                       g.Timeslot timing,
                       g.minAge as gminAge,
                       g.maxAge as gmaxAge,
-                      en.state
+                      en.state,
+                      en.ID as enrollID
                     FROM 
                       payment p 
                     JOIN 
@@ -137,7 +148,7 @@ if(isset($_GET['delid']))
                   <td><?php  echo $row['Uname'];?></td>
                   <td><?php  echo $row['state'];?></td>
                   <td><?php  echo $row['notes'];?></td>
-                  <td><a href="edit_payment_detail.php?editid=<?php echo $row['ID'];?>" class="btn btn-success">Edit</a> || <a href="viewall_payments.php?delid=<?php echo $row['ID'];?>" class="btn btn-danger confirm">Delete</a></td>
+                  <td><a href="edit_payment_detail.php?editid=<?php echo $row['ID'];?>" class="btn btn-success">Edit</a> || <a href="viewall_payments.php?delid=<?php echo $row['ID'];?>&enID=<?php echo $row['enrollID'] ?>" class="btn btn-danger confirm">Delete</a></td>
                 </tr>
                 <?php 
                   $cnt=$cnt+1;}?>
@@ -167,7 +178,7 @@ if(isset($_GET['delid']))
       let deleteBtn = document.querySelectorAll(".confirm");
       for (let i = 0; i < deleteBtn.length; i++) {
           deleteBtn[i].addEventListener("click", (e) => {
-              let ans = confirm("Are You Sure!!")
+              let ans = confirm("Are You Sure!!\nThis Action will delete the payment data and can not be restored ?")
               if (!ans) {
                   e.preventDefault();
               }

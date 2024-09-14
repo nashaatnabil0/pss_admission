@@ -5,6 +5,8 @@ include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
   } else{
+    
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -73,28 +75,28 @@ if (strlen($_SESSION['sportadmission']==0)) {
                 </thead>
                   <?php
                   $ret= $pdoConnection-> query("SELECT
-                    en.ID,
-                    en.traineeNID,
-                    en.groupId,
-                    en.paymentPlan,
-                    en.paymentState,
-                    en.state,
-                    en.discount,
-                    en.date,
-                    t.Name as Tname,
-                    g.Title as Gtilte,
-                    g.days as Gdays,
-                    g.minAge as gminAge,
-                    g.maxAge as gmaxAge,
-                    g.Timeslot as Timing
+                      en.ID,
+                      en.traineeNID,
+                      en.groupId,
+                      en.paymentPlan,
+                      COALESCE(en.paymentState, 'No Payment') AS paymentState,
+                      en.state,
+                      COALESCE(en.discount, 0) AS discount,
+                      en.date,
+                      t.Name as Tname,
+                      g.Title as Gtilte,
+                      g.days as Gdays,
+                      g.minAge as gminAge,
+                      g.maxAge as gmaxAge,
+                      g.Timeslot as Timing
                   FROM 
-                    enrollment en 
+                      enrollment en 
                   JOIN
-                    trainees t on en.traineeNID=t.NID 
+                      trainees t ON en.traineeNID = t.NID 
                   JOIN 
-                    groups g on en.groupId=g.ID
+                      groups g ON en.groupId = g.ID
                   WHERE
-                    en.state='on' AND paymentState != 'complete';");
+                      en.state = 'on' AND (en.paymentState IS NULL OR en.paymentState = 'partial');");
                   $cnt=1;
                   while ($row=$ret-> fetch(PDO:: FETCH_ASSOC)) {
                   ?>

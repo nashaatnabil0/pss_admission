@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute();
 
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
+            $_SESSION['user_id'] = $entered_nid;
             // Check if the NID is already available in the database
             if ($row) { // If a row is found, the NID exists
                 // Set the session for the logged-in user
