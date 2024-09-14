@@ -202,10 +202,10 @@ if ($formSubmitted) {
                                                           WHERE enrollmentId = $enrollId;");
                       
                       $row4 = $paidquery->fetch(PDO::FETCH_ASSOC);
-                            // Default to 0 if no amount is paid
+                            // Default to 0 if no amount is paid                                     
                       $totalPaidAmount = $row4['totalamntpaid'] ? $row4['totalamntpaid'] : 0;
                     ?>
-                      <input class=" form-control" id="totalpaid" name="totalpaid" type="text"  value="<?php echo $row4['totalamntpaid']; ?>" readonly>
+                      <input class=" form-control" id="totalpaid" name="totalpaid" type="text"  value="<?php if ($row4['totalamntpaid']==NULL) echo 0; else echo $row4['totalamntpaid']; ?>" readonly>
                     </div>
                   </div>
                   <div class="form-group">
