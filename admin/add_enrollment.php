@@ -20,7 +20,6 @@ else {
                                       WHERE trainees.NID = $traineeNID AND (enrollment.state IS NULL OR enrollment.state IN ('off', 'waiting'))");
     $exists = $stmt->fetchColumn();
 
-    
     if (!$exists) {
         $errors['traineeNIDinvalid'] = "Trainee NID not found, please add the trainee first.";
     }
