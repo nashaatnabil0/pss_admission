@@ -2,11 +2,24 @@
 session_start();
 error_reporting(0);
 
-include('includes/dbconnection.php');
+// Database connection using PDO
+try {
+    $dsn = "mysql:host=localhost;dbname=sportadmission";
+    $username = "root";
+    $password = "";
+    $options = [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    ];
+
+    $pdo = new PDO($dsn, $username, $password, $options);
+} catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <script>
         addEventListener("load", function () {
@@ -40,27 +53,27 @@ include('includes/dbconnection.php');
     <link href="css/style.css" rel="stylesheet">
 
     <style>
-.content-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 20px;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-}
+        .content-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
 
-.photo-section {
-    flex: 1;
-    max-width: 100%; 
-    overflow: hidden; 
-}
+        .photo-section {
+            flex: 1;
+            max-width: 100%; 
+            overflow: hidden; 
+        }
 
-.photo-section img {
-    width: 100%;
-    height: auto;
-    border-radius: 10px; 
-}
+        .photo-section img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px; 
+        }
 
         .content-section .text-section {
             flex: 2;
@@ -90,29 +103,35 @@ include('includes/dbconnection.php');
 
     <!-- New Content Section Start -->
     <div class="content-section">
-        <div class="photo-section">
-            <img src="img/new.jpg" alt="new">
-        </div>
-        <div class="text-section">
-            <h2>New Season Announcement</h2>
-            <p>𝗣𝗲𝗮𝗰𝗲 𝗦𝗽𝗼𝗿𝘁𝘀 𝗦𝗰𝗵𝗼𝗼𝗹 🏆
-‏Soccer For Girls ⚽️
-‏Summer 2024 ☀️
-‏‎متحمسين جداً اننا نبدأ سوا تمرين جديد💥
-‏‎كرة قدم للبنات 🥳⚽️
-‏‎ولأن رؤيتنا هي مش بس تعليم مهارات الاساسية للرياضيات المختلفة لكن كمان هي زرع مبادئ مسيحية في حياة كل لاعب و لاعبة 🌟
-بنات من سن 14-20 سنة 
-‏‎</p>
-    </br>
-    <div class="text-center">
-    <a href="login.php" class="btn btn-primary py-1 px-2" style="font-size: 1.5rem;">Enroll Now</a>
-</div>
-    <!-- <a href="login.php" class="btn btn-primary py-2 px-4 d-block d-lg-none">Enroll Now</a> -->
+    <?php
+    try {
+        $query = "SELECT * FROM season ORDER BY startDate DESC LIMIT 1";
+        $stmt = $pdo->query($query);
 
-
-            <!-- <p>Our portfolio showcases a diverse range of projects that highlight our ability to create unique and memorable designs.</p> -->
-        </div>
+        if ($row = $stmt->fetch()) {
+    ?>
+    <div class="photo-section">
+        <img src=".../images/<?php echo htmlspecialchars($row['image']); ?>" alt="Season Image">
     </div>
+    <div class="text-section">
+        <h1>Season Announcement</h1>
+        <h2><?php echo htmlspecialchars($row['name']); ?></h2>
+        <p><strong>Start Date:</strong> <?php echo date('F d, Y', strtotime($row['startDate'])); ?></p>
+        <br />
+            <a href="login.php" class="btn btn-primary py-2 px-2">Enroll Now</a>
+    </div>
+    <?php
+        } else {
+            echo "<p>No seasons available at the moment.</p>";
+        }
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
+    }
+    ?>
+</div>
+
+
+
     <!-- New Content Section End -->
 
     <div class="image-grid">
@@ -145,5 +164,4 @@ include('includes/dbconnection.php');
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 </body>
-
 </html>

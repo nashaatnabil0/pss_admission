@@ -70,7 +70,7 @@ include('includes/dbconnection.php');
                 <div class="col-lg-5 pb-4 pb-lg-0">
                     <img class="img-fluid w-100" src="img/aabout.jpg" alt="">
                     <div class="bg-primary text-dark text-center p-4">
-                        <h3 class="m-0">Peace Sports School - Assuit</h3>
+                        <h3 class="m-0">Peace Sports School - Assuit Branch</h3>
                     </div>
                 </div>
                 <div class="col-lg-7">
@@ -84,11 +84,20 @@ include('includes/dbconnection.php');
 𝘝𝘪𝘤𝘦𝘯𝘵𝘦 𝘥𝘦𝘭 𝘉𝘰𝘴𝘲𝘶𝘦
     </p>
                     <div class="d-flex align-items-center pt-2">
-                        <button type="button" class="btn-play" data-toggle="modal"
-                            data-src="https://www.facebook.com/watch/?v=957041235314456" data-target="#videoModal">
-                            <span></span>
-                        </button>
-                        <h5 class="font-weight-bold m-0 ml-4">Play Video</h5>
+                    <!-- <button type="button" class="btn-play" data-toggle="modal"
+        data-src="https://www.facebook.com/watch/?v=957041235314456" data-target="#videoModal">
+    <span></span>
+</button> -->
+
+<iframe id="videoIframe" src="https://www.facebook.com/plugins/video.php?height=314&href=https%3A%2F%2Fwww.facebook.com%2F100091623236982%2Fvideos%2F752210217067379%2F&show_text=false&width=560&t=0" width="560" height="314" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowFullScreen="true"></iframe>
+
+<script>
+    document.querySelector('.btn-play').addEventListener('click', function() {
+        var videoSrc = this.getAttribute('data-src');
+        document.getElementById('videoIframe').src = videoSrc;
+    });
+</script>
+                        <!-- <h5 class="font-weight-bold m-0 ml-4">Play Video</h5> -->
                     </div>
                 </div>
             </div>

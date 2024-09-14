@@ -143,9 +143,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <a class="text-white px-2" href="https://www.instagram.com/pss_assuit/">
                         <i class="fab fa-instagram"></i>
                     </a>
-                    <!-- <a class="text-white pl-2" href="">
-                        <i class="fab fa-youtube"></i>
-                    </a> -->
+                    <a class="text-white pl-2" href="https://wa.me/201205557683">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
                 </div>
             </div>
         </div>
@@ -181,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>    <!-- header section end -->
 
     <div class="container">
-        <h1 class="about_text_2"><strong>Register</strong></h1>
+        <h2 class="about_text_2"><strong>In order to enroll, please register first!</strong></h2>
         <section class="login_register_section layout_padding">
             <div class="container">
                 <div class="heading_container heading_center">
@@ -194,11 +194,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="register_form">
                             <form id="registerForm" method="POST" enctype="multipart/form-data">
                                 <div class="form-group">
-                                    <label for="registerName">Full Name</label>
+                                    <label for="registerName">*Full Name</label>
                                     <input type="text" class="form-control" name="registerName" id="registerName" placeholder="Enter full name" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="NID">National ID</label>
+                                    <label for="NID">*National ID</label>
                                     <input
                                     type="text"
                                     class="form-control"
@@ -211,53 +211,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </div>
 
                                 <div class="form-control">
-                                    <label for="gender" class="form-label">Gender</label> 
+                                    <label for="gender" class="form-label">*Gender</label> 
                                     <input type="radio" name="gender" value="male" required>Male
                                     <input type="radio" name="gender" value="female" required>Female
                                 </div> <br>
                                 <div class="form-group">
-                                    <label for="phoneNum">Enter phone number that has WhatsApp</label>
+                                    <label for="phoneNum">*Enter phone number that has WhatsApp</label>
                                     <input type="text" class="form-control" name="contactMobNum" id="contactMobNum" placeholder="Enter phone number" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="dob">Date of Birth</label>
+                                    <label for="dob">*Date of Birth</label>
                                     <input type="date" class="form-control" name="dob" id="dob" required>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label">Personal Photo</label>
+                                    <label class="control-label">*Personal Photo</label>
                                     <input type="file" class="form-control" name="personalPhoto" id="personalPhoto" required>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label">National ID/Birth Certificate Photo</label>
+                                    <label class="control-label">*National ID/Birth Certificate Photo</label>
                                     <input type="file" class="form-control" name="idPhoto" id="idPhoto" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="fatherName">Father Name</label>
+                                    <label for="fatherName">*Father Name</label>
                                     <input type="text" class="form-control" name="fatherName" id="fatherName" placeholder="Enter father name" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="fatherNum">Father Phone Number</label>
+                                    <label for="fatherNum">*Father Phone Number</label>
                                     <input type="text" class="form-control" name="fatherNum" id="fatherNum" placeholder="Enter father phone number" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="fatherJob">Father Job</label>
+                                    <label for="fatherJob">*Father Job</label>
                                     <input type="text" class="form-control" name="fatherJob" id="fatherJob" placeholder="Enter father job" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="motherName">Mother Name</label>
+                                    <label for="motherName">*Mother Name</label>
                                     <input type="text" class="form-control" name="motherName" id="motherName" placeholder="Enter mother name" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="motherNum">Mother Phone Number</label>
+                                    <label for="motherNum">*Mother Phone Number</label>
                                     <input type="text" class="form-control" name="motherNum" id="motherNum" placeholder="Enter mother phone number" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="motherJob">Mother Job</label>
+                                    <label for="motherJob">*Mother Job</label>
                                     <input type="text" class="form-control" name="motherJob" id="motherJob" placeholder="Enter mother job" required>
                                 </div>
                                 <div class="control-group">
                                 <textarea class="form-control border-1 py-3 px-4" rows="3" id="Notes" name ="notes" placeholder="Notes"
-                                    required="required"
+                                    
                                     data-validation-required-message="If you have notes regarding health or any thing, please write it here."></textarea>
                                 <p class="help-block text-danger"></p>
                             </div>
