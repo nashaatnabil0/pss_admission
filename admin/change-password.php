@@ -127,14 +127,14 @@ echo '<script>alert("Your current password is wrong.")</script>';
                       <label for="address" class="control-label col-lg-2">New Password <span class="required">*</span></label>
                       <div class="col-lg-10">
                         <input type="password" name="newpassword" class="form-control" value="">
-                        <span style="color:red;display:block;text-align:left"><?php echo (isset($errors['PassWeak']))?$errors['PassWeak']:'';?></span>
+                        <span style="color:red;display:block;text-align:left"><?php echo (isset($_POST['submit']) && isset($errors['PassWeak']))?$errors['PassWeak']:'';?></span>
                       </div>
                     </div>
                     <div class="form-group ">
                       <label for="username" class="control-label col-lg-2">Confirm Password <span class="required">*</span></label>
                       <div class="col-lg-10">
                         <input type="password" name="confirmpassword" class="form-control" value="">
-                        <span style="color:red;display:block;text-align:left"><?php echo (isset($errors['PassMatch']))?$errors['PassMatch']:'';?></span>
+                        <span style="color:red;display:block;text-align:left"><?php echo (isset($_POST['submit']) && isset($errors['PassMatch']))?$errors['PassMatch']:'';?></span>
                       </div>
                     </div>
                   

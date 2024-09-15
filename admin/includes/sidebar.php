@@ -91,12 +91,12 @@
               <li><a class="" href="viewall_payments.php">Manage Payments</a></li>
             </ul>
           </li>
-          <li>
+         <!-- <li>
             <a class="" href="search.php">
               <i class="icon_genius"></i>
               <span>Search </span>
             </a>
-          </li>
+          </li>-->
           
           <?php if($Urole == 'admin'): ?>
           <li class="sub-menu">

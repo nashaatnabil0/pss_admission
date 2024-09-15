@@ -26,14 +26,15 @@ if(isset($_POST['submit']))
 
     $seasonImg = $_FILES['image']['name'];
     if (empty($seasonImg)){
-      $errors['seasonImg'] = "Please upload season image";
-    }
+      $errors['image'] = "Please upload season image";
+    }else{
     
-    $extension = strtolower(pathinfo($seasonImg, PATHINFO_EXTENSION));
-    $allowed_extensions = array("jpg", "jpeg", "png", "gif");
-      // Validation for allowed extensions
-      if (!in_array($extension, $allowed_extensions)) {
+       $extension = strtolower(pathinfo($seasonImg, PATHINFO_EXTENSION));
+       $allowed_extensions = array("jpg", "jpeg", "png", "gif");
+       // Validation for allowed extensions
+       if (!in_array($extension, $allowed_extensions)) {
         $errors['imageinvalid'] = "Invalid format. Only jpg / jpeg/ png /gif format allowed";
+           }
      }
 
     if (empty($errors)) {

@@ -15,7 +15,8 @@ if(isset($_POST['login']))
       echo "<script type='text/javascript'> document.location ='dashboard.php'; </script>";
     }
     else{
-    echo "<script>alert('Invalid Details');</script>";
+    //echo "<script>alert('Wrong name or password ');</script>";
+         $errors = "Wrong Name or password";
     }
   }
 
@@ -50,14 +51,17 @@ if(isset($_POST['login']))
         <p class="login-img"><i class="icon_lock_alt"></i></p>
         <div class="input-group">
           <span class="input-group-addon"><i class="icon_profile"></i></span>
-          <input type="text" class="form-control" name="username" placeholder="Username" autofocus required="true">
+          <input type="text" class="form-control" name="username" placeholder="Username" autofocus >
         </div>
         <div class="input-group">
           <span class="input-group-addon"><i class="icon_key_alt"></i></span>
-          <input type="password" class="form-control" name="password" placeholder="Password" required="true">
+          <input type="password" class="form-control" name="password" placeholder="Password">
         </div>
-        
-                
+        <div>
+        <?php if(isset($errors)){ ?>
+           <span style="color:red;display:block;text-align: center ; font-weight: bold " ><?php echo $errors ; ?></span>
+         <?php } ?>
+        </div> <br>      
                 <lable><span class="pull-right"> <a href="forgot-password.php"> Forgot Password?</a></span>
             </label>
         <button class="btn btn-primary btn-lg btn-block" type="submit" name="login">Login</button>

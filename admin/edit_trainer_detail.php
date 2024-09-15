@@ -10,8 +10,19 @@ if (strlen($_SESSION['sportadmission']==0)) {
 if(isset($_POST['submit']))
   {
     $name=$_POST['name'];
-    $mobnum=$_POST['mobnum'];
-    $spID=$_POST['SportID'];
+    if (empty($name)) {
+      $errors['name'] = "Name cannot be empty";
+     }
+
+     $mobnum=$_POST['mobnum'];
+    $monnumPattern='/^(011|010|015|012)[0-9]{8}$/';
+    if (empty($mobnum)) {
+      $errors['mobnum'] = "phone number cannot be empty";
+      }elseif(!preg_match($monnumPattern,$mobnum)){
+      $errors['mobnuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
+      }  
+    
+      $spID=$_POST['SportID'];
     if($spID==""){
       $query = $pdoConnection -> query("update trainers SET name='$name', MobileNumber='$mobnum', sportId= NULL where ID='$eid'");
     }else{
@@ -20,8 +31,8 @@ if(isset($_POST['submit']))
     
     if ($query) {
       echo "<script>alert('Trainer details has been updated.');  location.href='viewall_trainers.php'</script>";
-  }
-  else
+     }
+    else
     {
       echo "<script>alert('Something Went Wrong. Please try again.');</script>";
     }
@@ -98,12 +109,21 @@ if(isset($_POST['submit']))
                     <label class="col-sm-2 control-label">Name</label>
                     <div class="col-sm-10">
                       <input class="form-control" id="name" name="name"  type="text" required="true" value="<?php  echo $row['name'];?>">
+                      <?php if(isset($_POST['submit']) && isset($errors['name'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['name'] ?></span>
+                       <?php } ?>
                     </div>
                   </div>
                    <div class="form-group">
                     <label class="col-sm-2 control-label">Mobile Number</label>
                     <div class="col-sm-10">
                       <input class="form-control" id="mobnum" name="mobnum"  type="text" required="true" value="<?php  echo '0'.$row['MobileNumber'];?>">
+                      <?php if(isset($_POST['submit']) && isset($errors['mobnum'])) {  ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['mobnum'];  ?></span>
+                       <?php } ?>
+                       <?php if(isset($_POST['submit']) && isset($errors['mobnuminvalid'])){ ?>
+                       <span style="color:red;display:block;text-align:left"><?php echo $errors['mobnuminvalid'] ?></span>
+                       <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">

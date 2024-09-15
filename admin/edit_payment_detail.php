@@ -55,7 +55,7 @@ if ($formSubmitted) {
 
     $notes = $_POST['notes'];
     if (empty($notes)) {
-        $notes = null;
+        $errors['notes'] = "Please leave a note about your edit" ;
     }
 
     // Only proceed with inserting into the database if there are no errors
@@ -272,6 +272,9 @@ if ($formSubmitted) {
                     <label class="col-sm-2 control-label">Notes</label>
                     <div class="col-sm-10">
                       <textarea class="form-control" name="notes" ><?php echo $row5['notes']; ?></textarea>
+                      <?php if( $formSubmitted && isset($errors['notes'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['notes'] ?></span>
+                       <?php } ?>
                     </div>
                   </div>
                  <p style="text-align: center;"> <button type="submit" name="submit" id= "submit" class="btn btn-primary">Submit</button></p>

@@ -108,7 +108,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
                             <label class="col-lg-2 control-label">Name</label>
                             <div class="col-lg-6">
                               <input class=" form-control" id="adminname" name="name" type="text" value="<?php  echo $row['name'];?>">
-                              <?php if(isset($errors['name'])){ ?>
+                              <?php if(isset($_POST['submit']) && isset($errors['name'])){ ?>
                                 <span style="color:red;display:block;text-align:left"><?php echo $errors['name'] ?></span>
                               <?php } ?>
                             </div>
@@ -118,7 +118,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
                             <label class="col-lg-2 control-label">Contact Number</label>
                             <div class="col-lg-6">
                               <input class="form-control " id="contactnumber" name="contactnumber" type="text" value="<?php  echo $row['MobileNumber'];?>" required="true">
-                              <?php if(isset($errors['mobnum'])){  ?>
+                              <?php if(isset($_POST['submit']) && isset($errors['mobnum'])){  ?>
                               <span style="color:red;display:block;text-align:left"><?php echo $errors['mobnum'];  ?></span>
                               <?php } elseif($errors['mobnuminvalid']!=""){ ?>
                               <span style="color:red;display:block;text-align:left"><?php echo $errors['mobnuminvalid'] ?></span>

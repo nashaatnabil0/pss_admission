@@ -10,6 +10,10 @@ if (strlen($_SESSION['sportadmission']==0)) {
 if(isset($_POST['submit']))
   {
   $spname=$_POST['sportname'];
+  if (empty($sportName)) {
+    $errors['sportname'] = "sport name cannot be empty";
+  }
+
   $superID=$_POST['supervisor'];
   $eid=$_GET['editid'];
   if($superID==""){
@@ -84,6 +88,9 @@ if(isset($_POST['submit']))
                     <label class="col-sm-2 control-label">Sport Name</label>
                     <div class="col-sm-10">
                       <input class="form-control" id="sportname" name="sportname" value="<?php echo $row['name'];?>" type="text" required="true">
+                      <?php if( isset($_POST['submit']) && isset($errors['sportname'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['sportname'] ?></span>
+                       <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">

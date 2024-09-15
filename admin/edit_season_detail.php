@@ -17,15 +17,30 @@ if (strlen($_SESSION['sportadmission']==0)) {
       $image_name = $image_data['image'];
 
       $Name=$_POST['Name'];
+      if (empty($Name)){
+        $errors['Name'] = "Please enter a season name";
+      }
+
       $State = $_POST['seasonstate'];
+      if (empty($State)){
+        $errors['seasonstate'] = "Please choose state for the season";
+      }
+
       $stDate=$_POST['startdate'];
+      if(empty($stDate)){
+        $stDate = null;
+      }
       $seasonImg = $_FILES['image']['name'];
+      if (empty($seasonImg)){
+        $errors['image'] = "Please upload season image";
+      }
+
       if($seasonImg!=""){
         $extension = strtolower(pathinfo($seasonImg, PATHINFO_EXTENSION));
         $allowed_extensions = array("jpg", "jpeg", "png", "gif");
         // Validation for allowed extensions
         if (!in_array($extension, $allowed_extensions)) {
-          $errors['image'] = "Invalid format. Only jpg / jpeg/ png /gif format allowed";
+          $errors['imageinvalid'] = "Invalid format. Only jpg / jpeg/ png /gif format allowed";
         }
       }
       if (empty($errors)) {
@@ -120,7 +135,10 @@ if (strlen($_SESSION['sportadmission']==0)) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Season Name</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="Name" name="Name"  type="text" required value="<?php  echo $row['name'];?>">
+                      <input class="form-control" id="Name" name="Name"  type="text" value="<?php  echo $row['name'];?>">
+                      <?php if( isset($errors['Name'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['Name'] ?></span>
+                       <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">
@@ -128,6 +146,9 @@ if (strlen($_SESSION['sportadmission']==0)) {
                     <div class="col-sm-10">
                       <input class="" id="seasonstate" name="seasonstate"  type="radio" value="on" style="margin:7px" <?php if($row['state']==='on'){ echo 'checked';}?> >Active <span style="margin: 30px"></span>
                       <input class="" id="seasonstateoff" name="seasonstate"  type="radio" value="off" style="margin:7px" <?php if($row['state']==='off'){ echo 'checked';}?> >Inactive 
+                      <?php if( isset($errors['seasonstate'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['seasonstate'] ?></span>
+                       <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">
@@ -148,6 +169,9 @@ if (strlen($_SESSION['sportadmission']==0)) {
                        <input type="file" class="form-control" name="image" id="image" value="">
                        <?php if( isset($errors['image'])){ ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['image'] ?></span>
+                       <?php } ?>
+                       <?php if( isset($errors['imageinvalid'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['imageinvalid'] ?></span>
                        <?php } ?>
                       </div>
                   </div>
