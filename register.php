@@ -1,10 +1,13 @@
 <?php
-session_start();
-// error_reporting(0);
+error_reporting(0);
 include('includes/dbconnection.php');  
 
 try {
+    if(isset($_GET['nid'])){
     $user_id = $_GET['nid'];
+    }else{
+        echo "<script>location.href='index.php'</script>";
+    }
     $sql = "SELECT * FROM trainees WHERE NID = ?";
     $stmt = $pdoConnection->prepare($sql);
     $stmt->execute([$user_id]);
@@ -369,9 +372,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <!-- Template Javascript -->
         <script src="js/main.js"></script>
-        <script>
-            alert(document.getElementsByName('gender')[0].value);
-        </script>
 </body>
 
 </html>
