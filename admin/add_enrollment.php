@@ -21,7 +21,7 @@ else {
     $exists = $stmt->fetchColumn();
 
     if (!$exists) {
-        $errors['traineeNIDinvalid'] = "Trainee is already enrolled in a group or not on added the trainees list.";
+        $errors['traineeNIDinvalid'] = "Trainee is already enrolled in a group or not on added the trainees list. Add the trainee first or edit his enrollment from the manage page.";
     }
     if (empty($traineeNID)){
       $errors['traineeNID'] = "Trainee NID can't be empty";
