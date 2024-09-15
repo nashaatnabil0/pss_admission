@@ -9,17 +9,20 @@ else {
   $errors = [];
 if (isset($_POST['submit'])) {
     // Trainee
-    $name = $_POST['Name'];
+    $name =trim($_POST['Name']);
+    $namePattern = '/^[a-zA-Z]+(?:\s+[a-zA-Z]+)+$/';
     if (empty($name)) {
         $errors['Name'] = "Name cannot be empty";
-    }
+    }elseif (!preg_match( $namePattern , $name)) {
+      $errors['Name'] = "Name must be two words at least  and contain letters only ";
+     }
     
-    $gender = $_POST['gender'];
+    $gender = trim ($_POST['gender']);
     if (empty($gender)) {
         $errors['gender'] = "Please Choose a gender";
     }
     
-    $contactmobnum = $_POST['contactMobNum'];
+    $contactmobnum = trim($_POST['contactMobNum']);
     $mobnumPattern = '/^(011|010|015|012)[0-9]{8}$/';
     if (empty($contactmobnum)) {
         $errors['contactMobNum'] = "Phone number cannot be empty";
@@ -32,7 +35,7 @@ if (isset($_POST['submit'])) {
         $errors['birthdate'] = "Birthdate cannot be empty";
     }
     
-    $NID = $_POST['NID'];
+    $NID = trim($_POST['NID']);
     if (empty($NID)) {
         $errors['NID'] = "National ID number cannot be empty";
     }
@@ -42,15 +45,18 @@ if (isset($_POST['submit'])) {
     }
 
     // Father
-    $fatherName = $_POST['fatherName'];
+    $fatherName = trim( $_POST['fatherName']);
     if (empty($fatherName)) {
       $errors['fatherName'] = "Father full name can't be empty";
-    }
-    $fatherJob = $_POST['fatherJob'];
+    }elseif (!preg_match( $namePattern , $fatherName)) {
+      $errors['fatherName'] = "Name must be two words at least  and contain letters only ";
+     }
+
+    $fatherJob = trim($_POST['fatherJob']);
     if (empty($fatherJob)) {
       $errors['fatherJob'] = "Father job can't be empty";
     }
-    $fathermobnum = $_POST['fatherMobNum'];
+    $fathermobnum = trim($_POST['fatherMobNum']);
     if (empty($fathermobnum)) {
         $errors['fatherMobNum'] = "Phone number cannot be empty";
     } elseif (!preg_match($mobnumPattern, $fathermobnum)) {
@@ -58,15 +64,18 @@ if (isset($_POST['submit'])) {
     }
 
     // Mother
-    $motherName = $_POST['motherName'];
+    $motherName = trim($_POST['motherName']);
     if (empty($motherName)) {
       $errors['motherName'] = "Mother full name can't be empty";
-    }
-    $motherJob = $_POST['motherJob'];
+    }elseif (!preg_match( $namePattern , $motherName)) {
+      $errors['fatherName'] = "Name must be two words at least  and contain letters only ";
+     }
+
+    $motherJob = trim($_POST['motherJob']);
     if (empty($motherName)) {
       $errors['motherJob'] = "Mother job can't be empty";
     }
-    $mothermobnum = $_POST['motherMobNum'];
+    $mothermobnum = trim( $_POST['motherMobNum']);
     if (empty($mothermobnum)) {
         $errors['motherMobNum'] = "Phone number cannot be empty";
     } elseif (!preg_match($mobnumPattern, $mothermobnum)) {
@@ -99,7 +108,7 @@ var_dump($_FILES);
     }
   
     //notes
-  $notes =$_POST['Notes'];
+  $notes = trim($_POST['Notes']);
   if(empty($errors)){
 
     $bdImage = uploadImages($_FILES["bdimg"], $allowed_extensions, "certimg", $NID,"bdimg");
