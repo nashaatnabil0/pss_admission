@@ -20,91 +20,40 @@ try {
     exit();
 }
 
-    // if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    //     // Retrieve form data
-    //     $errors = [];
-    //     $mobnumPattern = '/^(011|010|015|012)[0-9]{8}$/';
-    //     $name = $_POST['registerName'];
-    //     if (empty($name)) {
-    //         $errors['Name'] = "Name cannot be empty";
-    //     }
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Retrieve form data
+        $errors = [];
+        $name = $_POST['registerName'];
+        if (empty($name)) {
+            $errors['Name'] = "Name cannot be empty";
+        }
+        $group = $_POST['group'];
+        $enrollstate = $_POST['enrollStat'];
+        var_dump($_POST);
+        if(empty($errors)){    
+            try{            
+                $query = $pdoConnection->query("INSERT INTO enrollment (traineeNID, groupId, paymentPlan, state) VALUES ('$nationalId', '$group','full', '$enrollstate')");
+                    
+                    if ($query) {
+                        echo "<script>alert('Enrolled succsessfully.');</script>";
+                        echo "<script>window.location.href ='account.php?nid=$nationalId'</script>";
+                    } else {
+                        echo "<script>alert('Something Went Wrong. Please try again.');</script>";
+                    }
+            } catch (PDOException $e) {
+                echo "Error: " . $e->getMessage();
+                exit();
+            }
+        }
 
-    //     $nid = $nationalId;
-    //     if ($genderDigit % 2 == 0) { $gender = "female"; }else $gender="male";
-    //     $dob = $_POST['dob'];
-
-    //     $contactMobNum = $_POST['contactMobNum'];  
-    //     if (empty($contactMobNum)) {
-    //         $errors['contactMobNum'] = "Phone number cannot be empty";
-    //     } elseif (!preg_match($mobnumPattern, $contactMobNum)) {
-    //         $errors['contactMobNuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
-    //     }
-
-    //     // Father
-    //     $fatherName = $_POST['fatherName'];
-    //     if (empty($fatherName)) {
-    //     $errors['fatherName'] = "Father full name can't be empty";
-    //     }
-    //     $fatherJob = $_POST['fatherJob'];
-    //     if (empty($fatherJob)) {
-    //     $errors['fatherJob'] = "Father job can't be empty";
-    //     }
-    //     $fatherNum = $_POST['fatherNum'];
-    //     if (empty($fatherNum)) {
-    //         $errors['fatherMobNum'] = "Phone number cannot be empty";
-    //     } elseif (!preg_match($mobnumPattern, $fatherNum)) {
-    //         $errors['fatherMobNuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
-    //     }
-
-    //     // Mother
-    //     $motherName = $_POST['motherName'];
-    //     if (empty($motherName)) {
-    //     $errors['motherName'] = "Mother full name can't be empty";
-    //     }
-    //     $motherJob = $_POST['motherJob'];
-    //     if (empty($motherName)) {
-    //     $errors['motherJob'] = "Mother job can't be empty";
-    //     }
-    //     $motherNum = $_POST['motherNum'];
-    //     if (empty($motherNum)) {
-    //         $errors['motherMobNum'] = "Phone number cannot be empty";
-    //     } elseif (!preg_match($mobnumPattern, $motherNum)) {
-    //         $errors['motherMobNuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
-    //     }
-        
-    //     if (empty($_FILES["personalPhoto"])){
-    //         $errors['traineePicempty']= "Please upload trainee Photo.";
-    //     }
-    //     if (empty($_FILES["idPhoto"])){
-    //         $errors['bdimgempty']= "Please upload Birth Certificate or National ID photo. ";
-    //     }
-
-    //     $notes =$_POST['notes'];
-    //     // var_dump($_FILES['idPhoto']);
-    //     var_dump($errors);
-
-    //     if(empty($errors)){
-    //         $personalPhoto = uploadImages($_FILES['personalPhoto'], $allowed_extensions, "proimg", $nid,"traineePic");
-    //         $idPhoto = uploadImages($_FILES['idPhoto'], $allowed_extensions, "certimg", $nid,"bdimg");
-    //         if(empty($notes)){
-    //             $query = $pdoConnection->query("INSERT INTO trainees (Name, NID, birthDate, gender, photo, birthCertificate,contactMobNum,fatherName,fatherMobNum,fatherJob,motherName,motherMobNum,motherJob) VALUES ('$name', '$nationalId','$dob', '$gender', '$personalPhoto','$idPhoto','$contactMobNum','$fatherName','$fatherNum','$fatherJob','$motherName','$motherNum','$motherJob')");
-
-    //         }else{
-    //             $query = $pdoConnection->query("INSERT INTO trainees (Name, NID, birthDate, gender, photo, birthCertificate,contactMobNum,fatherName,fatherMobNum,fatherJob,motherName,motherMobNum,motherJob,Notes) VALUES ('$name', '$nationalId','$dob', '$gender', '$personalPhoto','$idPhoto','$contactMobNum','$fatherName','$fatherNum','$fatherJob','$motherName','$motherNum','$motherJob','$notes')");
-    //         }
-    //                 if ($query) {
-    //                     echo "<script>alert('Profile Created Successfully\n.');</script>";
-    //                     echo "<script>window.location.href ='account.php?nid=$nid'</script>";
-    //                 } else {
-    //                     echo "<script>alert('Something Went Wrong. Please try again.');</script>";
-    //                 }
-    //     }
-
-    // }
+    }
     $query = "SELECT COUNT(groupId) AS groupCount 
     FROM enrollment 
     WHERE traineeNID = :traineeNID 
-    AND state = 'on'";
+    AND state IN ('on', 'waiting')";
+
+    // AND state = 'on'";
+    
     $stmt = $pdoConnection->prepare($query);
     $stmt->execute(['traineeNID' => $nationalId]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -116,8 +65,7 @@ try {
         // echo "<script>alert('can enroll in $groupcounter more group');</script>";
         $able_to_enroll = true;
         $query = "SELECT
-            g.sportId,
-            sp.name
+            g.sportId
         FROM 
             enrollment en 
         JOIN 
@@ -127,12 +75,13 @@ try {
         WHERE 
             en.traineeNID = :traineeNID 
         AND 
-            en.state = 'on'";
+            en.state IN ('on', 'waiting');";
         $stmt = $pdoConnection->prepare($query);
         $stmt->execute(['traineeNID' => $nationalId]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        $diabledsportID= $result['sportId'];
-
+        
+        // $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $diabledsportArr = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        
     }elseif($groupcounter == 0){
         $able_to_enroll = true;
     }
@@ -331,8 +280,29 @@ try {
                                     <label for="NID">*Sport</label>
                                     <select class="form-control m-bot15" name="sport" id="sport" required>
                                         <option value="">Choose a sport</option>
-                                        <?php $query=$pdoConnection-> query("Select * from sport WHERE ID <> '$diabledsportID';");
-                                        while($row=$query ->fetch(PDO:: FETCH_ASSOC))
+                                        <?php 
+
+                                            if (!empty($diabledsportArr)) {
+                                                // Create placeholders for the IDs
+                                                $placeholders = implode(',', array_fill(0, count($diabledsportArr), '?'));
+
+                                                // Main query to select from 'sport' excluding certain IDs
+                                                $sql = "SELECT * FROM sport WHERE ID NOT IN ($placeholders)";
+                                                
+                                                // Prepare and execute the query
+                                                $stmt = $pdoConnection->prepare($sql);
+                                                $stmt->execute($diabledsportArr);
+
+                                                // Fetch the results
+                                                $results = $stmt->fetchAll();
+                                            } else {
+                                                // Handle case when no values are returned from the exclusion query
+                                                $sql = "SELECT * FROM sport";
+                                                $stmt = $pdoConnection->prepare($sql);
+                                                $stmt->execute();
+                                            }
+                                    
+                                        while($row=$stmt ->fetch(PDO:: FETCH_ASSOC))
                                         {?>    
                                             <option value="<?php echo $row['ID'];?>"><?php echo $row['name'];?></option>
                                         <?php } ?> 
@@ -343,7 +313,8 @@ try {
                                 </div>
                                 <div class="radio-card-container">
 
-                                        <?php $query=$pdoConnection-> query("Select g.*,(SELECT COUNT(*) FROM enrollment en WHERE en.groupId = g.ID AND en.state = 'on') as totalEnrollments from groups g WHERE sportId <> '$diabledsportID';");
+                                        <?php 
+                                        $query=$pdoConnection-> query("Select g.*,(SELECT COUNT(*) FROM enrollment en WHERE en.groupId = g.ID AND en.state = 'on') as totalEnrollments from groups g ;");
                                         while($row=$query ->fetch(PDO:: FETCH_ASSOC))
                                         {
                                             $totalEnrollments = $row['totalEnrollments']+29;
@@ -362,10 +333,10 @@ try {
                                                         <!-- Show "Waiting" label if totalEnrollments exceed 30 -->
                                                         <?php if ($isWaiting) { ?>
                                                             <p style="color: red; text-align: left;"><strong>Status:</strong> Waiting List</p>
-                                                            <input value='waiting' id="enrollStat" readonly hidden>
+                                                            <input value='waiting' name="enrollStat" id="enrollStat" readonly hidden>
                                                         <?php } else { ?>
                                                             <p style="color: green; text-align: left;"><strong>Status:</strong> Available</p>
-                                                            <input value='on' id="enrollStat" readonly hidden>
+                                                            <input value='on' name="enrollStat" id="enrollStat" readonly hidden>
                                                         <?php } ?>
                                                     
                                                     </div>
