@@ -115,7 +115,7 @@ try {
     <img src="admin/images/<?php echo htmlspecialchars($row['image']); ?>" alt="Season Image" class="img-fluid" style="max-width: 100%; height: auto;">
     </div>
     <div class="text-section text-center text-md-left">
-        <h1>Season Announcement</h1>
+        <h1 >New Season open!</h1>
         <h2><?php echo htmlspecialchars($row['name']); ?></h2>
         <p><strong>Start Date:</strong> <?php echo date('F d, Y', strtotime($row['startDate'])); ?></p>
         <br />
