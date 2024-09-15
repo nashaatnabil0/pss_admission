@@ -97,20 +97,23 @@ $sql= $pdoConnection -> query("DELETE FROM enrollment WHERE ID='$rid'");
                     g.days as Gdays,
                     g.minAge as gminAge,
                     g.maxAge as gmaxAge,
-                    g.Timeslot as Timing
+                    g.Timeslot as Timing,
+                    sp.name as spname
                   FROM 
                     enrollment en 
                   JOIN
                     trainees t on en.traineeNID=t.NID 
                   JOIN 
-                    groups g on en.groupId=g.ID;");
+                    groups g on en.groupId=g.ID
+                  JOIN
+                    sport sp on g.sportId = sp.ID;");
                   $cnt=1;
                   while ($row=$ret-> fetch(PDO:: FETCH_ASSOC)) {
                   ?>
                   <tr>
                     <td><?php echo $cnt;?></td>
                     <td><?php  echo $row['Tname'];?></td>
-                    <td><?php  echo $row['Gtilte'].' / '.$row['Gdays'].' / '.$row['gminAge'].' to '.$row['gmaxAge'].' / '.$row['Timing'];?></td> 
+                    <td><?php  echo $row['Gtilte'].' / '.$row['spname'].' / '.$row['Gdays'].' / '.$row['gminAge'].' to '.$row['gmaxAge'].' / '.$row['Timing'];?></td> 
                     <td><?php  echo $row['paymentPlan'];?></td>
                     <td><?php  echo $row['paymentState'];?></td>
                     <td><?php  echo $row['state'];?></td>

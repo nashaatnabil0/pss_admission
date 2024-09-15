@@ -152,11 +152,11 @@ else {
                     <div class="col-sm-10">
                       <select class="form-control m-bot15" name="group" id="group">
                         <option value="">Choose a group</option>
-                          <?php $query=$pdoConnection-> query("select * from groups");
+                          <?php $query=$pdoConnection-> query("select * from groups g JOIN sport sp on g.sportId = sp.ID;");
                             while($row=$query ->fetch(PDO:: FETCH_ASSOC))
                             {
                             ?> 
-                          <option value="<?php echo $row['ID'];?>"><?php echo $row['Title'];?></option>
+                          <option value="<?php echo $row['ID'];?>"><?php echo $row['Title'].' / '.$row['name'];?></option>
                             <?php } ?> 
                       </select>
                       <?php if (isset($_POST['submit']) && isset($errors['group'])){ ?>
