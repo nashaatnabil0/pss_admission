@@ -53,7 +53,7 @@ try {
     AND state IN ('on', 'waiting')";
 
     // AND state = 'on'";
-    
+
     $stmt = $pdoConnection->prepare($query);
     $stmt->execute(['traineeNID' => $nationalId]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -294,7 +294,7 @@ try {
                                                 $stmt->execute($diabledsportArr);
 
                                                 // Fetch the results
-                                                $results = $stmt->fetchAll();
+                                                // $results = $stmt->fetchAll();
                                             } else {
                                                 // Handle case when no values are returned from the exclusion query
                                                 $sql = "SELECT * FROM sport";
