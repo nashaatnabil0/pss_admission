@@ -47,7 +47,7 @@ else {
       $errors['traineeNID'] = "Trainee not found, please add the trainee first.";
       } else {
       $existQuery = $pdoConnection->prepare("
-                                            SELECT t.NID, e.state, g.sportId, g.seasonId
+                                            SELECT t.NID, e.state as enrollstate , g.sportId as spID, g.seasonId as seId
                                             FROM trainees t
                                             LEFT JOIN enrollment e ON t.NID = e.traineeNID
                                             LEFT JOIN groups g ON e.groupId = g.ID
@@ -65,51 +65,45 @@ else {
       $res = $existQuery->fetch(PDO::FETCH_ASSOC);
        
 
-       if ($res['state'] === 'on' && $res['sportId'] === $sport && $res['seasonId'] === $season) {
-          $errors['submit']= "Trainee is already enrolled in this sport and season. kindly go to manage enrollment for any edits";
-        
-        } elseif ($res['state'] === 'on' && ($res['sportId'] !== $sport || $res['seasonId'] !== $season)) {
-          $errors['submit']= "Trainee is already enrolled in this sport and season. kindly go to manage enrollment for any edits";
-       
-      } elseif (in_array($res['state'], ['waiting', 'off']) && $result['sportId'] === $sport && $res['seasonId'] === $season) {
-          $errors['submit'] = "Trainee is already enrolled but his enrollment is not active (waiting or off). go to manage enrollments to activate it.";
-        } elseif ($res['seasonId'] !== $season) {
+       if ($res['enrollstate'] !== null && $res['spID'] === $sport && $res['seID'] === $season) {
+          $errors['submit']= "Trainee is already enrolled in this sport this season. kindly go to manage enrollment to edit his state or group";
+        } else {
           
-    $pymntPlan = $_POST['pymntplan'];
-    if (empty($pymntPlan)) {
-      $errors['pymntplan'] = "Please select a payment plan";
-    }
+            $pymntPlan = $_POST['pymntplan'];
+            if (empty($pymntPlan)) {
+              $errors['pymntplan'] = "Please select a payment plan";
+            }
 
-    $enrollstate = $_POST['enrollstate'];
-    if (empty($enrollstate)) {
-      $errors['enrollstate'] = "Please select an enrollment state";
-    }
+            $enrollstate = $_POST['enrollstate'];
+            if (empty($enrollstate)) {
+              $errors['enrollstate'] = "Please select an enrollment state";
+            }
 
-    $enrolldate = $_POST['enrolldate'];
-    if ($enrolldate == "") {
-        $enrolldate = date('Y-m-d') ;
-    }else{
-      $enrolldate = $_POST['enrolldate'];
-    }
-    
-    $discount = $_POST['discount'];
-    if (empty($discount)){
-      $discount = null;
-    }
-      
-     if (empty($errors)){
-            $query2 = $pdoConnection->query("INSERT INTO enrollment(traineeNID, groupId, paymentPlan, state, date, discount) VALUES ('$traineeNID', '$group', '$pymntPlan', '$enrollstate', '$enrolldate', '$discount')");
-                  if ($query2) {
-                      echo "<script>alert('Enrollment details have been added.');</script>";
-                      echo "<script>window.location.href ='viewall_enrollments.php'</script>";
-                  } else {
-                      echo "<script>alert('Something Went Wrong. Please try again.');</script>";
-                    }
-              }
-          }
+            $enrolldate = $_POST['enrolldate'];
+            if ($enrolldate == "") {
+                $enrolldate = date('Y-m-d') ;
+            }else{
+              $enrolldate = $_POST['enrolldate'];
+            }
+            
+            $discount = $_POST['discount'];
+            if (empty($discount)){
+              $discount = null;
+            }
+              
+            if (empty($errors)){
+                    $query2 = $pdoConnection->query("INSERT INTO enrollment(traineeNID, groupId, paymentPlan, state, date, discount) VALUES ('$traineeNID', '$group', '$pymntPlan', '$enrollstate', '$enrolldate', '$discount')");
+                          if ($query2) {
+                              echo "<script>alert('Enrollment details have been added.');</script>";
+                              echo "<script>window.location.href ='viewall_enrollments.php'</script>";
+                          } else {
+                              echo "<script>alert('Something Went Wrong. Please try again.');</script>";
+                            }
+                      }
+                  }
 
-    }
-    
+            }
+            
  }
 ?>
 <!DOCTYPE html>
