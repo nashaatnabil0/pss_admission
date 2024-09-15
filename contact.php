@@ -130,8 +130,8 @@ include('includes/dbconnection.php');
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div>
-                                <button class="btn btn-primary py-3 px-4" type="submit" id="sendMessageButton">Send
-                                    Message</button>
+                            <button class="btn btn-primary py-3 px-4 rounded" type="button" id="sendMessageButton" onclick="redirectToThankYou()">Send Message</button>
+
                             </div>
                         </form>
                     </div>
@@ -164,6 +164,13 @@ include('includes/dbconnection.php');
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+
+    <script>
+    function redirectToThankYou() {
+        window.location.href = 'thanku.php';
+    }
+</script>
+
 </body>
 
 </html>
