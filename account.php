@@ -9,7 +9,6 @@ if (!isset($_GET['nid'])) {
     exit();
 }else{
 $user_id = $_GET['nid'];
-
 try {
     $sql = "SELECT * FROM trainees WHERE NID = ?";
     $stmt = $pdoConnection->prepare($sql);
@@ -26,8 +25,6 @@ try {
     exit();
 }
 
-// Close db connection
-$conn = null;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -83,7 +80,6 @@ $conn = null;
                     <a class="text-white px-2" href="https://www.facebook.com/people/Peace-Sports-School-Assuit/100091623236982/" target="_blank">
                         <i class="fab fa-facebook-f"></i>
                     </a>
-                    
                     <a class="text-white px-2" href="https://www.instagram.com/pss_assuit/" target="_blank">
                         <i class="fab fa-instagram"></i>
                     </a>
@@ -108,9 +104,8 @@ $conn = null;
             </button>
             <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
                 <div class="navbar-nav m-auto py-0">
-                    <a href="index.php" class="nav-item nav-link active">Home</a>
-                    <a href="about.php" class="nav-item nav-link">About</a>
-                    
+                    <a href="index.php" class="nav-item nav-link">Home</a>
+                    <a href="about.php" class="nav-item nav-link">About</a>                
                     <a href="contact.php" class="nav-item nav-link">Contact</a>
 
         </nav>
@@ -163,7 +158,7 @@ $conn = null;
 
                 if ($row = $stmt->fetch()) {
             ?>        
-            <a href="forms.php?nid=<?php echo $user_id; ?>" class="btn btn-primary py-2 px-3" style="position: absolute; right: 50px;">Enroll Now</a> </br>
+            <a href="forms.php?nid=<?php echo $user_id; ?>&traineeName=<?php echo htmlspecialchars($user['Name']); ?>" class="btn btn-primary py-2 px-3" style="position: absolute; right: 50px;">Enroll Now</a> </br>
             <?php
                 } else {
                     echo "<p>No seasons available at the moment.</p>";
