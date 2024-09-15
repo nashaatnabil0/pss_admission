@@ -63,7 +63,6 @@ if (isset($_POST['submit'])) {
         $errors['fatherMobNuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
     }
 
-    
     // Mother
     $motherName = trim($_POST['motherName']);
     if (empty($motherName)) {
