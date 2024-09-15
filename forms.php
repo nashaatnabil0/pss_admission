@@ -108,7 +108,7 @@ try {
     $stmt = $pdoConnection->prepare($query);
     $stmt->execute(['traineeNID' => $nationalId]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    $groupcounter= $result['groupCount'];
+    $groupcounter= $result['groupCount']-1;
     $able_to_enroll = false;
     $diabledsportID =0;
     // If the count is less than 2, allow enrollment
@@ -133,7 +133,13 @@ try {
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         $diabledsportID= $result['sportId'];
 
+    }elseif($groupcounter == 0){
+        $able_to_enroll = true;
+    }
+    else{
+        echo "<script>alert('you can not enroll in more than $groupcounter diffreant sport groups - If you need any help with this contact the admins'); location.href='account.php?nid=$nationalId'</script>";
 
+    }
         // Extract birth date from the ID (assuming a specific format)
         $gen = substr($nationalId, 0, 1);
         $birthDate = substr($nationalId, 1, 6);
@@ -149,15 +155,6 @@ try {
 
         // Calculate the age in years
         $age = $currentDate->diff($birthDate)->y;
-
-    }elseif($groupcounter == 0){
-        $able_to_enroll = true;
-    }
-    else{
-        echo "<script>alert('you can not enroll in more than $groupcounter diffreant sport groups - If you need any help with this contact the admins'); location.href='account.php?nid=$nationalId'</script>";
-
-    }
-
 
 
 ?>
@@ -196,38 +193,57 @@ try {
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
    
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    .radio-card {
-      cursor: pointer;
-      border: 2px solid #ddd;
-      border-radius: 8px;
-      padding: 15px;
-      transition: border-color 0.3s;
-    }
+    <style>
+        .radio-card-container {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        }
 
-    .radio-card:hover {
-      border-color: #007bff;
-    }
+        .radio-card {
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 20px;
+        width: 100%;
+        max-width: 300px;
+        text-align: center;
+        margin: 10px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+        }
 
-    .radio-card input[type="radio"] {
-      display: none;
-    }
+        .radio-card:hover {
+        border-color: #007bff;
+        transform: scale(1.05);
+        }
 
-    .radio-card input[type="radio"]:checked + .card {
-      border-color: #007bff;
-      background-color: #f1f8ff;
-    }
+        .radio-card input[type="radio"] {
+        display: none;
+        }
 
-    .radio-card .card {
-      margin-bottom: 10px;
-      padding: 15px;
-    }
+        .radio-card input[type="radio"]:checked + .card-content {
+        border-color: #007bff;
+        background-color: #e7f1ff;
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
+        }
 
-    .custom-control-label {
-      font-weight: bold;
-    }
-  </style>
+        .radio-card .card-content {
+        padding: 15px;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        }
+
+        .radio-card h5 {
+        margin-bottom: 15px;
+        }
+
+        .radio-card p {
+        font-size: 14px;
+        color: #666;
+        }
+    </style>
 
 </head>
 
@@ -276,19 +292,19 @@ try {
                     <a href="index.php" class="nav-item nav-link ">Home</a>
                     <a href="about.php" class="nav-item nav-link">About</a>                    
                     <a href="contact.php" class="nav-item nav-link">Contact</a>
+                </div>
+            </div>
         </nav>
     </div>
     <div class="container">
-        <h2 class="about_text_2"><strong>Let's Choses The Best Group For You</strong></h2>
+        <h2 class="about_text_2" style="text-align: center;"><strong>Let's Choses The Best Group For You</strong></h2>
         <section class="login_register_section layout_padding">
             <div class="container">
-                <div class="heading_container heading_center">
-                    <p>
-                        *Please fill all the fields.
-                    </p>
+                <div class="heading_container" style="text-align: center;">
+                    <p>*Please fill all the fields.</p>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
+                <div class="row justify-content-center">
+                    <div class="col-9">
                         <div class="register_form">
                             <form id="registerForm" method="POST" enctype="multipart/form-data">
                                 <div class="form-group">
@@ -306,68 +322,49 @@ try {
                                     value=<?php echo $nationalId; ?>
                                     readonly>
                                     <?php echo "Your age is: " . $age;?>
-                                    </div>
-                                    <div class="form-group">
-                                        <select class="form-control m-bot15" name="sport" id="sport">
-                                            <option value="">Choose a sport</option>
-                                            <?php $query=$pdoConnection-> query("Select * from sport WHERE ID <> '$diabledsportID';");
-                                                while($row=$query ->fetch(PDO:: FETCH_ASSOC))
-                                                {
-                                                ?>    
+                                </div>
+                                <div class="form-group">
+                                    <select class="form-control m-bot15" name="sport" id="sport" required>
+                                        <option value="">Choose a sport</option>
+                                        <?php $query=$pdoConnection-> query("Select * from sport WHERE ID <> '$diabledsportID';");
+                                        while($row=$query ->fetch(PDO:: FETCH_ASSOC))
+                                        {?>    
                                             <option value="<?php echo $row['ID'];?>"><?php echo $row['name'];?></option>
-                                                <?php } ?> 
+                                        <?php } ?> 
                                         </select>
                                         <?php if(isset($_POST['submit']) && isset($errors['sport'])) { ?>
                                             <span style="color:red;display:block;text-align:left"><?php echo $errors['sport']; ?></span>
                                             <?php } ?>
-                                    </div>
-                                        <!-- <select class="form-control m-bot15" name="group" id="group"> -->
-                                            <!-- <option value="">Choose a group</option> -->
-                                            <?php $query=$pdoConnection-> query("Select * from groups WHERE sportId <> '$diabledsportID';");
-                                                while($row=$query ->fetch(PDO:: FETCH_ASSOC))
-                                                {
-                                                ?>    
-        <div class="col-md-4">
-        <label class="radio-card">
-          <input type="radio" name="option" value="option1">
-          <div class="card">
-            <h5 class="custom-control-label">Option 1</h5>
-            <p>Details about Option 1</p>
-          </div>
-        </label>
-      </div>
-                                            <!-- <option value="<?php echo $row['ID'];?>"><?php echo $row['Title'];?></option> -->
-                                                <?php } ?> 
-                                        <!-- </select> -->
+                                </div>
+                                <div class="radio-card-container">
+
+                                        <?php $query=$pdoConnection-> query("Select * from groups WHERE sportId <> '$diabledsportID';");
+                                        while($row=$query ->fetch(PDO:: FETCH_ASSOC))
+                                        {?>    
+                                                <!-- Option 1 -->
+                                                <label class="radio-card" style="display: none;" Sportdata="<?php echo $row['sportId'];?>">
+                                                    <input type="radio" name="group" id="group" value="<?php echo $row['ID'];?>" required>
+                                                    <div class="card-content">
+                                                        <h5 class="text-primary"><?php echo $row['Title'];?></h5>
+                                                        <p style="text-align: left;"><strong>Days:</strong> <?php echo $row['days'];?> - timing: <?php echo $row['Timeslot'];?></p>
+                                                        <p style="text-align: left;"><strong>Age:</strong> <?php echo $row['minAge']; ?>y to <?php echo $row['maxAge']; ?>y</p>
+                                                        <p style="text-align: left;"><strong>Location:</strong> <?php echo $row['place'];?></p>
+                                                        <p style="text-align: left;"><strong>Fees:</strong> <?php echo $row['price'];?></p>
+                                                    </div>
+                                                </label>
+
+                                            <?php } ?>
+                                </div>
+
                                         <?php if(isset($_POST['submit']) && isset($errors['groups'])) { ?>
                                             <span style="color:red;display:block;text-align:left"><?php echo $errors['sport']; ?></span>
-                                            <?php } ?>
+                                        <?php } ?>
                                             
-                                
-      
-
-                                
-                                <!-- <div class="form-group">
-                                    <label for="motherNum">*Mother Phone Number</label>
-                                    <input type="text" class="form-control" name="motherNum" id="motherNum" placeholder="Enter mother phone number" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="motherJob">*Mother Job</label>
-                                    <input type="text" class="form-control" name="motherJob" id="motherJob" placeholder="Enter mother job" required>
-                                </div>
-                                <div class="control-group">
-                                <textarea class="form-control border-1 py-3 px-4" rows="3" id="Notes" name ="notes" 
-                                placeholder="If you have notes regarding health or any thing, please write it here."></textarea>
-                                <p class="help-block text-danger"></p>
-                            </div> -->
-                                <div>
-                                <button type="submit" style="background-color: #063547" class="btn btn-primary">Register</button>
+                                <button type="submit"  class="btn btn-primary">Register</button>
                             </form>
-                            <br>
                         </div>
                     </div>
                 </div>
-            </div>
         </section>
     </div>
 
@@ -384,8 +381,8 @@ try {
         <script src="lib/waypoints/waypoints.min.js"></script>
         <script src="lib/counterup/counterup.min.js"></script>
         <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+       
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
         <!-- Contact Javascript File -->
         <script src="mail/jqBootstrapValidation.min.js"></script>
@@ -393,22 +390,24 @@ try {
 
         <!-- Template Javascript -->
         <script src="js/main.js"></script>
+        
+        <!-- JavaScript to Filter Cards -->
         <script>
-            function toggleDropdown() {
-                document.querySelector('.select-items').style.display = 
-                document.querySelector('.select-items').style.display === 'block' ? 'none' : 'block';
-            }
-
-            function selectOption(elm) {
-                document.querySelector('.selected-item').innerHTML = elm.innerHTML;
-                document.querySelector('.select-items').style.display = 'none';
-            }
-
-            window.onclick = function(event) {
-                if (!event.target.matches('.selected-item')) {
-                document.querySelector('.select-items').style.display = 'none';
-                }
-            }
+            document.getElementById('sport').addEventListener('change', function() {
+                var selectedSportId = this.value;
+                var cards = document.querySelectorAll('.radio-card');
+                
+                cards.forEach(function(card) {
+                    var cardSportId = card.getAttribute('Sportdata');
+                    
+                    // Show card if the sport ID matches, otherwise hide it
+                    if (selectedSportId === cardSportId) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
         </script>
 </body>
 

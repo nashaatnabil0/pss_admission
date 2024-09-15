@@ -17,12 +17,6 @@ $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
                     <a class="text-white px-2" href="https://www.facebook.com/people/Peace-Sports-School-Assuit/100091623236982/" target="_blank">
                         <i class="fab fa-facebook-f"></i>
                     </a>
-                    <!-- <a class="text-white px-2" href="">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a class="text-white px-2" href="">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a> -->
                     <a class="text-white px-2" href="https://www.instagram.com/pss_assuit/" target="_blank">
                         <i class="fab fa-instagram"></i>
                     </a>
@@ -52,8 +46,9 @@ $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
                     <a href="contact.php" class="nav-item nav-link <?php if (strpos($url,'contact') == true) { echo ' active'; } ?>">Contact</a>
                 </div>
                 <a href="login.php" class="btn btn-primary py-2 px-4 d-none d-lg-block ">Register / Enroll</a>
-                <a href="login.php" class="btn btn-primary py-2 px-4 d-block d-lg-none">Register / Enroll</a>
+                <!-- <a href="login.php" class="btn btn-primary py-2 px-4 d-block d-lg-none">Register / Enroll</a> -->
                 </div>
+            </div>
         </nav>
     </div>
     <!-- Navbar End -->
