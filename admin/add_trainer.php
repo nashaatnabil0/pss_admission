@@ -8,11 +8,15 @@ if (strlen($_SESSION['sportadmission']==0)) {
 else {
   $errors = [];
   if(isset($_POST['submit'])){
-    $name = $_POST['name'];
+    $namePattern = '/^[a-zA-Z]+(?:\s+[a-zA-Z]+)+$/';
+    $name = trim($_POST['name']);
     if (empty($name)) {
       $errors['name'] = "Name cannot be empty";
-  }
-    $mobnum = $_POST['mobnum'];
+  }elseif (!preg_match( $namePattern , $name)) {
+    $errors['name'] = "Name must be two words at least  and contain letters only ";
+   }
+
+    $mobnum = trim($_POST['mobnum']);
     $monnumPattern='/^(011|010|015|012)[0-9]{8}$/';
     if (empty($mobnum)) {
       $errors['mobnum'] = "phone number cannot be empty";

@@ -8,13 +8,13 @@ if (strlen($_SESSION['sportadmission']==0)) {
   $errors = [];
   
   if(isset($_POST['submit'])) {
-    $sportName = $_POST['sportname'];
+    $sportName = trim($_POST['sportname']);
     
     if (empty($sportName)) {
       $errors['sportname'] = "sport name cannot be empty";
     }
     
-    $supervisor = $_POST['supervisorID'];
+    $supervisor = trim($_POST['supervisorID']);
     
     if (empty($errors)) {
       if ($supervisor == "") {

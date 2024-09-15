@@ -12,7 +12,7 @@ else {
     if (empty($name)) {
       $errors['name'] = "Name cannot be empty";
   }
-    $mobnum = $_POST['mobnum'];
+    $mobnum = trim($_POST['mobnum']);
     $monnumPattern='/^(011|010|015|012)[0-9]{8}$/';
     if (empty($mobnum)) {
       $errors['mobnum'] = "phone number cannot be empty";
@@ -21,7 +21,7 @@ else {
      $errors['mobnuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
  }
 
-    $email = $_POST['email'];
+    $email = trim($_POST['email']);
 
     if (empty($email)) {
       $errors['email'] = "Email cannot be empty";
@@ -36,11 +36,11 @@ else {
     $errors['role'] = "Please choose a role";
   }
 
-  $password=$_POST['password'];
+  $password=trim($_POST['password']);
   if(empty($password)){
     $errors['password'] = "Password can't be empty";
       }
-  $Confpassword=$_POST['confirmpassword'];
+  $Confpassword=trim($_POST['confirmpassword']);
 
   $passwordPattern= '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/';
   

@@ -10,7 +10,7 @@ $errors = [];
 if(isset($_POST['submit']))
   {
    
-    $Name=$_POST['Name'];
+    $Name=trim($_POST['Name']);
     if (empty($Name)){
       $errors['Name'] = "Please enter a season name";
     }
@@ -19,12 +19,12 @@ if(isset($_POST['submit']))
       $errors['seasonstate'] = "Please choose state for the season";
     }
     
-    $stDate=$_POST['startdate'];
+    $stDate=trim($_POST['startdate']);
     if(empty($stDate)){
       $stDate = null;
     }
 
-    $seasonImg = $_FILES['image']['name'];
+    $seasonImg = trim($_FILES['image']['name']);
     if (empty($seasonImg)){
       $errors['image'] = "Please upload season image";
     }else{
