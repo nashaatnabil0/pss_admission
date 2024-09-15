@@ -264,14 +264,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     required>
                                     <?php echo "Your age is: " . $age;?>
                                     </div>
-
+                                <div class="form-group">
+                                    <label for="gender" class="form-label"  style="margin:7px">*Gender</label>
                                 <div class="form-control">
-                                    <label for="gender" class="form-label">*Gender</label> 
                                     <input type="radio" name="genderele" value="male" required 
-                                    <?php if ($genderDigit % 2 != 0) { echo "checked"; } ?> disabled > Male
+                                    <?php if ($genderDigit % 2 != 0) { echo "checked"; } ?> disabled > Male 
                                     <input type="radio" name="genderele" value="female" required
-                                    <?php if ($genderDigit % 2 == 0) { echo "checked"; } ?> disabled > Female
-                                </div> <br>
+                                    <?php if ($genderDigit % 2 == 0) { echo "checked"; } ?> disabled style="margin-left:40px"> Female
+                                </div>
+                                </div>
                                 <div class="form-group">
                                     <label for="phoneNum">*Enter phone number that has WhatsApp</label>
                                     <input type="text" class="form-control" name="contactMobNum" id="contactMobNum" placeholder="Enter phone number">

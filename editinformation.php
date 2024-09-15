@@ -249,22 +249,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     required>
                                     <!-- Error message placeholder -->
                                      <span id="nidError" style="color: red; display: none;">Please enter a valid 14-digit National ID where the 4th and 5th digits form a number less than or equal to 12, and the 6th and 7th digits form a number less than or equal to 31.</span>
-                                    </div>
                                      <?php echo "Your age is: " . $age;?> 
-
+                                    </div>
+                                    
+                                     <div class="form-group">
+                                     <label for="gender" class="form-label"> Gender</label> 
                                 <div class="form-control">
-                                    <label for="gender" class="form-label">Gender</label> 
                                     <input type="radio" name="gender" value="male" required <?php 
                                     if ($genderDigit % 2 != 0) {
                                         echo "checked";
                                     } 
-                                    ?> disabled >Male
+                                    ?> disabled > Male
                                     <input type="radio" name="gender" value="female" required <?php 
                                     if ($genderDigit % 2 == 0) {
                                         echo "checked";
                                     } 
-                                    ?> disabled >Female
-                                </div> <br>
+                                    ?> disabled style="margin-left:40px"> Female
+                                </div> 
+                                </div>
                                 <div class="form-group">
                                     <label for="phoneNum">Enter phone number that has WhatsApp</label>
                                     <input type="text" class="form-control" name="contactMobNum" id="contactMobNum" placeholder="Enter phone number" value="<?php  echo $row['contactMobNum'];?>" required>
