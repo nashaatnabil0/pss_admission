@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(0);
+//error_reporting(0);
 include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
@@ -10,28 +10,71 @@ else {
    // Fetch all trainee NIDs from the database
    $stmt = $pdoConnection->query("SELECT NID, Name FROM trainees");
    $trainees = $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetch all NIDs and names
-
+   
+   $nidPattern ='/^\d{3}(0[0-9]|1[0-2])([0-2][0-9]|3[01])\d{7}$/';
   if(isset($_POST['submit'])){
     $traineeNID = $_POST['traineeNID'];
-    // Validate traineeNID
-    // Check if the trainee exists in the 'trainees' table and has no existing enrollment
-    $stmt = $pdoConnection->query(" SELECT COUNT(*) FROM trainees 
-                                      LEFT JOIN enrollment ON trainees.NID = enrollment.traineeNID 
-                                      WHERE trainees.NID = $traineeNID AND (enrollment.state IS NULL OR enrollment.state IN ('off', 'waiting'))");
-    $exists = $stmt->fetchColumn();
-
-    if (!$exists) {
-        $errors['traineeNIDinvalid'] = "Trainee is already enrolled in a group or not on added the trainees list. Add the trainee first or edit his enrollment from the manage page.";
+    if (empty($traineeNID)) {
+      $errors['traineeNID'] = "National ID number cannot be empty";
+     } elseif (!preg_match($nidPattern, $traineeNID)){
+         $errors['ineeNIDinvalid'] = "Please enter a valid 14-digit National ID where the 4th and 5th digits form a number less than or equal to 12, and the 6th and 7th digits form a number less than or equal to 31.";
+       }
+   
+    // checking if traineeNID exists in the database
+    $traineeExists = false; 
+    foreach ($trainees as $trainee){
+      if ($trainee['NID'] == $traineeNID){
+        $traineeExists = true;
+        break;
+      }
     }
-    if (empty($traineeNID)){
-      $errors['traineeNID'] = "Trainee NID can't be empty";
-    }
-
+   
     $group = $_POST['group'];
     if (empty($group)) {
       $errors['group'] = "Please select a group";
     }
+    $sport = $_POST['sport'];
+    if (empty($sport)) {
+      $errors['sport'] = "Please select a group";
+    }
+    
+    $season = $_POST['season'];
+    if (empty($season)) {
+      $errors['season'] = "Please select a group";
+    }
+   
+    if (!$traineeExists) {
+      $errors['traineeNID'] = "Trainee not found, please add the trainee first.";
+      } else {
+      $existQuery = $pdoConnection->prepare("
+                                            SELECT t.NID, e.state, g.sportId, g.seasonId
+                                            FROM trainees t
+                                            LEFT JOIN enrollment e ON t.NID = e.traineeNID
+                                            LEFT JOIN groups g ON e.groupId = g.ID
+                                            WHERE t.NID = :traineeNID
+                                              AND (g.sportId = :sport OR g.sportId IS NULL)
+                                              AND (g.seasonId = :season OR g.seasonId IS NULL)
+                                        ");
+  
+                  $existQuery->execute([
+                      ':traineeNID' => $traineeNID,
+                      ':sport' => $sport,
+                      ':season' => $season
+                       ]);
+  
+      $res = $existQuery->fetch(PDO::FETCH_ASSOC);
+       
 
+       if ($res['state'] === 'on' && $res['sportId'] === $sport && $res['seasonId'] === $season) {
+          $errors['submit']= "Trainee is already enrolled in this sport and season. kindly go to manage enrollment for any edits";
+        
+        } elseif ($res['state'] === 'on' && ($res['sportId'] !== $sport || $res['seasonId'] !== $season)) {
+          $errors['submit']= "Trainee is already enrolled in this sport and season. kindly go to manage enrollment for any edits";
+       
+      } elseif (in_array($res['state'], ['waiting', 'off']) && $result['sportId'] === $sport && $res['seasonId'] === $season) {
+          $errors['submit'] = "Trainee is already enrolled but his enrollment is not active (waiting or off). go to manage enrollments to activate it.";
+        } elseif ($res['seasonId'] !== $season) {
+          
     $pymntPlan = $_POST['pymntplan'];
     if (empty($pymntPlan)) {
       $errors['pymntplan'] = "Please select a payment plan";
@@ -50,20 +93,23 @@ else {
     }
     
     $discount = $_POST['discount'];
-    
-    if (empty($errors)){
-    if ($discount == "") {
-    $query2 = $pdoConnection->query("INSERT INTO enrollment(traineeNID, groupId, paymentPlan, state, date) VALUES ('$traineeNID', '$group', '$pymntPlan', '$enrollstate', '$enrolldate')");
-    }else{
-    $query2 = $pdoConnection->query("INSERT INTO enrollment(traineeNID, groupId, paymentPlan, state, date, discount) VALUES ('$traineeNID', '$group', '$pymntPlan', '$enrollstate', '$enrolldate', '$discount')");
+    if (empty($discount)){
+      $discount = null;
     }
-          if ($query2) {
-              echo "<script>alert('Enrollment details have been added.');</script>";
-              echo "<script>window.location.href ='viewall_enrollments.php'</script>";
-          } else {
-              echo "<script>alert('Something Went Wrong. Please try again.');</script>";
-            }
-      }
+      
+     if (empty($errors)){
+            $query2 = $pdoConnection->query("INSERT INTO enrollment(traineeNID, groupId, paymentPlan, state, date, discount) VALUES ('$traineeNID', '$group', '$pymntPlan', '$enrollstate', '$enrolldate', '$discount')");
+                  if ($query2) {
+                      echo "<script>alert('Enrollment details have been added.');</script>";
+                      echo "<script>window.location.href ='viewall_enrollments.php'</script>";
+                  } else {
+                      echo "<script>alert('Something Went Wrong. Please try again.');</script>";
+                    }
+              }
+          }
+
+    }
+    
  }
 ?>
 <!DOCTYPE html>
@@ -128,6 +174,9 @@ else {
               <div class="panel-body">
                 <form class="form-horizontal " method="post" action="" enctype="multipart/form-data" novalidate>
                 <!-- Trainee National ID input with datalist -->
+                <?php if (isset($_POST['submit']) && isset($errors['submit'])){ ?>
+                    <span style="color:red;display:block;text-align:left"><?php echo $errors['traineeNID']; ?></span>
+                  <?php } ?>
                 <div class="form-group">
                 <label class="col-sm-2 control-label">Trainee National ID</label>
                 <div class="col-sm-10">
@@ -147,21 +196,41 @@ else {
                   <?php } ?>
                 </div>
                 </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Sport</label>
+                    <div class="col-sm-10">
+                      <select class="form-control m-bot15" name="sport" id="sport">
+                        <option value="">Choose a Sport</option>
+                          <?php $sportquery=$pdoConnection-> query("select * from sport ");
+                            while($row=$sportquery ->fetch(PDO:: FETCH_ASSOC))
+                            {
+                            ?> 
+                          <option value="<?php echo $row['ID'];?>"><?php echo $row['name'];?></option>
+                            <?php } ?> 
+                      </select>
+                      <?php if (isset($_POST['submit']) && isset($errors['sport'])){ ?>
+                    <span style="color:red;display:block;text-align:left"><?php echo $errors['sport']; ?></span>
+                  <?php } ?>
+                    </div>
+                  </div>
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Group</label>
                     <div class="col-sm-10">
                       <select class="form-control m-bot15" name="group" id="group">
-                        <option value="">Choose a group</option>
-                          <?php $query=$pdoConnection-> query("select * from groups g JOIN sport sp on g.sportId = sp.ID;");
-                            while($row=$query ->fetch(PDO:: FETCH_ASSOC))
-                            {
-                            ?> 
-                          <option value="<?php echo $row['ID'];?>"><?php echo $row['Title'].' / '.$row['name'];?></option>
-                            <?php } ?> 
+                        <option value="">Choose a group</option> 
                       </select>
                       <?php if (isset($_POST['submit']) && isset($errors['group'])){ ?>
                     <span style="color:red;display:block;text-align:left"><?php echo $errors['group']; ?></span>
                   <?php } ?>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Season</label>
+                    <div class="col-sm-10">
+                      <?php $seasonquery = $pdoConnection->query( "select * from season where state = 'on' ");
+                           $row3 = $seasonquery -> fetch(PDO:: FETCH_ASSOC);
+                      ?>
+                      <input class="form-control" id="season" name="season"  type="text" value="<?php echo $row3['name'];?>" readonly >
                     </div>
                   </div>
                   <div class="form-group">
@@ -259,6 +328,46 @@ else {
 
   // Set the value of the input as today's date
   dateElement.value = formattedDate;  
+</script>
+<!-- get the groups based on the sport selected -->
+<script>
+   // All groups with their associated sport ID
+    const groups = [
+        <?php
+        $groupquery = $pdoConnection->query("SELECT g.ID, g.Title, sp.ID as sportId, sp.name as sportName, g.maxAge, g.minAge 
+                                            FROM groups g 
+                                            JOIN sport sp ON g.sportId = sp.ID");
+        while ($row2 = $groupquery->fetch(PDO::FETCH_ASSOC)) {
+        ?>
+            { 
+              id: "<?php echo $row2['ID']; ?>", 
+              title: "<?php echo $row2['Title']; ?>", 
+              sportId: "<?php echo $row2['sportId']; ?>",
+              minAge: "<?php echo $row2['minAge']; ?>",
+              maxAge: "<?php echo $row2['maxAge']; ?>",
+            },
+        <?php
+        }
+        ?>
+    ];
+
+    // Function to update groups based on selected sport
+    document.getElementById('sport').addEventListener('change', function() {
+        const sportId = this.value;
+        const groupSelect = document.getElementById('group');
+
+        // Clear previous options
+        groupSelect.innerHTML = '<option value="">Choose a Group</option>';
+
+        // Filter and add new group options based on the selected sport
+        groups.filter(group => group.sportId === sportId).forEach(group => {
+            const option = document.createElement('option');
+            option.value = group.id;
+            option.textContent = group.title + " / " + " ( " + group.minAge + "-" + group.maxAge + " ) " + " Y " ;
+            groupSelect.appendChild(option);
+        });
+    });
+
 </script>
 </body>
 
