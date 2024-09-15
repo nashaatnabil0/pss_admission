@@ -313,8 +313,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="control-group">
                                 <textarea class="form-control border-1 py-3 px-4" rows="3" id="Notes" name ="notes" placeholder="Notes"
                                 value="<?php  echo $row['Notes'];?>"   
-                                required="required"
-                                    data-validation-required-message="If you have notes regarding health or any thing, please write it here."></textarea>
+                                placeholder="If you have notes regarding health or any thing, please write it here."></textarea>
                                 <p class="help-block text-danger"></p>
                             </div>
                             <?php } ?>

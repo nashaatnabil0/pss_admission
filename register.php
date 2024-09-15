@@ -12,7 +12,7 @@ try {
 
     if ($user) {
         // Handle case where no user is found (e.g., user does not exist)
-        echo "<script>alert('There is a ready account for you can enroll if it available or you can edit your profile');  location.href='login.php'</script>";
+        echo "<script>alert('There is a ready account for you! You can enroll if it is available or you can edit your profile');  location.href='login.php'</script>";
         exit();
     }
 } catch (PDOException $e) {
@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $fatherNum = $_POST['fatherNum'];
     if (empty($fatherNum)) {
-        $errors['fatherMobNum'] = "Phone number cannot be empty";
+        $errors['fatherNum'] = "Phone number cannot be empty";
     } elseif (!preg_match($mobnumPattern, $fatherNum)) {
         $errors['fatherMobNuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
     }
@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $motherNum = $_POST['motherNum'];
     if (empty($motherNum)) {
-        $errors['motherMobNum'] = "Phone number cannot be empty";
+        $errors['motherNum'] = "Phone number cannot be empty";
     } elseif (!preg_match($mobnumPattern, $motherNum)) {
         $errors['motherMobNuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
     }
@@ -244,7 +244,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="row">
                     <div class="col-md-6">
                         <div class="register_form">
-                            <form id="registerForm" method="POST" enctype="multipart/form-data">
+                            <form id="registerForm" method="POST" enctype="multipart/form-data" novalidate>
                                 <div class="form-group">
                                     <label for="registerName">*Full Name</label>
                                     <input type="text" class="form-control" name="registerName" id="registerName" placeholder="Enter full name" required>
@@ -290,20 +290,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="form-group">
                                     <label class="control-label">*Personal Photo</label>
                                     <input type="file" class="form-control" name="personalPhoto" id="personalPhoto" required>
-                                    <?php if(isset($errors['traineePic'])) { ?>
+                                    <?php if( isset($_POST['submit']) && isset($errors['traineePic'])) { ?>
                                         <span style="color:red;display:block;text-align:left"><?php echo $errors['traineePic']; ?></span>
                                     <?php } ?>
-                                    <?php if(isset($errors['traineePicempty'])) { ?>
+                                    <?php if( isset($_POST['submit']) && isset($errors['traineePicempty'])) { ?>
                                         <span style="color:red;display:block;text-align:left"><?php echo $errors['traineePicempty']; ?></span>
                                     <?php } ?>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">*National ID/Birth Certificate Photo</label>
                                     <input type="file" class="form-control" name="idPhoto" id="idPhoto" required>
-                                    <?php if(isset($errors['bdimg'])) { ?>
+                                    <?php if(isset($_POST['submit']) && isset($errors['bdimg'])) { ?>
                                         <span style="color:red;display:block;text-align:left"><?php echo $errors['bdimg']; ?></span>
                                     <?php } ?>
-                                    <?php if(isset($errors['bdimgempty'])) { ?>
+                                    <?php if(isset($_POST['submit']) && isset($errors['bdimgempty'])) { ?>
                                         <span style="color:red;display:block;text-align:left"><?php echo $errors['bdimgempty']; ?></span>
                                     <?php } ?>
                                 </div>
@@ -317,22 +317,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="form-group">
                                     <label for="fatherNum">*Father Phone Number</label>
                                     <input type="text" class="form-control" name="fatherNum" id="fatherNum" placeholder="Enter father phone number" required>
+                                    <?php if(isset($_POST['submit']) && isset($errors['fatherNum'])){  ?>
+                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherMobNum'];  ?></span>
+                                    <?php } ?>
+                                    <?php if(isset($_POST['submit']) && isset($errors['fatherMobNuminvalid'])){ ?>
+                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherMobNuminvalid'] ?></span>
+                                    <?php } ?>
                                 </div>
                                 <div class="form-group">
                                     <label for="fatherJob">*Father Job</label>
                                     <input type="text" class="form-control" name="fatherJob" id="fatherJob" placeholder="Enter father job" required>
+                                    <?php if(isset($_POST['submit']) && isset($errors['fatherJob'])){  ?>
+                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherMobNum'];  ?></span>
+                                    <?php } ?>
                                 </div>
                                 <div class="form-group">
                                     <label for="motherName">*Mother Name</label>
                                     <input type="text" class="form-control" name="motherName" id="motherName" placeholder="Enter mother name" required>
+                                    <?php if(isset($_POST['submit']) && isset($errors['motherName'])){  ?>
+                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherMobNum'];  ?></span>
+                                    <?php } ?>
                                 </div>
                                 <div class="form-group">
                                     <label for="motherNum">*Mother Phone Number</label>
                                     <input type="text" class="form-control" name="motherNum" id="motherNum" placeholder="Enter mother phone number" required>
+                                    <?php if(isset($_POST['submit']) && isset($errors['motherNum'])){  ?>
+                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherMobNum'];  ?></span>
+                                    <?php } ?>
+                                    <?php if(isset($_POST['submit']) && isset($errors['fatherMobNuminvalid'])){ ?>
+                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherMobNuminvalid'] ?></span>
+                                    <?php } ?>
                                 </div>
                                 <div class="form-group">
                                     <label for="motherJob">*Mother Job</label>
                                     <input type="text" class="form-control" name="motherJob" id="motherJob" placeholder="Enter mother job" required>
+                                    <?php if(isset($_POST['submit']) && isset($errors['motherJob'])){  ?>
+                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherMobNum'];  ?></span>
+                                    <?php } ?>
                                 </div>
                                 <div class="control-group">
                                 <textarea class="form-control border-1 py-3 px-4" rows="3" id="Notes" name ="notes" 
