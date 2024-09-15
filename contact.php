@@ -102,38 +102,36 @@ include('includes/dbconnection.php');
                     <h1 class="mb-4">Leave us a message here!</h1>
                     <div class="contact-form bg-secondary" style="padding: 30px;">
                         <div id="success"></div>
-                        <!-- <form name="sentMessage" id="contactForm" novalidate="novalidate"> -->
-                        <form action="https://formsubmit.co/nashaatnabil8@gmail.com" method="POST">
-                            <!-- <div class="control-group">
+                        <form name="sentMessage" id="contactForm" novalidate="novalidate">
+                            <div class="control-group">
                                 <input type="text" class="form-control border-0 p-4" id="name" placeholder="Your Name"
                                     required="required" data-validation-required-message="Please enter your name" />
                                 <p class="help-block text-danger"></p>
-                            </div> -->
-                            <!-- <div class="control-group">
-                                <input type="text" class="form-control border-0 p-4" id="phoneNumber" placeholder="Your Phone Number"
+                            </div>
+                            <div class="control-group">
+                                <input type="email" class="form-control border-0 p-4" id="phoneNumber" placeholder="Your Phone Number"
                                     required="required" data-validation-required-message="Please enter your phone number" />
                                 <p class="help-block text-danger"></p>
-                            </div> -->
+                            </div>
                             <div class="control-group">
-                                <input type="email" class="form-control border-0 p-4" id="email" name="email" placeholder="Your Email"
+                                <input type="email" class="form-control border-0 p-4" id="email" placeholder="Your Email"
                                     required="required" data-validation-required-message="Please enter your email" />
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="control-group">
-                                <input type="text" class="form-control border-0 p-4" id="subject" name="_subject" placeholder="Subject"
+                                <input type="text" class="form-control border-0 p-4" id="subject" placeholder="Subject"
                                     required="required" data-validation-required-message="Please enter a subject" />
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="control-group">
-                                <textarea class="form-control border-0 py-3 px-4" rows="3" id="message" name="message" placeholder="Message"
+                                <textarea class="form-control border-0 py-3 px-4" rows="3" id="message" placeholder="Message"
                                     required="required"
                                     data-validation-required-message="Please enter your message"></textarea>
                                 <p class="help-block text-danger"></p>
                             </div>
-                            <input type="hidden" name="_next" value="https://yourdomain.co/thanks.html">
                             <div>
-                                <button class="btn btn-primary py-3 px-4" type="submit" id="sendMessageButton">Send
-                                    Email</button>
+                            <button class="btn btn-primary py-3 px-4 rounded" type="button" id="sendMessageButton" onclick="redirectToThankYou()">Send Message</button>
+
                             </div>
                         </form>
                     </div>
@@ -166,6 +164,13 @@ include('includes/dbconnection.php');
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+
+    <script>
+    function redirectToThankYou() {
+        window.location.href = 'thanku.php';
+    }
+</script>
+
 </body>
 
 </html>

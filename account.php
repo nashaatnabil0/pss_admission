@@ -163,15 +163,13 @@ try {
         <!-- Buttons for Edit and Enroll -->
         <div class="row">
             <div class="col-md-4 ml-auto">
-                <a href="editinformation.php?editid=<?php echo $user['NID']; ?>" class="btn btn-primary py-2 px-3" style="margin-bottom: 5px">Edit</a>
+                <a href="editinformation.php?editid=<?php echo $user['NID']; ?>" class="btn btn-primary py-2 px-3">Edit</a>
             </div> 
             <div class="col-md-4 ml-auto">
-            <?php
-            $query = "SELECT * FROM season WHERE state = 'on' ORDER BY startDate DESC LIMIT 1";
-            $stmt = $pdoConnection->query($query);
+            </br> <?php
                 if ($row = $stmt->fetch()) {
                 ?>
-                <a href="forms.php?nid=<?php echo $user_id; ?>&traineeName=<?php echo htmlspecialchars($user['Name']); ?>" class="btn btn-primary py-2 px-3">Enroll Now</a>
+                <a href="forms.php?nid=<?php echo $user_id; ?>&traineeName=<?php echo htmlspecialchars($user['Name']); ?>" class="btn btn-primary py-2 px-3 rounded">Enroll Now</a>
                 <?php } else {
                     echo "<p>No seasons available at the moment.</p>";
                 } ?>
