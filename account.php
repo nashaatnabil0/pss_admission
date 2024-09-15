@@ -113,62 +113,71 @@ try {
 
     <!-- User Account Section Start -->
     <div class="container-fluid py-5">
-        <div class="container">
-            <h2 class="text-center mb-4">User Account</h2>
-            <div class="row  justify-content-center">
-                <div class="col">
-                    <div class="bg-light p-4 rounded">
-                        <h4 class="text-primary">Personal Information</h4>
-                        <p><strong>Name:</strong> <?php echo htmlspecialchars($user['Name']); ?></p>
-                        <p><strong>Birth Date:</strong> <?php echo htmlspecialchars($user['birthDate']); ?></p>
-                        <p><strong>Gender:</strong> <?php echo htmlspecialchars($user['gender']); ?></p>
-                        <p><strong>Contact Mobile Number:</strong> <?php echo '0'.htmlspecialchars($user['contactMobNum']); ?></p>
+    <div class="container">
+        <h2 class="text-center mb-4">User Account</h2>
+        <div class="row justify-content-center">
+            <!-- Personal and Family Information -->
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col">
+                        <div class="bg-light p-4 rounded">
+                            <h4 class="text-primary">Personal Information</h4>
+                            <p><strong>Name:</strong> <?php echo htmlspecialchars($user['Name']); ?></p>
+                            <p><strong>Birth Date:</strong> <?php echo htmlspecialchars($user['birthDate']); ?></p>
+                            <p><strong>Gender:</strong> <?php echo htmlspecialchars($user['gender']); ?></p>
+                            <p><strong>Contact Mobile Number:</strong> <?php echo '0'.htmlspecialchars($user['contactMobNum']); ?></p>
+                        </div>
                     </div>
-                </div>
-                <div class="col">
-                    <div class="bg-light p-4 rounded">
-                        <h4 class="text-primary">Family Information</h4>
-                        <p><strong>Father's Name:</strong> <?php echo htmlspecialchars($user['fatherName']); ?></p>
-                        <p><strong>Father's Mobile Number:</strong> <?php echo '0'.htmlspecialchars($user['fatherMobNum']); ?></p>
-                        <p><strong>Father's Job:</strong> <?php echo htmlspecialchars($user['fatherJob']); ?></p>
-                        <p><strong>Mother's Name:</strong> <?php echo htmlspecialchars($user['motherName']); ?></p>
-                        <p><strong>Mother's Mobile Number:</strong> <?php echo '0'.htmlspecialchars($user['motherMobNum']); ?></p>
-                        <p><strong>Mother's Job:</strong> <?php echo htmlspecialchars($user['motherJob']); ?></p>
-                        <p><strong>Notes:</strong> <?php echo htmlspecialchars($user['Notes']); ?></p>
+                    <div class="col">
+                        <div class="bg-light p-4 rounded">
+                            <h4 class="text-primary">Family Information</h4>
+                            <p><strong>Father's Name:</strong> <?php echo htmlspecialchars($user['fatherName']); ?></p>
+                            <p><strong>Father's Mobile Number:</strong> <?php echo '0'.htmlspecialchars($user['fatherMobNum']); ?></p>
+                            <p><strong>Father's Job:</strong> <?php echo htmlspecialchars($user['fatherJob']); ?></p>
+                            <p><strong>Mother's Name:</strong> <?php echo htmlspecialchars($user['motherName']); ?></p>
+                            <p><strong>Mother's Mobile Number:</strong> <?php echo '0'.htmlspecialchars($user['motherMobNum']); ?></p>
+                            <p><strong>Mother's Job:</strong> <?php echo htmlspecialchars($user['motherJob']); ?></p>
+                            <p><strong>Notes:</strong> <?php echo htmlspecialchars($user['Notes']); ?></p>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="row  justify-content-center"> 
-                <div class="col-md-4 ml-auto">
-                    <a href="admin/images/<?php echo $user['photo'];?>" target="_blank" id="imageproLink">
-                        <img src="admin/images/<?php echo $user['photo'];?>" width='150' height="150" id="modalpropic" style="margin-bottom: 15px;">
-                    </a>
-                </div>
-                <div class="col-md-4 ml-auto">
-                    <a href="admin/images/<?php echo $user['birthCertificate'];?>" target="_blank" id="imageproLink">
-                        <img src="admin/images/<?php echo $user['birthCertificate'];?>" width='150' height="150" id="modalpropic" style="margin-bottom: 15px;">
-                    </a>
-                </div>
-            </div>
-            <a href="editinformation.php?editid=<?php echo $user['NID']; ?>" class="btn btn-primary py-2 px-3" style="position: absolute; left: 50px;">Edit</a> 
-            <?php
-                try {
-                $query = "SELECT * FROM season WHERE state = 'on' ORDER BY startDate DESC LIMIT 1";
-                $stmt = $pdoConnection->query($query);
 
+            <!-- Pictures Section -->
+            <div class="col-md-4">
+                <div class="col">
+                    <div class="col mb-4">
+                        <a href="admin/images/<?php echo $user['photo'];?>" target="_blank">
+                            <img src="admin/images/<?php echo $user['photo'];?>" width='150' height="150" class="img-fluid" alt="User Photo">
+                        </a>
+                    </div> 
+                    <div class="col">
+                        <a href="admin/images/<?php echo $user['birthCertificate'];?>" target="_blank">
+                            <img src="admin/images/<?php echo $user['birthCertificate'];?>" width='150' height="150" class="img-fluid" alt="Birth Certificate">
+                        </a>
+                    </div> </br>
+                </div>
+            </div>
+        </div>
+
+        <!-- Buttons for Edit and Enroll -->
+        <div class="row">
+            <div class="col-md-4 ml-auto">
+                <a href="editinformation.php?editid=<?php echo $user['NID']; ?>" class="btn btn-primary py-2 px-3">Edit</a>
+            </div> 
+            <div class="col-md-4 ml-auto">
+            </br> <?php
                 if ($row = $stmt->fetch()) {
-            ?>        
-            <a href="forms.php?nid=<?php echo $user_id; ?>&traineeName=<?php echo htmlspecialchars($user['Name']); ?>" class="btn btn-primary py-2 px-3" style="position: absolute; right: 50px;">Enroll Now</a> </br>
-            <?php
-                } else {
+                ?>
+                <a href="forms.php?nid=<?php echo $user_id; ?>&traineeName=<?php echo htmlspecialchars($user['Name']); ?>" class="btn btn-primary py-2 px-3">Enroll Now</a>
+                <?php } else {
                     echo "<p>No seasons available at the moment.</p>";
-                }
-                } catch (PDOException $e) {
-                    echo "Error: " . $e->getMessage();
-                }
-            ?>
+                } ?>
+            </div>
         </div>
     </div>
+</div>
+
     <!-- User Account Section End -->
 
     <!-- Footer Start -->

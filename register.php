@@ -236,7 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </nav>
     </div>
     <div class="container">
-        <h2 class="about_text_2"><strong>In order to enroll, please Create Yor Profile first!</strong></h2>
+        <h2 class="about_text_2"><strong>In order to enroll, please create your profile first!</strong></h2>
         <section class="login_register_section layout_padding">
             <div class="container">
                 <div class="heading_container heading_center">

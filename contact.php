@@ -67,25 +67,39 @@ include('includes/dbconnection.php');
         <div class="container-fluid py-5">
         <div class="container">
             <div class="row">
-                <div class="col-lg-5 pb-4 pb-lg-0">
-                    <div class="bg-primary text-dark text-center p-4">
-                        <h4 class="m-0"><i class="fa fa-map-marker-alt text-white mr-2"></i>Get In Touch</h4>
-                    </div> </br>
-                    <div class="col-md-6 mb-5">
+                <div class="col-lg-5 pb-4 pb-lg-0 mx-auto">
+                    <div class=" text-dark text-center p-4">
+                        <h1 class="m-0" style="color: #FF4800;"><i class=" text-white mr-2"></i>Get In Touch</p>
+                    </div> 
+                    <div class="col-md-8 mb-5 mx-auto text-center">
                     <a href="https://maps.app.goo.gl/VyMNrRsB7VuPTFGF8" target="_blank">
-                        <p><i class="fa fa-map-marker-alt mr-2"></i>شارع الجمهوريه أمام ميدان ام البطل , Asyut, Egypt</p>
+                        <h5><i class="fa fa-map-marker-alt mr-2"></i>شارع الجمهوريه أمام ميدان ام البطل , Asyut, Egypt</h5>
                     </a>
                     <a href="https://wa.me/201205557683" target="_blank">
-                        <p><i class="fa fa-phone-alt mr-2"></i>+01205557683</p>
+                        <h5><i class="fa fa-phone-alt mr-2"></i>+01205557683</h5>
                     </a>
                     <a href="mailto:pssassiut1@gmail.com" target="_blank">
-                        <p><i class="fa fa-envelope mr-2"></i>pssassiut1@gmail.com</p>
+                        <h5><i class="fa fa-envelope mr-2"></i>pssassiut1@gmail.com</h5>
+                    </a>
+                    </div>
+                    <div class=" text-dark text-center p-4">
+                        <h1 class="m-0" style="color: #FF4800;"><i class=" text-white mr-2"></i>Our Social Media</h1>
+                    </div> 
+                    <div class="col-md-8 mb-5 mx-auto text-center">
+                    <a href="https://maps.app.goo.gl/VyMNrRsB7VuPTFGF8" target="_blank">
+                        <h5><i class="fab fa-facebook"></i> Facebook</h5>
+                    </a>
+                    <a href="https://www.instagram.com/pss_assuit/" target="_blank">
+                        <h5><i class="fab fa-instagram"></i> Instagram</h5>
+                    </a>
+                    <a href="https://wa.me/201205557683" target="_blank">
+                        <h5><i class="fab fa-whatsapp"></i> WhatsApp</h5>
                     </a>
                     </div>
                 </div>
                 <div class="col-lg-7">
-                    <h6 class="text-primary text-uppercase font-weight-bold">Contact Us</h6>
-                    <h1 class="mb-4">Contact For Any Queries</h1>
+                    <h6 class="text-primary text-uppercase font-weight-bold">If you have any query</h6>
+                    <h1 class="mb-4">Leave us a message here!</h1>
                     <div class="contact-form bg-secondary" style="padding: 30px;">
                         <div id="success"></div>
                         <!-- <form name="sentMessage" id="contactForm" novalidate="novalidate"> -->
