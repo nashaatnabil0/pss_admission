@@ -104,16 +104,16 @@ include('includes/dbconnection.php');
                         <div id="success"></div>
                         <!-- <form name="sentMessage" id="contactForm" novalidate="novalidate"> -->
                         <form action="https://formsubmit.co/nashaatnabil8@gmail.com" method="POST">
-                            <div class="control-group">
+                            <!-- <div class="control-group">
                                 <input type="text" class="form-control border-0 p-4" id="name" placeholder="Your Name"
                                     required="required" data-validation-required-message="Please enter your name" />
                                 <p class="help-block text-danger"></p>
-                            </div>
-                            <div class="control-group">
+                            </div> -->
+                            <!-- <div class="control-group">
                                 <input type="text" class="form-control border-0 p-4" id="phoneNumber" placeholder="Your Phone Number"
                                     required="required" data-validation-required-message="Please enter your phone number" />
                                 <p class="help-block text-danger"></p>
-                            </div>
+                            </div> -->
                             <div class="control-group">
                                 <input type="email" class="form-control border-0 p-4" id="email" name="email" placeholder="Your Email"
                                     required="required" data-validation-required-message="Please enter your email" />
