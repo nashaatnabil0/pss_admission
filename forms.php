@@ -108,7 +108,7 @@ try {
     $stmt = $pdoConnection->prepare($query);
     $stmt->execute(['traineeNID' => $nationalId]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    $groupcounter= $result['groupCount']-1;
+    $groupcounter= $result['groupCount'];
     $able_to_enroll = false;
     $diabledsportID =0;
     // If the count is less than 2, allow enrollment
@@ -154,8 +154,11 @@ try {
         $currentDate = new DateTime();
 
         // Calculate the age in years
-        $age = $currentDate->diff($birthDate)->y;
-
+        $ageY = ($currentDate->diff($birthDate)->y)-8;
+        $ageM = $currentDate->diff($birthDate)->m;
+        if($ageM > 6){
+            $ageY +=1;
+        }
 
 ?>
 
@@ -321,9 +324,11 @@ try {
                                     id="NID"
                                     value=<?php echo $nationalId; ?>
                                     readonly>
-                                    <?php echo "Your age is: " . $age;?>
+                                    <input value='<?php echo $ageY; ?>' traineeMonth="<?php echo $ageM; ?>" id="traineeAge" readonly hidden>
+                                    <?php if($ageM>6){echo "Your age is: " .($ageY-1)."y and ".$ageM.'m';}else{ echo "Your age is: " .$ageY."y and ".$ageM.'m';} ?>
                                 </div>
                                 <div class="form-group">
+                                    <label for="NID">*Sport</label>
                                     <select class="form-control m-bot15" name="sport" id="sport" required>
                                         <option value="">Choose a sport</option>
                                         <?php $query=$pdoConnection-> query("Select * from sport WHERE ID <> '$diabledsportID';");
@@ -338,24 +343,39 @@ try {
                                 </div>
                                 <div class="radio-card-container">
 
-                                        <?php $query=$pdoConnection-> query("Select * from groups WHERE sportId <> '$diabledsportID';");
+                                        <?php $query=$pdoConnection-> query("Select g.*,(SELECT COUNT(*) FROM enrollment en WHERE en.groupId = g.ID AND en.state = 'on') as totalEnrollments from groups g WHERE sportId <> '$diabledsportID';");
                                         while($row=$query ->fetch(PDO:: FETCH_ASSOC))
-                                        {?>    
+                                        {
+                                            $totalEnrollments = $row['totalEnrollments']+29;
+                                            $isWaiting = $totalEnrollments >= $row['capacity'] ? true : false; // Check if enrollments exceed 30
+                                        ?>    
                                                 <!-- Option 1 -->
-                                                <label class="radio-card" style="display: none;" Sportdata="<?php echo $row['sportId'];?>">
+                                                <label class="radio-card" style="display: none;" Sportdata="<?php echo $row['sportId'];?>" minAge="<?php echo $row['minAge']; ?>" maxAge="<?php echo $row['maxAge']; ?>">
                                                     <input type="radio" name="group" id="group" value="<?php echo $row['ID'];?>" required>
                                                     <div class="card-content">
                                                         <h5 class="text-primary"><?php echo $row['Title'];?></h5>
                                                         <p style="text-align: left;"><strong>Days:</strong> <?php echo $row['days'];?> - timing: <?php echo $row['Timeslot'];?></p>
                                                         <p style="text-align: left;"><strong>Age:</strong> <?php echo $row['minAge']; ?>y to <?php echo $row['maxAge']; ?>y</p>
                                                         <p style="text-align: left;"><strong>Location:</strong> <?php echo $row['place'];?></p>
-                                                        <p style="text-align: left;"><strong>Fees:</strong> <?php echo $row['price'];?></p>
+                                                        <p style="text-align: left;"><strong>Fees:</strong> <?php echo $row['price'].' EGP';?></p>
+                                                    
+                                                        <!-- Show "Waiting" label if totalEnrollments exceed 30 -->
+                                                        <?php if ($isWaiting) { ?>
+                                                            <p style="color: red; text-align: left;"><strong>Status:</strong> Waiting List</p>
+                                                            <input value='waiting' id="enrollStat" readonly hidden>
+                                                        <?php } else { ?>
+                                                            <p style="color: green; text-align: left;"><strong>Status:</strong> Available</p>
+                                                            <input value='on' id="enrollStat" readonly hidden>
+                                                        <?php } ?>
+                                                    
                                                     </div>
                                                 </label>
 
                                             <?php } ?>
                                 </div>
-
+                                <div class="alert alert-danger" role="alert" hidden >
+                                    This is a danger alert—check it out!
+                                </div>
                                         <?php if(isset($_POST['submit']) && isset($errors['groups'])) { ?>
                                             <span style="color:red;display:block;text-align:left"><?php echo $errors['sport']; ?></span>
                                         <?php } ?>
@@ -395,13 +415,18 @@ try {
         <script>
             document.getElementById('sport').addEventListener('change', function() {
                 var selectedSportId = this.value;
+                var traineeAgeY = document.getElementById('traineeAge').value;
+                // var traineeAgeM = parseInt(document.getElementById('traineeAge').getAttribute('traineeMonth'));
                 var cards = document.querySelectorAll('.radio-card');
                 
                 cards.forEach(function(card) {
                     var cardSportId = card.getAttribute('Sportdata');
+                    var minAge = parseInt(card.getAttribute('minAge'));
+                    var maxAge = parseInt(card.getAttribute('maxAge'));
                     
                     // Show card if the sport ID matches, otherwise hide it
-                    if (selectedSportId === cardSportId) {
+                    if (selectedSportId === cardSportId &&
+                    (traineeAgeY >= minAge && traineeAgeY <= maxAge)) {
                         card.style.display = 'block';
                     } else {
                         card.style.display = 'none';
