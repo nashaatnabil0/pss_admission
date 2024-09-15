@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </form>
                 <!-- Error message placeholder -->
-                <div class="alert alert-info mt-3" id="nidError" style="color: red; display: none;" ><span  >Please enter a valid 14-digit National ID</span></div>
+                <div class="alert alert-info mt-3" id="nidError" style="color: blue; display: none;" ><span  >Please enter a valid 14-digit National ID</span></div>
                 <?php if ($message): ?>
                     <div class="alert alert-info mt-3"><?php echo $message; ?></div>
                 <?php endif; ?>
