@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(0);
+// error_reporting(0);
 include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
@@ -76,7 +76,7 @@ if (isset($_POST['submit'])) {
     // Photo & Birth Certificate/NID
     $allowed_extensions = ["jpg", "jpeg", "png", "gif"];
 
-    function uploadImages($imageFile, $allowed_extensions, $name, $NID,$fileInputName) {
+    function uploadImages($imageFile, $allowed_extensions, $name, $NID, $fileInputName) {
         if ($imageFile["name"] != "") {
             $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
             if (in_array($extension, $allowed_extensions)) {
@@ -90,18 +90,19 @@ if (isset($_POST['submit'])) {
         }
         return null;
       }
-
-    if (empty($_FILES["traineePic"])){
+var_dump($_FILES);
+    if (empty($_FILES["traineePic"]["name"])){
       $errors['traineePicempty']= "Please upload trainee Photo.";
     }
-    if (empty($_FILES["bdimg"])){
+    if (empty($_FILES["bdimg"]["name"])){
       $errors['bdimgempty']= "Please upload Birth Certificate or National ID photo. ";
     }
   
     //notes
   $notes =$_POST['Notes'];
   if(empty($errors)){
-    $bdImage = uploadImages($_FILES["bdimg"], $allowed_extensions, "certimg", $NID."bdimg");
+
+    $bdImage = uploadImages($_FILES["bdimg"], $allowed_extensions, "certimg", $NID,"bdimg");
     $traineePhoto = uploadImages($_FILES["traineePic"], $allowed_extensions, "proimg", $NID,"traineePic");
 
   if($notes==""){
