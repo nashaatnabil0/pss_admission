@@ -132,8 +132,7 @@ include('includes/dbconnection.php');
                             <input type="hidden" name="_template" value="table">
                             <input type="hidden" name="_next" value="http://localhost/pss_admission/thanku.php">
                             <div>
-                            <button class="btn btn-primary py-3 px-4 rounded" type="submit" id="sendMessageButton" >Send Email</button>
-
+                            <button class="btn btn-primary py-3 px-4 rounded" type="button" id="sendMessageButton" onclick="redirectToThankYou()">Send Message</button>
                             </div>
                         </form>
                     </div>
@@ -166,6 +165,13 @@ include('includes/dbconnection.php');
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+
+    <script>
+    function redirectToThankYou() {
+        window.location.href = 'thanku.php';
+    }
+</script>
+
 
 </body>
 
