@@ -9,11 +9,11 @@ if (strlen($_SESSION['contactno']==0)||strlen($_SESSION['email']==0)) {
 if(isset($_POST['submit']))
   {
     $errors = [];   
-    $contactno=$_SESSION['contactno']; 
+    $contactno=trim($_SESSION['contactno']); 
     
-    $email=$_SESSION['email'];
-    $password=$_POST['newpassword'];
-    $Confpassword=$_POST['confirmpassword'];
+    $email=trim($_SESSION['email']);
+    $password=trim($_POST['newpassword']);
+    $Confpassword=trim($_POST['confirmpassword']);
 
     $passwordPattern= '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/';
     if(preg_match($passwordPattern,$password)){

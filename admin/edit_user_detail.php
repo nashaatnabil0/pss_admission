@@ -9,11 +9,11 @@ if (strlen($_SESSION['sportadmission']==0)) {
     $cid=$_GET['editid'];
     $errors = [];
     if(isset($_POST['submit'])){
-      $name = $_POST['name'];
+      $name = trim($_POST['name']);
       if (empty($name)) {
         $errors['name'] = "Name cannot be empty";
     }
-      $mobnum = $_POST['mobnum'];
+      $mobnum = trim($_POST['mobnum']);
       $monnumPattern='/^(011|010|015|012)[0-9]{8}$/';
       if (empty($mobnum)) {
         $errors['mobnum'] = "phone number cannot be empty";
@@ -21,14 +21,14 @@ if (strlen($_SESSION['sportadmission']==0)) {
        $errors['mobnuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
    }
   
-      $email = $_POST['email'];
+      $email = trim($_POST['email']);
   
       if (empty($email)) {
         $errors['email'] = "Email cannot be empty";
     }elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = "Invalid email format";
         }
-    $role= $_POST['role'];
+    $role= trim($_POST['role']);
     if (empty($role)) {
       $errors['role'] = "Please choose a role";
   }

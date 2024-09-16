@@ -40,7 +40,7 @@ else {
         $seasonId = $groupDetails['seasonId'];
     
         // Check if the trainee is already enrolled in the same sport and season in any group
-        $checkEnrollment = $pdoConnection->prepare("SELECT COUNT(*) FROM enrollment e 
+        /*$checkEnrollment = $pdoConnection->prepare("SELECT COUNT(*) FROM enrollment e 
             JOIN groups g ON e.groupId = g.ID 
             WHERE e.traineeNID = :traineeNID 
             AND g.sportId = :sportId 
@@ -56,7 +56,7 @@ else {
     
         if ($enrollmentExists) {
             $errors['traineeNIDinvalid'] = "The trainee is already enrolled in this sport this season in a different group. Go to manage enrollment page for any edits.";
-        }
+        }*/
     
         // Check if the trainee is already enrolled in the selected group
         $checkSameGroupEnrollment = $pdoConnection->prepare("SELECT COUNT(*) FROM enrollment WHERE traineeNID = :traineeNID AND groupId = :groupId");
@@ -68,7 +68,7 @@ else {
         $sameGroupEnrollmentExists = $checkSameGroupEnrollment->fetchColumn();
     
         if ($sameGroupEnrollmentExists) {
-            $errors['traineeNIDinvalid'] = "The trainee is already enrolled in this group this season. Go to manage enrollment page for any edits  ";
+            $errors['traineeNIDinvalid'] = "The trainee is already enrolled in this group this season.";
         }
       }
         

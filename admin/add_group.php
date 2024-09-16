@@ -9,52 +9,52 @@ else {
   $errors = [];
   if(isset($_POST['submit'])){
    
-    $title = $_POST['title'];
+    $title = trim($_POST['title']);
     if (empty($title)) {
       $errors['title'] = "Please enter a group name";
     }
-    $days = $_POST['days'];
+    $days = trim($_POST['days']);
     if (empty($days)) {
       $errors['days'] = "Please enter the training days";
     }
     
-    $timing = $_POST['timing'];
+    $timing = trim($_POST['timing']);
 
     if (empty($timing)) {
       $errors['timing'] = "Please enter a Training time";
     }
     
-    $minAge = $_POST['minAge'];
+    $minAge = trim($_POST['minAge']);
     if (empty($minAge)) {
       $errors['minAge'] = "Minimum Age can't be empty";
     }
    
-    $maxAge = $_POST['maxAge'];
+    $maxAge = trim($_POST['maxAge']);
     if (empty($maxAge)) {
       $errors['maxAge'] = "Maximum Age can't be empty";
     }
     
-    $trainer = $_POST['trainer'];
+    $trainer = trim($_POST['trainer']);
     if (empty($trainer)) {
       $errors['trainer'] = "Please select a trainer";
     }
-    $sport = $_POST['sport'];
+    $sport = trim($_POST['sport']);
     if (empty($sport)) {
       $errors['sport'] = "Please select a sport";
     }
-    $season = $_POST['season'];
+    $season = trim($_POST['season']);
     if (empty($season)) {
       $errors['season'] = "Please select a season";
     }
-    $price = $_POST['price'];
+    $price = trim($_POST['price']);
     if (empty($season)) {
       $errors['price'] = "Plese enter a price ";
     }
-    $capacity = $_POST['capacity'];
+    $capacity = trim($_POST['capacity']);
     if (empty($capacity)) {
       $errors['capacity'] = "Capacity can't be empty";
     }
-    $place = $_POST['place'];
+    $place = trim($_POST['place']);
    if(empty($errors)){
     if ($place == "") {
       $query = $pdoConnection->query("INSERT INTO groups (Title ,days, timeslot, minAge, maxAge, trainerId, sportId, seasonId, price, capacity) VALUES ('$title', '$days', '$timing', '$minAge', '$maxAge', '$trainer', '$sport', '$season', '$price', '$capacity')");

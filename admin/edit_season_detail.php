@@ -16,17 +16,17 @@ if (strlen($_SESSION['sportadmission']==0)) {
       $image_data = $delete_image-> fetch(PDO:: FETCH_ASSOC);
       $image_name = $image_data['image'];
 
-      $Name=$_POST['Name'];
+      $Name=trim($_POST['Name']);
       if (empty($Name)){
         $errors['Name'] = "Please enter a season name";
       }
 
-      $State = $_POST['seasonstate'];
+      $State = trim($_POST['seasonstate']);
       if (empty($State)){
         $errors['seasonstate'] = "Please choose state for the season";
       }
 
-      $stDate=$_POST['startdate'];
+      $stDate=trim($_POST['startdate']);
       if(empty($stDate)){
         $stDate = null;
       }
@@ -40,7 +40,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
         $allowed_extensions = array("jpg", "jpeg", "png", "gif");
         // Validation for allowed extensions
         if (!in_array($extension, $allowed_extensions)) {
-          $errors['imageinvalid'] = "Invalid format. Only jpg / jpeg/ png /gif format allowed";
+          $seasonImg = $image_name ;
         }
       }
       if (empty($errors)) {

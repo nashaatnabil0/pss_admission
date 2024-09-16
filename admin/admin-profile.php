@@ -15,7 +15,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
         $errors['name'] = "Name cannot be empty";
     }
 
-    $mobnum=$_POST['contactnumber'];
+    $mobnum=trim($_POST['contactnumber']);
 
     $monnumPattern='/^(011|010|015|012)[0-9]{8}$/';
     if (empty($mobnum)) {

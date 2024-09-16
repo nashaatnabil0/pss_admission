@@ -11,9 +11,9 @@ if(isset($_POST['submit']))
   $errors = [];   
 $adminid=$_SESSION['sportadmission'];
 
-$cpassword=md5($_POST['currentpassword']);
-$newpassword=$_POST['newpassword'];
-$Confpassword=$_POST['confirmpassword'];
+$cpassword=md5(trim($_POST['currentpassword']));
+$newpassword=trim($_POST['newpassword']);
+$Confpassword=trim($_POST['confirmpassword']);
 
 $query=$pdoConnection-> query("select ID from users where ID='$adminid' and Password='$cpassword'");
 $row=$query ->fetch(PDO:: FETCH_ASSOC);

@@ -9,12 +9,12 @@ if (strlen($_SESSION['sportadmission']==0)) {
 
 if(isset($_POST['submit']))
   {
-  $spname=$_POST['sportname'];
+  $spname=trim($_POST['sportname']);
   if (empty($sportName)) {
     $errors['sportname'] = "sport name cannot be empty";
   }
 
-  $superID=$_POST['supervisor'];
+  $superID= tirm($_POST['supervisor']);
   $eid=$_GET['editid'];
   if($superID==""){
     $query=$pdoConnection-> query("update sport set name='$spname',supervisorID= NULL where ID='$eid'");

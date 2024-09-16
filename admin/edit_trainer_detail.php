@@ -9,12 +9,12 @@ if (strlen($_SESSION['sportadmission']==0)) {
     $eid=$_GET['editid'];
 if(isset($_POST['submit']))
   {
-    $name=$_POST['name'];
+    $name=trim($_POST['name']);
     if (empty($name)) {
       $errors['name'] = "Name cannot be empty";
      }
 
-     $mobnum=$_POST['mobnum'];
+     $mobnum=trim($_POST['mobnum']);
     $monnumPattern='/^(011|010|015|012)[0-9]{8}$/';
     if (empty($mobnum)) {
       $errors['mobnum'] = "phone number cannot be empty";
@@ -22,7 +22,7 @@ if(isset($_POST['submit']))
       $errors['mobnuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
       }  
     
-      $spID=$_POST['SportID'];
+      $spID=trim($_POST['SportID']);
     if($spID==""){
       $query = $pdoConnection -> query("update trainers SET name='$name', MobileNumber='$mobnum', sportId= NULL where ID='$eid'");
     }else{

@@ -18,34 +18,34 @@ $formSubmitted = $_SERVER["REQUEST_METHOD"] == "POST";
 if ($formSubmitted) {
     // Validate enroll ID
 
-    $name = $_POST['name'];
+    $name = trim($_POST['name']);
     if (empty($name)) {
         $errors['name'] = "Name cannot be empty";
     }
 
-    $pymntAmount = $_POST['amount'];
+    $pymntAmount = trim($_POST['amount']);
     if (empty($pymntAmount)) {
         $errors['amount'] = "Payment amount cannot be empty";
     }
 
-    $remainingAmount = $_POST['remaining'];
-    $feesAfterDiscount =$_POST['discprice'];
+    $remainingAmount =trim( $_POST['remaining']);
+    $feesAfterDiscount = trim($_POST['discprice']);
     if ($pymntAmount > $feesAfterDiscount) {
        $errors['amount'] = "Payment amount cannot exceed the fees after discount value";
       }
 
-    $pymntMethod = $_POST['method'];
+    $pymntMethod = trim($_POST['method']);
     if (empty($pymntMethod)) {
         $errors['method'] = "Payment method is required";
     }
     
 
-    $pymntdate = $_POST['date'];
+    $pymntdate = trim($_POST['date']);
     if (empty($pymntdate)) {
         $pymntdate = date('Y-m-d');
     }
 
-    $addedby = $_POST['adminName'];
+    $addedby = trim($_POST['adminName']);
     $adminid = $_SESSION['sportadmission'];
     $stmt2 = $pdoConnection->query("SELECT * FROM users WHERE ID = $adminid;" );
     $exists = $stmt2->fetchall();
@@ -53,7 +53,7 @@ if ($formSubmitted) {
         $errors['addedby'] = "Admin not found";
     }
 
-    $notes = $_POST['notes'];
+    $notes = trim($_POST['notes']);
     if (empty($notes)) {
         $errors['notes'] = "Please leave a note about your edit" ;
     }

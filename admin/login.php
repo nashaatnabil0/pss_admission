@@ -5,8 +5,8 @@ include('includes/dbconnection.php');
 
 if(isset($_POST['login']))
   {
-    $adminuser=$_POST['username'];
-    $password=md5($_POST['password']);
+    $adminuser=trim($_POST['username']);
+    $password=md5(trim($_POST['password']));
     $query=$pdoConnection-> query("SELECT ID,role from users where name='$adminuser' AND Password= '$password'");
     $ret = $query ->fetch(PDO:: FETCH_ASSOC);
     if($ret>0){
