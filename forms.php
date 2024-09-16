@@ -265,8 +265,7 @@ try {
                                                 $placeholders = implode(',', array_fill(0, count($diabledsportArr), '?'));
 
                                                 // Main query to select from 'sport' excluding certain IDs
-                                                $sql = "SELECT sp.ID AS spID,sp.*, g.*,
-                                                        (SELECT COUNT(*) FROM enrollment en WHERE en.groupId = g.ID AND en.state = 'on') as totalEnrollments
+                                                $sql = "SELECT DISTINCT sp.ID AS spID,sp.*
                                                         FROM sport sp
                                                         JOIN groups g ON sp.ID = g.sportId
                                                         JOIN season se ON g.seasonId=se.ID
@@ -285,8 +284,7 @@ try {
                                             } else {
                                                 // Handle case when no values are returned from the exclusion query
 
-                                                $sql = "SELECT sp.ID AS spID, sp.*, g.*,
-                                                        (SELECT COUNT(*) FROM enrollment en WHERE en.groupId = g.ID AND en.state = 'on') as totalEnrollments
+                                                $sql = "SELECT DISTINCT sp.ID AS spID, sp.*
                                                         FROM sport sp
                                                         JOIN groups g ON sp.ID = g.sportId
                                                         JOIN season se ON g.seasonId=se.ID
@@ -305,7 +303,6 @@ try {
                                             exit();
                                         }else {
 
-                                            var_dump($SportsResult);
                                         foreach($SportsResult as $row)
                                         { ?>    
                                             <option value="<?php echo $row['spID'];?>"><?php echo $row['name'];?></option>
@@ -318,8 +315,9 @@ try {
                                 <div class="radio-card-container">
 
                                         <?php 
-                                              
-                                        foreach($SportsResult as $row)
+                                        $query=$pdoConnection-> query("Select g.*,(SELECT COUNT(*) FROM enrollment en WHERE en.groupId = g.ID AND en.state = 'on') as totalEnrollments from groups g ;");
+                                        while($row=$query ->fetch(PDO:: FETCH_ASSOC))
+                                        // foreach($SportsResult as $row)
                                         {
                                             $totalEnrollments = $row['totalEnrollments'];
                                             $isWaiting = $totalEnrollments >= $row['capacity'] ? true : false; // Check if enrollments exceed 30
