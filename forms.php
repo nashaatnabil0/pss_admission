@@ -32,7 +32,7 @@ try {
         var_dump($_POST);
         if(empty($errors)){    
             try{            
-                $query = $pdoConnection->query("INSERT INTO enrollment (traineeNID, groupId, paymentPlan, state) VALUES ('$nationalId', '$group','full', '$enrollstate')");
+                $query = $pdoConnection->query("INSERT INTO enrollment (traineeNID, groupId, paymentPlan, state,discount) VALUES ('$nationalId', '$group','full', '$enrollstate',0)");
                     
                     if ($query) {
                         echo "<script>alert('Enrolled succsessfully.');</script>";
@@ -47,24 +47,8 @@ try {
         }
 
     }
-    $query = "SELECT COUNT(groupId) AS groupCount 
-    FROM enrollment 
-    WHERE traineeNID = :traineeNID 
-    AND state IN ('on', 'waiting')";
-
-    // AND state = 'on'";
-
-    $stmt = $pdoConnection->prepare($query);
-    $stmt->execute(['traineeNID' => $nationalId]);
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    $groupcounter= $result['groupCount'];
-    $able_to_enroll = false;
-    $diabledsportID =0;
-    // If the count is less than 2, allow enrollment
-    if ($groupcounter < 2 && $groupcounter >0) {
-        // echo "<script>alert('can enroll in $groupcounter more group');</script>";
-        $able_to_enroll = true;
-        $query = "SELECT
+        
+        $sqlExclude  = "SELECT
             g.sportId
         FROM 
             enrollment en 
@@ -73,22 +57,15 @@ try {
         JOIN 
             sport sp ON g.sportId = sp.ID 
         WHERE 
-            en.traineeNID = :traineeNID 
+            en.traineeNID = ? 
         AND 
             en.state IN ('on', 'waiting');";
-        $stmt = $pdoConnection->prepare($query);
-        $stmt->execute(['traineeNID' => $nationalId]);
+        $stmtt = $pdoConnection->prepare($sqlExclude);
+        $stmtt->execute([$nationalId]);
         
-        // $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        $diabledsportArr = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $diabledsportArr = $stmtt->fetchAll(PDO::FETCH_COLUMN);
         
-    }elseif($groupcounter == 0){
-        $able_to_enroll = true;
-    }
-    else{
-        echo "<script>alert('you can not enroll in more than $groupcounter diffreant sport groups - If you need any help with this contact the admins'); location.href='account.php?nid=$nationalId'</script>";
 
-    }
         // Extract birth date from the ID (assuming a specific format)
         $gen = substr($nationalId, 0, 1);
         $birthDate = substr($nationalId, 1, 6);
@@ -283,29 +260,56 @@ try {
                                         <?php 
 
                                             if (!empty($diabledsportArr)) {
+
                                                 // Create placeholders for the IDs
                                                 $placeholders = implode(',', array_fill(0, count($diabledsportArr), '?'));
 
                                                 // Main query to select from 'sport' excluding certain IDs
-                                                $sql = "SELECT * FROM sport WHERE ID NOT IN ($placeholders)";
+                                                $sql = "SELECT sp.ID AS spID,sp.*, g.*,
+                                                        (SELECT COUNT(*) FROM enrollment en WHERE en.groupId = g.ID AND en.state = 'on') as totalEnrollments
+                                                        FROM sport sp
+                                                        JOIN groups g ON sp.ID = g.sportId
+                                                        JOIN season se ON g.seasonId=se.ID
+                                                        AND se.state ='on'
+                                                        WHERE g.minAge <= ?
+                                                        AND g.maxAge >= ?
+                                                        AND sp.ID NOT IN ($placeholders)";
                                                 
+                                                $params = array_merge([$ageY, $ageY], $diabledsportArr);
+
                                                 // Prepare and execute the query
                                                 $stmt = $pdoConnection->prepare($sql);
-                                                $stmt->execute($diabledsportArr);
+                                                $stmt->execute($params);
 
-                                                // Fetch the results
-                                                // $results = $stmt->fetchAll();
+
                                             } else {
                                                 // Handle case when no values are returned from the exclusion query
-                                                $sql = "SELECT * FROM sport";
+
+                                                $sql = "SELECT sp.ID AS spID, sp.*, g.*,
+                                                        (SELECT COUNT(*) FROM enrollment en WHERE en.groupId = g.ID AND en.state = 'on') as totalEnrollments
+                                                        FROM sport sp
+                                                        JOIN groups g ON sp.ID = g.sportId
+                                                        JOIN season se ON g.seasonId=se.ID
+                                                        WHERE g.minAge <= ?
+                                                        AND g.maxAge >= ?
+                                                        AND se.state ='on'";
                                                 $stmt = $pdoConnection->prepare($sql);
-                                                $stmt->execute();
+                                                $stmt->execute([$ageY, $ageY]);
                                             }
-                                    
-                                        while($row=$stmt ->fetch(PDO:: FETCH_ASSOC))
-                                        {?>    
-                                            <option value="<?php echo $row['ID'];?>"><?php echo $row['name'];?></option>
-                                        <?php } ?> 
+                                          
+                                            $SportsResult=$stmt ->fetchAll();
+
+                                        if(empty($SportsResult)){
+                                            echo "<script>alert('No sports available for you at the moment. IF you think there is a problem contact with the admins');</script>";
+                                            echo "<script>window.location.href = 'account.php?nid=$nationalId';</script>";
+                                            exit();
+                                        }else {
+
+                                            var_dump($SportsResult);
+                                        foreach($SportsResult as $row)
+                                        { ?>    
+                                            <option value="<?php echo $row['spID'];?>"><?php echo $row['name'];?></option>
+                                        <?php }  ?> 
                                         </select>
                                         <?php if(isset($_POST['submit']) && isset($errors['sport'])) { ?>
                                             <span style="color:red;display:block;text-align:left"><?php echo $errors['sport']; ?></span>
@@ -314,14 +318,14 @@ try {
                                 <div class="radio-card-container">
 
                                         <?php 
-                                        $query=$pdoConnection-> query("Select g.*,(SELECT COUNT(*) FROM enrollment en WHERE en.groupId = g.ID AND en.state = 'on') as totalEnrollments from groups g ;");
-                                        while($row=$query ->fetch(PDO:: FETCH_ASSOC))
+                                              
+                                        foreach($SportsResult as $row)
                                         {
-                                            $totalEnrollments = $row['totalEnrollments']+29;
+                                            $totalEnrollments = $row['totalEnrollments'];
                                             $isWaiting = $totalEnrollments >= $row['capacity'] ? true : false; // Check if enrollments exceed 30
                                         ?>    
                                                 <!-- Option 1 -->
-                                                <label class="radio-card" style="display: none;" Sportdata="<?php echo $row['sportId'];?>" minAge="<?php echo $row['minAge']; ?>" maxAge="<?php echo $row['maxAge']; ?>">
+                                                <label class="radio-card" style="display: none;" Sportdata="<?php echo $row['sportId'];?>" >
                                                     <input type="radio" name="group" id="group" value="<?php echo $row['ID'];?>" required>
                                                     <div class="card-content">
                                                         <h5 class="text-primary"><?php echo $row['Title'];?></h5>
@@ -342,11 +346,11 @@ try {
                                                     </div>
                                                 </label>
 
-                                            <?php } ?>
+                                            <?php } } ?>
                                 </div>
-                                <div class="alert alert-danger" role="alert" hidden >
+                                <!-- <div class="alert alert-danger" role="alert" hidden >
                                     This is a danger alert—check it out!
-                                </div>
+                                </div> -->
                                         <?php if(isset($_POST['submit']) && isset($errors['groups'])) { ?>
                                             <span style="color:red;display:block;text-align:left"><?php echo $errors['sport']; ?></span>
                                         <?php } ?>
@@ -387,17 +391,16 @@ try {
             document.getElementById('sport').addEventListener('change', function() {
                 var selectedSportId = this.value;
                 var traineeAgeY = document.getElementById('traineeAge').value;
-                // var traineeAgeM = parseInt(document.getElementById('traineeAge').getAttribute('traineeMonth'));
                 var cards = document.querySelectorAll('.radio-card');
-                
+                console.log(selectedSportId);
+
                 cards.forEach(function(card) {
                     var cardSportId = card.getAttribute('Sportdata');
                     var minAge = parseInt(card.getAttribute('minAge'));
                     var maxAge = parseInt(card.getAttribute('maxAge'));
-                    
+                    console.log(cardSportId);
                     // Show card if the sport ID matches, otherwise hide it
-                    if (selectedSportId === cardSportId &&
-                    (traineeAgeY >= minAge && traineeAgeY <= maxAge)) {
+                    if (selectedSportId === cardSportId ) {
                         card.style.display = 'block';
                     } else {
                         card.style.display = 'none';
