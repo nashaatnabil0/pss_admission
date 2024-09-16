@@ -392,6 +392,11 @@ try {
                 var cards = document.querySelectorAll('.radio-card');
                 console.log(selectedSportId);
 
+                var selectedRadio = document.querySelector('.radio-card input[type="radio"]:checked');
+                if (selectedRadio) {
+                    selectedRadio.checked = false; // Uncheck the selected radio button
+                }
+
                 cards.forEach(function(card) {
                     var cardSportId = card.getAttribute('Sportdata');
                     var minAge = parseInt(card.getAttribute('minAge'));
