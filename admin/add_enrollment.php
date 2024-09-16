@@ -1,6 +1,6 @@
 <?php
 session_start();
-//error_reporting(0);
+error_reporting(0);
 include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
@@ -11,98 +11,122 @@ else {
    $stmt = $pdoConnection->query("SELECT NID, Name FROM trainees");
    $trainees = $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetch all NIDs and names
    
-   $nidPattern ='/^\d{3}(0[0-9]|1[0-2])([0-2][0-9]|3[01])\d{7}$/';
   if(isset($_POST['submit'])){
-    $traineeNID = $_POST['traineeNID'];
-    if (empty($traineeNID)) {
-      $errors['traineeNID'] = "National ID number cannot be empty";
-     } elseif (!preg_match($nidPattern, $traineeNID)){
-         $errors['ineeNIDinvalid'] = "Please enter a valid 14-digit National ID where the 4th and 5th digits form a number less than or equal to 12, and the 6th and 7th digits form a number less than or equal to 31.";
-       }
-   
-    // checking if traineeNID exists in the database
-    $traineeExists = false; 
-    foreach ($trainees as $trainee){
-      if ($trainee['NID'] == $traineeNID){
-        $traineeExists = true;
-        break;
-      }
+    
+$nidPattern = '/^\d{3}(0[0-9]|1[0-2])([0-2][0-9]|3[01])\d{7}$/';
+$traineeNID =trim($_POST['traineeNID']);
+$traineeExists = false; 
+
+// Check if empty
+if (empty($traineeNID)) {
+    $errors['traineeNID'] = "National ID number cannot be empty";
+} 
+// Check if matches the pattern
+elseif (!preg_match($nidPattern, $traineeNID)) {
+    $errors['traineeNIDinvalid'] = "Please enter a valid 14-digit National ID where the 4th and 5th digits form a number less than or equal to 12, and the 6th and 7th digits form a number less than or equal to 31.";
+} 
+else {
+    // Check if exists in the list
+    foreach ($trainees as $trainee) {
+        if ($trainee['NID'] == $traineeNID) {
+            $traineeExists = true;
+            break;
+        }
     }
-   
-    $group = $_POST['group'];
-    if (empty($group)) {
-      $errors['group'] = "Please select a group";
+    if (!$traineeExists) {
+        $errors['traineeNID'] = "Trainee not found, please add the trainee first.";
     }
-    $sport = $_POST['sport'];
+  }
+
+    $sport = trim($_POST['sport']);
     if (empty($sport)) {
       $errors['sport'] = "Please select a group";
     }
-    
-    $season = $_POST['season'];
+    $season = trim( $_POST['season']);
     if (empty($season)) {
       $errors['season'] = "Please select a group";
     }
-   
-    if (!$traineeExists) {
-      $errors['traineeNID'] = "Trainee not found, please add the trainee first.";
-      } else {
-      $existQuery = $pdoConnection->prepare("
-                                            SELECT t.NID, e.state as enrollstate , g.sportId as spID, g.seasonId as seId
-                                            FROM trainees t
-                                            LEFT JOIN enrollment e ON t.NID = e.traineeNID
-                                            LEFT JOIN groups g ON e.groupId = g.ID
-                                            WHERE t.NID = :traineeNID
-                                              AND (g.sportId = :sport OR g.sportId IS NULL)
-                                              AND (g.seasonId = :season OR g.seasonId IS NULL)
-                                        ");
-  
-                  $existQuery->execute([
-                      ':traineeNID' => $traineeNID,
-                      ':sport' => $sport,
-                      ':season' => $season
-                       ]);
-  
-      $res = $existQuery->fetch(PDO::FETCH_ASSOC);
-       
+    $group = trim($_POST['group']);
+    if (empty($group)) {
+      $errors['group'] = "Please select a group";
+    }
 
-       if ($res['enrollstate'] !== null && $res['spID'] === $sport && $res['seID'] === $season) {
-          $errors['submit']= "Trainee is already enrolled in this sport this season. kindly go to manage enrollment to edit his state or group";
-        } else {
+    // Check for the sport and season based on the selected group
+    $groupQuery = $pdoConnection->prepare("SELECT sportId, seasonId FROM groups WHERE ID = :groupId");
+    $groupQuery->execute(['groupId' => $group]);
+    $groupDetails = $groupQuery->fetch(PDO::FETCH_ASSOC);
+    
+    if ($groupDetails) {
+      $sportId = $groupDetails['sportId'];
+      $seasonId = $groupDetails['seasonId'];
+  
+      // Check if the trainee is already enrolled in the same sport and season in any group
+      $checkEnrollment = $pdoConnection->prepare("SELECT COUNT(*) FROM enrollment e 
+          JOIN groups g ON e.groupId = g.ID 
+          WHERE e.traineeNID = :traineeNID 
+          AND g.sportId = :sportId 
+          AND g.seasonId = :seasonId");
+  
+      $checkEnrollment->execute([
+          'traineeNID' => $traineeNID,
+          'sportId' => $sportId,
+          'seasonId' => $seasonId
+      ]);
+  
+      $enrollmentExists = $checkEnrollment->fetchColumn();
+  
+      if ($enrollmentExists) {
+          $errors['traineeNIDinvalid'] = "The trainee is already enrolled in this sport this season in a different group. Go to manage enrollment page for any edits.";
+      }
+  
+      // Check if the trainee is already enrolled in the selected group
+      $checkSameGroupEnrollment = $pdoConnection->prepare("SELECT COUNT(*) FROM enrollment WHERE traineeNID = :traineeNID AND groupId = :groupId");
+      $checkSameGroupEnrollment->execute([
+          'traineeNID' => $traineeNID,
+          'groupId' => $group
+      ]);
+  
+      $sameGroupEnrollmentExists = $checkSameGroupEnrollment->fetchColumn();
+  
+      if ($sameGroupEnrollmentExists) {
+          $errors['traineeNIDinvalid'] = "The trainee is already enrolled in this group this season. Go to manage enrollment page for any edits  ";
+      }
+    }
+      
+    $pymntPlan = trim($_POST['pymntplan']);
+    if (empty($pymntPlan)) {
+      $errors['pymntplan'] = "Please select a payment plan";
+    }
+
+    $enrollstate = trim($_POST['enrollstate']);
+    if (empty($enrollstate)) {
+      $errors['enrollstate'] = "Please select an enrollment state";
+    }
+
+    $enrolldate = trim($_POST['enrolldate']);
+    if ($enrolldate == "") {
+        $enrolldate = date('Y-m-d') ;
+    }else{
+      $enrolldate = trim($_POST['enrolldate']);
+    }
+    
+    $discount = trim($_POST['discount']);
+    if (empty($discount)){
+      $discount = null;
+    }
+      
+    if (empty($errors)){
+            $query2 = $pdoConnection->query("INSERT INTO enrollment(traineeNID, groupId, paymentPlan, state, date, discount) VALUES ('$traineeNID', '$group', '$pymntPlan', '$enrollstate', '$enrolldate', '$discount')");
+                  if ($query2) {
+                      echo "<script>alert('Enrollment details have been added.');</script>";
+                      echo "<script>window.location.href ='viewall_enrollments.php'</script>";
+                  } else {
+                      echo "<script>alert('Something Went Wrong. Please try again.');</script>";
+                    }
+              }
           
-            $pymntPlan = $_POST['pymntplan'];
-            if (empty($pymntPlan)) {
-              $errors['pymntplan'] = "Please select a payment plan";
-            }
 
-            $enrollstate = $_POST['enrollstate'];
-            if (empty($enrollstate)) {
-              $errors['enrollstate'] = "Please select an enrollment state";
-            }
-
-            $enrolldate = $_POST['enrolldate'];
-            if ($enrolldate == "") {
-                $enrolldate = date('Y-m-d') ;
-            }else{
-              $enrolldate = $_POST['enrolldate'];
-            }
             
-            $discount = $_POST['discount'];
-            if (empty($discount)){
-              $discount = null;
-            }
-              
-            if (empty($errors)){
-                    $query2 = $pdoConnection->query("INSERT INTO enrollment(traineeNID, groupId, paymentPlan, state, date, discount) VALUES ('$traineeNID', '$group', '$pymntPlan', '$enrollstate', '$enrolldate', '$discount')");
-                          if ($query2) {
-                              echo "<script>alert('Enrollment details have been added.');</script>";
-                              echo "<script>window.location.href ='viewall_enrollments.php'</script>";
-                          } else {
-                              echo "<script>alert('Something Went Wrong. Please try again.');</script>";
-                            }
-                      }
-                  }
-
-            }
             
  }
 ?>
@@ -168,13 +192,10 @@ else {
               <div class="panel-body">
                 <form class="form-horizontal " method="post" action="" enctype="multipart/form-data" novalidate>
                 <!-- Trainee National ID input with datalist -->
-                <?php if (isset($_POST['submit']) && isset($errors['submit'])){ ?>
-                    <span style="color:red;display:block;text-align:left"><?php echo $errors['traineeNID']; ?></span>
-                  <?php } ?>
                 <div class="form-group">
                 <label class="col-sm-2 control-label">Trainee National ID</label>
                 <div class="col-sm-10">
-                  <input class="form-control" id="searchTrainee" name="traineeNID" type="text" maxlength="14" placeholder="Type the national ID number" list="traineeListOptions" value=""/>
+                  <input class="form-control" id="searchTrainee" name="traineeNID" type="text" placeholder="Type the national ID number" list="traineeListOptions" value=""/>
                   <datalist id="traineeListOptions">
                     <?php foreach ($trainees as $trainee) { ?>
                       <option value="<?php echo $trainee['NID']; ?>">
