@@ -344,6 +344,7 @@ else {
   // Set the value of the input as today's date
   dateElement.value = formattedDate;  
 </script>
+
 <!-- get the groups based on the sport selected -->
 <script>
    // All groups with their associated sport ID
