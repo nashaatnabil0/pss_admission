@@ -1,6 +1,6 @@
 <?php
 session_start();
-// error_reporting(0);
+error_reporting(0);
 include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
@@ -85,34 +85,37 @@ if (isset($_POST['submit'])) {
     // Photo & Birth Certificate/NID
     $allowed_extensions = ["jpg", "jpeg", "png", "gif"];
 
-    function uploadImages($imageFile, $allowed_extensions, $name, $NID, $fileInputName) {
-        if ($imageFile["name"] != "") {
-            $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
-            if (in_array($extension, $allowed_extensions)) {
-                $newImageName = $NID .'-'. $name . '.' . $extension;
-                move_uploaded_file($imageFile["tmp_name"], "images/" . $newImageName);
-                return $newImageName;
-            } else {
-              $errors[$fileInputName] = "Invalid format. Only jpg / jpeg / png / gif format allowed.";
-              return null;
-            }
-        }
-        return null;
+   
+    function uploadImages($imageFile, $allowed_extensions, $name, $NID, &$errors ,$fileInputName ) {
+      if ($imageFile["name"] != "") {
+          $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
+          if (in_array($extension, $allowed_extensions)) {
+              $newImageName = $NID .'-'. $name. $fileInputName . '.' . $extension;
+              move_uploaded_file($imageFile["tmp_name"], "images/" . $newImageName);
+              return $newImageName;
+          } else {
+            $errors[$fileInputName] = "Invalid format. Only jpg / jpeg / png / gif format allowed.";
+            return null;
+          }
       }
-var_dump($_FILES);
-    if (empty($_FILES["traineePic"]["name"])){
-      $errors['traineePicempty']= "Please upload trainee Photo.";
+      return null;
     }
-    if (empty($_FILES["bdimg"]["name"])){
-      $errors['bdimgempty']= "Please upload Birth Certificate or National ID photo. ";
+
+//var_dump($_FILES);
+    $traineePhoto = uploadImages($_FILES["traineePic"], $allowed_extensions, $name, $NID, $errors, 'traineePic');
+    if (empty($traineePhoto)){
+      $errors['traineePicempty'] = "Please upload trainee Photo.";
     }
+
+    $bdImage = uploadImages($_FILES["bdimg"], $allowed_extensions, $name, $NID, $errors, 'bdimg');
+    if (empty($bdImage)){
+      $errors['bdimgempty'] = "Please upload Birth Certificate or National ID photo.";
+    }
+
   
     //notes
   $notes = trim($_POST['Notes']);
   if(empty($errors)){
-
-    $bdImage = uploadImages($_FILES["bdimg"], $allowed_extensions, "certimg", $NID,"bdimg");
-    $traineePhoto = uploadImages($_FILES["traineePic"], $allowed_extensions, "proimg", $NID,"traineePic");
 
   if($notes==""){
     $query = $pdoConnection->query("INSERT INTO trainees (Name, NID, birthDate, gender, photo, birthCertificate,contactMobNum,fatherName,fatherMobNum,fatherJob,motherName,motherMobNum,motherJob) VALUES ('$name', '$NID','$birthdate', '$gender', '$traineePhoto','$bdImage','$contactmobnum','$fatherName','$fathermobnum','$fatherJob','$motherName','$mothermobnum','$motherJob')");
@@ -296,7 +299,7 @@ var_dump($_FILES);
                       <input class="form-control" id="motherMobNum"  name="motherMobNum"  type="text"value="">
                       <?php if(isset($_POST['submit']) && isset($errors['motherMobNum'])){ ?>
                             <span style="color:red;display:block;text-align:left"><?php echo $errors['motherMobNum'];  ?></span>
-                        <?php } elseif(isset($_POST['submit']) && isset($errors['contactMobNuminvalid'])){ ?>
+                        <?php } elseif(isset($_POST['submit']) && isset($errors['motherMobNuminvalid'])){ ?>
                             <span style="color:red;display:block;text-align:left"><?php echo $errors['motherMobNuminvalid']; ?></span>
                         <?php } ?>
                     </div>
