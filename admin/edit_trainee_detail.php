@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(0);
+//error_reporting(0);
 include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
@@ -76,10 +76,11 @@ if (strlen($_SESSION['sportadmission']==0)) {
     }
 
         //notes
-  $notes = tim($_POST['Notes']);
-  if ($notes==""){
-    $notes = null;
-  }
+    $notes = trim($_POST['Notes']);
+    if ($notes == "") {
+        $notes = null;
+    }
+        
 
     // Photo & Birth Certificate/NID
     //fetching photos from the database to update
@@ -91,35 +92,32 @@ if (strlen($_SESSION['sportadmission']==0)) {
 
     $allowed_extensions = ["jpg", "jpeg", "png", "gif"];
     
-    $allowed_extensions = ["jpg", "jpeg", "png", "gif"];
-
    //&$error to modify the errors array outside the function
-    function uploadImages($imageFile, $allowed_extensions, $name, $NID, &$errors, $fileInputName) {
-        if ($imageFile["name"] != "") {
-            $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
-            if (in_array($extension, $allowed_extensions)) {
-                $newImageName = $NID . '-' . md5($imageFile["name"]) . '.' . $extension;
-                move_uploaded_file($imageFile["tmp_name"], "images/" . $newImageName);
-                return $newImageName;
-            } else {
-                $errors[$fileInputName] = "Invalid format. Only jpg / jpeg / png / gif formats are allowed.";
-                return null;
-            }
-        }
-        return null;
-    }    
-  
-      $traineePhoto = uploadImages($_FILES["traineePic"], $allowed_extensions, $name, $NID, $errors, 'traineePic');
-      if (empty($traineePhoto)) {
-          $traineePhoto = $existing_TraineePhoto;
-      }
-      
-      $bdImage = uploadImages($_FILES["bdimg"], $allowed_extensions, $name, $NID, $errors, 'bdimg');
-      if (empty($bdImage)) {
-          $bdImage = $existing_birthcertificate;
-      }
-      
+   function uploadImages($imageFile, $allowed_extensions, $name, $NID, &$errors ,$fileInputName ) {
+     if ($imageFile["name"] != "") {
+         $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
+         if (in_array($extension, $allowed_extensions)) {
+             $newImageName = $NID .'-'. $name. $fileInputName . '.' . $extension;
+             move_uploaded_file($imageFile["tmp_name"], "images/" . $newImageName);
+             return $newImageName;
+         } else {
+           $errors[$fileInputName] = "Invalid format. Only jpg / jpeg / png / gif format allowed.";
+           return null;
+         }
+     }
+     return null;
+   }
 
+//var_dump($_FILES);
+   $traineePhoto = uploadImages($_FILES["traineePic"], $allowed_extensions, $name, $NID, $errors, 'traineePic');
+   if (empty($traineePhoto)){
+     $traineePhoto= $existing_TraineePhoto;
+   }
+
+   $bdImage = uploadImages($_FILES["bdimg"], $allowed_extensions, $name, $NID, $errors, 'bdimg');
+   if (empty($bdImage)){
+     $bdImage = $existing_birthcertificate;
+   }
 
   if(empty($errors)){
   //insert into databse
