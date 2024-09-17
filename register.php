@@ -25,20 +25,20 @@ try {
     // Allowed extensions
     $allowed_extensions = array ("jpg", "jpeg", "png", "gif");
     // Function to handle image uploads
-    function uploadImages($imageFile, $allowed_extensions, $name, $NID,$fileInputName) {
+    function uploadImages($imageFile, $allowed_extensions, $name, $NID, &$errors ,$fileInputName ) {
         if ($imageFile["name"] != "") {
             $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
             if (in_array($extension, $allowed_extensions)) {
-                $newImageName = $NID .'-'. $name . '.' . $extension;
-                move_uploaded_file($imageFile["tmp_name"], "admin/images/" . $newImageName);
+                $newImageName = $NID .'-'. $name. $fileInputName . '.' . $extension;
+                move_uploaded_file($imageFile["tmp_name"], "images/" . $newImageName);
                 return $newImageName;
             } else {
-            $errors[$fileInputName] = "Invalid format. Only jpg / jpeg / png / gif format allowed.";
-            return null;
+              $errors[$fileInputName] = "Invalid format. Only jpg / jpeg / png / gif format allowed.";
+              return null;
             }
         }
         return null;
-    }
+      }
 
         $nationalId = $_GET['nid'];
 
@@ -65,10 +65,9 @@ try {
 
         $genderDigit = $nationalId[12]; // Get the 13th digit (index 12)
 
-
+ $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Retrieve form data
-    $errors = [];
     $mobnumPattern = '/^(011|010|015|012)[0-9]{8}$/';
     $namePattern = '/^[a-zA-Z]+(?:\s+[a-zA-Z]+)+$/';
     $name = trim($_POST['registerName']);
@@ -125,27 +124,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!preg_match($mobnumPattern, $motherNum)) {
         $errors['motherMobNuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
     }
-    
-    if (empty($_FILES["personalPhoto"])){
-        $errors['traineePicempty']= "Please upload trainee Photo.";
-    }
-    if (empty($_FILES["idPhoto"])){
-        $errors['bdimgempty']= "Please upload Birth Certificate or National ID photo. ";
+
+    $personalPhoto = uploadImages($_FILES['personalPhoto'], $allowed_extensions, $name , $nid, $errors,"personalPhoto");
+    if (empty($personalPhoto)) {
+        $errors['traineePicempty'] = "Please upload a photo of the trainee.";
     }
 
+    $idPhoto = uploadImages($_FILES['idPhoto'], $allowed_extensions, $name , $nid, $errors, "idPhoto");
+    if (empty($idPhoto)) {
+        $errors['bdimgempty'] = "Please upload a Birth Certificate or National ID photo.";
+    }
+    
     $notes =trim($_POST['notes']);
-    // var_dump($_FILES['idPhoto']);
-    var_dump($errors);
+    if ($notes == "") {
+        $notes = null;
+    }
+    //var_dump($_FILES['idPhoto']);
+    //var_dump($errors);
 
     if(empty($errors)){
-        $personalPhoto = uploadImages($_FILES['personalPhoto'], $allowed_extensions, "proimg", $nid,"traineePic");
-        $idPhoto = uploadImages($_FILES['idPhoto'], $allowed_extensions, "certimg", $nid,"bdimg");
-        if(empty($notes)){
-            $query = $pdoConnection->query("INSERT INTO trainees (Name, NID, birthDate, gender, photo, birthCertificate,contactMobNum,fatherName,fatherMobNum,fatherJob,motherName,motherMobNum,motherJob) VALUES ('$name', '$nationalId','$dob', '$gender', '$personalPhoto','$idPhoto','$contactMobNum','$fatherName','$fatherNum','$fatherJob','$motherName','$motherNum','$motherJob')");
 
-        }else{
             $query = $pdoConnection->query("INSERT INTO trainees (Name, NID, birthDate, gender, photo, birthCertificate,contactMobNum,fatherName,fatherMobNum,fatherJob,motherName,motherMobNum,motherJob,Notes) VALUES ('$name', '$nationalId','$dob', '$gender', '$personalPhoto','$idPhoto','$contactMobNum','$fatherName','$fatherNum','$fatherJob','$motherName','$motherNum','$motherJob','$notes')");
-        }
+        
                 if ($query) {
                     echo "<script>alert('Profile Created Successfully\n.');</script>";
                     echo "<script>window.location.href ='account.php?nid=$nid'</script>";
@@ -252,7 +252,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="row">
                     <div class="col-md-6">
                         <div class="register_form">
-                            <form id="registerForm" method="POST" enctype="multipart/form-data" novalidate>
+                            <form id="registerForm" method="POST"  enctype="multipart/form-data" novalidate>
                                 <div class="form-group">
                                     <label for="registerName">*Full Name</label>
                                     <input type="text" class="form-control" name="registerName" id="registerName" placeholder="Enter full name" required>
@@ -336,35 +336,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <label for="fatherJob">*Father Job</label>
                                     <input type="text" class="form-control" name="fatherJob" id="fatherJob" placeholder="Enter father job" required>
                                     <?php if(isset($_POST['submit']) && isset($errors['fatherJob'])){  ?>
-                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherMobNum'];  ?></span>
+                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherJob'];  ?></span>
                                     <?php } ?>
                                 </div>
                                 <div class="form-group">
                                     <label for="motherName">*Mother Name</label>
                                     <input type="text" class="form-control" name="motherName" id="motherName" placeholder="Enter mother name" required>
                                     <?php if(isset($_POST['submit']) && isset($errors['motherName'])){  ?>
-                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherMobNum'];  ?></span>
+                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['motherName'];  ?></span>
                                     <?php } ?>
                                 </div>
                                 <div class="form-group">
                                     <label for="motherNum">*Mother Phone Number</label>
                                     <input type="text" class="form-control" name="motherNum" id="motherNum" placeholder="Enter mother phone number" required>
                                     <?php if(isset($_POST['submit']) && isset($errors['motherNum'])){  ?>
-                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherMobNum'];  ?></span>
+                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['motherMobNum'];  ?></span>
                                     <?php } ?>
-                                    <?php if(isset($_POST['submit']) && isset($errors['fatherMobNuminvalid'])){ ?>
-                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherMobNuminvalid'] ?></span>
+                                    <?php if(isset($_POST['submit']) && isset($errors['motherMobNuminvalid'])){ ?>
+                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['motherMobNuminvalid'] ?></span>
                                     <?php } ?>
                                 </div>
                                 <div class="form-group">
                                     <label for="motherJob">*Mother Job</label>
                                     <input type="text" class="form-control" name="motherJob" id="motherJob" placeholder="Enter mother job" required>
                                     <?php if(isset($_POST['submit']) && isset($errors['motherJob'])){  ?>
-                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherMobNum'];  ?></span>
+                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['motherJob'];  ?></span>
                                     <?php } ?>
                                 </div>
                                 <div class="control-group">
-                                <textarea class="form-control border-1 py-3 px-4" rows="3" id="Notes" name ="notes" 
+                                <textarea class="form-control border-1 py-3 px-4" rows="3" id="notes" name ="notes" 
                                 placeholder="If you have notes regarding health or any thing, please write it here."></textarea>
                                 <p class="help-block text-danger"></p>
                             </div>
