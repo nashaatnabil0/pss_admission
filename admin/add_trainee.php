@@ -115,14 +115,14 @@ if (isset($_POST['submit'])) {
   
     //notes
   $notes = trim($_POST['Notes']);
+  if ($notes == "") {
+      $notes = null;
+  }
+  
   if(empty($errors)){
-
-  if($notes==""){
-    $query = $pdoConnection->query("INSERT INTO trainees (Name, NID, birthDate, gender, photo, birthCertificate,contactMobNum,fatherName,fatherMobNum,fatherJob,motherName,motherMobNum,motherJob) VALUES ('$name', '$NID','$birthdate', '$gender', '$traineePhoto','$bdImage','$contactmobnum','$fatherName','$fathermobnum','$fatherJob','$motherName','$mothermobnum','$motherJob')");
-  }else{
   //insert into databse
   $query = $pdoConnection->query("INSERT INTO trainees (Name, NID, birthDate, gender, photo, birthCertificate,contactMobNum,fatherName,fatherMobNum,fatherJob,motherName,motherMobNum,motherJob,Notes) VALUES ('$name', '$NID','$birthdate', '$gender', '$traineePhoto','$bdImage','$contactmobnum','$fatherName','$fathermobnum','$fatherJob','$motherName','$mothermobnum','$motherJob','$notes')");
-  }
+  
           if ($query) {
               echo "<script>alert('Trainee has been added.');</script>";
               echo "<script>window.location.href ='viewall_trainees.php'</script>";
