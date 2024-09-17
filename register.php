@@ -326,7 +326,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <label for="fatherNum">*Father Phone Number</label>
                                     <input type="text" class="form-control" name="fatherNum" id="fatherNum" placeholder="Enter father phone number" required>
                                     <?php if(isset($_POST['submit']) && isset($errors['fatherNum'])){  ?>
-                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherMobNum'];  ?></span>
+                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherNum'];  ?></span>
                                     <?php } ?>
                                     <?php if(isset($_POST['submit']) && isset($errors['fatherMobNuminvalid'])){ ?>
                                     <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherMobNuminvalid'] ?></span>
@@ -350,7 +350,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <label for="motherNum">*Mother Phone Number</label>
                                     <input type="text" class="form-control" name="motherNum" id="motherNum" placeholder="Enter mother phone number" required>
                                     <?php if(isset($_POST['submit']) && isset($errors['motherNum'])){  ?>
-                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['motherMobNum'];  ?></span>
+                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['motherNum'];  ?></span>
                                     <?php } ?>
                                     <?php if(isset($_POST['submit']) && isset($errors['motherMobNuminvalid'])){ ?>
                                     <span style="color:red;display:block;text-align:left"><?php echo $errors['motherMobNuminvalid'] ?></span>
@@ -369,7 +369,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <p class="help-block text-danger"></p>
                             </div>
                                 <div>
-                                <button type="submit" style="background-color: #063547" class="btn btn-primary">Register</button>
+                                <button type="submit" name="submit" id="submit" style="background-color: #063547" class="btn btn-primary">Register</button>
                             </form>
                             <br>
                         </div>
