@@ -14,7 +14,7 @@ if(isset($_POST['submit']))
     $errors['sportname'] = "sport name cannot be empty";
   }
 
-  $superID= tirm($_POST['supervisor']);
+  $superID= $_POST['supervisor'];
   $eid=$_GET['editid'];
   if($superID==""){
     $query=$pdoConnection-> query("update sport set name='$spname',supervisorID= NULL where ID='$eid'");

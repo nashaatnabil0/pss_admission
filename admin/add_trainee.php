@@ -14,7 +14,7 @@ if (isset($_POST['submit'])) {
     if (empty($name)) {
         $errors['Name'] = "Name cannot be empty";
     }elseif (!preg_match( $namePattern , $name)) {
-      $errors['Name'] = "Name must be two words at least  and contain letters only ";
+      $errors['Name'] = "Name must be two words at least and contain letters only ";
      }
     
     $gender = trim ($_POST['gender']);

@@ -16,7 +16,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
         $errors['Name'] = "Name cannot be empty";
     }
     
-    $gender = trim($_POST['gender']);
+    $gender = $_POST['gender'];
     if (empty($gender)) {
         $errors['gender'] = "Please Choose a gender";
     }

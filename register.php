@@ -70,16 +70,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Retrieve form data
     $errors = [];
     $mobnumPattern = '/^(011|010|015|012)[0-9]{8}$/';
-    $name = $_POST['registerName'];
+    $namePattern = '/^[a-zA-Z]+(?:\s+[a-zA-Z]+)+$/';
+    $name = trim($_POST['registerName']);
     if (empty($name)) {
         $errors['Name'] = "Name cannot be empty";
-    }
+    }elseif (!preg_match( $namePattern , $name)) {
+        $errors['Name'] = "Name must be two words at least and contain letters only ";
+     }
 
     $nid = $nationalId;
     if ($genderDigit % 2 == 0) { $gender = "female"; }else $gender="male";
     $dob = $_POST['dob'];
 
-    $contactMobNum = $_POST['contactMobNum'];  
+    $contactMobNum = trim($_POST['contactMobNum']);  
     if (empty($contactMobNum)) {
         $errors['contactMobNum'] = "Phone number cannot be empty";
     } elseif (!preg_match($mobnumPattern, $contactMobNum)) {
@@ -87,15 +90,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Father
-    $fatherName = $_POST['fatherName'];
+    $fatherName = trim($_POST['fatherName']);
     if (empty($fatherName)) {
     $errors['fatherName'] = "Father full name can't be empty";
-    }
-    $fatherJob = $_POST['fatherJob'];
+    }elseif (!preg_match( $namePattern , $fatherName)) {
+        $errors['fatherName'] = "Name must be two words at least and contain letters only ";
+       }
+
+    $fatherJob = trim($_POST['fatherJob']);
     if (empty($fatherJob)) {
     $errors['fatherJob'] = "Father job can't be empty";
     }
-    $fatherNum = $_POST['fatherNum'];
+    $fatherNum = trim($_POST['fatherNum']);
     if (empty($fatherNum)) {
         $errors['fatherNum'] = "Phone number cannot be empty";
     } elseif (!preg_match($mobnumPattern, $fatherNum)) {
@@ -103,15 +109,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Mother
-    $motherName = $_POST['motherName'];
+    $motherName = trim($_POST['motherName']);
     if (empty($motherName)) {
     $errors['motherName'] = "Mother full name can't be empty";
-    }
-    $motherJob = $_POST['motherJob'];
+    }elseif (!preg_match( $namePattern , $motherName)) {
+        $errors['motherName'] = "Name must be two words at least and contain letters only ";
+       }
+    $motherJob = trim($_POST['motherJob']);
     if (empty($motherName)) {
     $errors['motherJob'] = "Mother job can't be empty";
     }
-    $motherNum = $_POST['motherNum'];
+    $motherNum = trim($_POST['motherNum']);
     if (empty($motherNum)) {
         $errors['motherNum'] = "Phone number cannot be empty";
     } elseif (!preg_match($mobnumPattern, $motherNum)) {
@@ -125,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['bdimgempty']= "Please upload Birth Certificate or National ID photo. ";
     }
 
-    $notes =$_POST['notes'];
+    $notes =trim($_POST['notes']);
     // var_dump($_FILES['idPhoto']);
     var_dump($errors);
 
@@ -147,11 +155,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
 }
+
 ?>
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 
