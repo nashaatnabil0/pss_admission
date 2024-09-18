@@ -31,25 +31,30 @@ if (strlen($_SESSION['sportadmission']==0)) {
         $stDate = null;
       }
       $seasonImg = $_FILES['image']['name'];
-      if (empty($seasonImg)){
-        $errors['image'] = "Please upload season image";
-      }
+      // if (empty($seasonImg)){
+      //   $errors['image'] = "Please upload season image";
+      // }
 
       if($seasonImg!=""){
         $extension = strtolower(pathinfo($seasonImg, PATHINFO_EXTENSION));
         $allowed_extensions = array("jpg", "jpeg", "png", "gif");
         // Validation for allowed extensions
         if (!in_array($extension, $allowed_extensions)) {
-          $seasonImg = $image_name ;
+          $errors['image'] = "Image Extension not acceptable use one of (jpg, jpeg, png, gif)";
+        }else{
+          // $renameSeasonImg = md5($seasonImg) . '.' . $extension;
+          $renameSeasonImg = $Name .'-poster'. '.' . $extension;
+          move_uploaded_file($_FILES["image"]["tmp_name"], "images/" . $renameSeasonImg);
         }
       }
+
       if (empty($errors)) {
         if(!empty($seasonImg)){
-          $renameSeasonImg = md5($seasonImg) . '.' . $extension;
-        move_uploaded_file($_FILES["image"]["tmp_name"], "images/" . $renameSeasonImg);
-          // $query = $pdoConnection->query("INSERT INTO season (name, state, startDate, image) VALUES ('$Name', '$State', '$stDate', '$renameSeasonImg')");
+         
           $query = $pdoConnection->query("UPDATE season SET name='$Name',state='$State',startDate='$stDate',image='$renameSeasonImg' WHERE ID = $cid;");
+
         }else{
+         
           $query = $pdoConnection->query("UPDATE season SET name='$Name',state='$State',startDate='$stDate' WHERE ID = $cid;");
         }
           if ($query) {

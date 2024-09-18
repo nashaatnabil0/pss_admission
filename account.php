@@ -120,22 +120,22 @@ try {
             <div class="col-md-8">
                 <div class="row">
                     <div class="col">
-                        <div class="bg-light p-4 rounded">
+                        <div class="bg-light p-6 rounded">
                             <h4 class="text-primary">Personal Information</h4>
                             <p><strong>Name:</strong> <?php echo htmlspecialchars($user['Name']); ?></p>
                             <p><strong>Birth Date:</strong> <?php echo htmlspecialchars($user['birthDate']); ?></p>
                             <p><strong>Gender:</strong> <?php echo htmlspecialchars($user['gender']); ?></p>
-                            <p><strong>Contact Mobile Number:</strong> <?php echo '0'.htmlspecialchars($user['contactMobNum']); ?></p>
+                            <p><strong>Contact Mobile Number:</strong> <?php echo htmlspecialchars($user['contactMobNum']); ?></p>
                         </div>
                     </div>
                     <div class="col">
-                        <div class="bg-light p-4 rounded">
+                        <div class="bg-light p-6 rounded">
                             <h4 class="text-primary">Family Information</h4>
                             <p><strong>Father's Name:</strong> <?php echo htmlspecialchars($user['fatherName']); ?></p>
-                            <p><strong>Father's Mobile Number:</strong> <?php echo '0'.htmlspecialchars($user['fatherMobNum']); ?></p>
+                            <p><strong>Father's Mobile Number:</strong> <?php echo htmlspecialchars($user['fatherMobNum']); ?></p>
                             <p><strong>Father's Job:</strong> <?php echo htmlspecialchars($user['fatherJob']); ?></p>
                             <p><strong>Mother's Name:</strong> <?php echo htmlspecialchars($user['motherName']); ?></p>
-                            <p><strong>Mother's Mobile Number:</strong> <?php echo '0'.htmlspecialchars($user['motherMobNum']); ?></p>
+                            <p><strong>Mother's Mobile Number:</strong> <?php echo htmlspecialchars($user['motherMobNum']); ?></p>
                             <p><strong>Mother's Job:</strong> <?php echo htmlspecialchars($user['motherJob']); ?></p>
                             <p><strong>Notes:</strong> <?php echo htmlspecialchars($user['Notes']); ?></p>
                         </div>

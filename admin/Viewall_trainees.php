@@ -97,7 +97,7 @@ if($sql){
                   <td><?php echo $cnt;?></td>
                   <td><?php  echo $row['Name'];?></td>
                   <td><?php  echo $row['NID'];?></td>
-                  <td><?php  echo '0'.$row['contactMobNum'];?></td>
+                  <td><?php  echo $row['contactMobNum'];?></td>
                   <td><?php  echo $row['Notes'];?></td>
                   <td>
                     <button 

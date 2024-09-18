@@ -116,7 +116,7 @@ else {
     }
       
     if (empty($errors)){
-            $query2 = $pdoConnection->query("INSERT INTO enrollment(traineeNID, groupId, paymentPlan, state, date, discount) VALUES ('$traineeNID', '$group', '$pymntPlan', '$enrollstate', '$enrolldate', '$discount')");
+            $query2 = $pdoConnection->query("INSERT INTO enrollment(traineeNID, groupId, paymentPlan, state, discount) VALUES ('$traineeNID', '$group', '$pymntPlan', '$enrollstate', '$discount')");
                   if ($query2) {
                       echo "<script>alert('Enrollment details have been added.');</script>";
                       echo "<script>window.location.href ='viewall_enrollments.php'</script>";

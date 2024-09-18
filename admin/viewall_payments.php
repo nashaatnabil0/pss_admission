@@ -109,7 +109,6 @@ if(isset($_GET['delid']))
                   </tr>
                 </thead>
                   <?php
-                  // $ret= $pdoConnection-> query("SELECT * FROM payment");
                   $ret= $pdoConnection-> query("SELECT
                       p.ID,
                       p.paymentAmount,
@@ -134,7 +133,9 @@ if(isset($_GET['delid']))
                     JOIN 
                       users u on p.userId=u.ID 
                     JOIN 
-                      groups g on en.groupId=g.ID");
+                      groups g on en.groupId=g.ID
+                    ORDER BY 
+                      p.date DESC;");
                   $cnt=1;
                   while ($row=$ret-> fetch(PDO:: FETCH_ASSOC)) {
                   ?>
