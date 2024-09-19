@@ -80,7 +80,7 @@ try {
         $currentDate = new DateTime();
 
         // Calculate the age in years
-        $ageY = ($currentDate->diff($birthDate)->y)-8;
+        $ageY = ($currentDate->diff($birthDate)->y);
         $ageM = $currentDate->diff($birthDate)->m;
         if($ageM > 6){
             $ageY +=1;
@@ -346,9 +346,6 @@ try {
 
                                             <?php } } ?>
                                 </div>
-                                <!-- <div class="alert alert-danger" role="alert" hidden >
-                                    This is a danger alert—check it out!
-                                </div> -->
                                         <?php if(isset($_POST['submit']) && isset($errors['groups'])) { ?>
                                             <span style="color:red;display:block;text-align:left"><?php echo $errors['sport']; ?></span>
                                         <?php } ?>

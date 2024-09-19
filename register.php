@@ -25,11 +25,11 @@ try {
     // Allowed extensions
     $allowed_extensions = array ("jpg", "jpeg", "png", "gif");
     // Function to handle image uploads
-    function uploadImages($imageFile, $allowed_extensions, $name, $NID, &$errors ,$fileInputName ) {
+    function uploadImages($imageFile, $allowed_extensions, $name, $NID ,$fileInputName ) {
         if ($imageFile["name"] != "") {
             $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
             if (in_array($extension, $allowed_extensions)) {
-                $newImageName = $NID .'-'. $name. $fileInputName . '.' . $extension;
+                $newImageName = $NID .'-'. $name. '.' . $extension;
                 move_uploaded_file($imageFile["tmp_name"], "admin/images/" . $newImageName);
                 return $newImageName;
             } else {
@@ -125,12 +125,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['motherMobNuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
     }
 
-    $personalPhoto = uploadImages($_FILES['personalPhoto'], $allowed_extensions, $name , $nid, $errors,"personalPhoto");
+    $personalPhoto = uploadImages($_FILES['personalPhoto'], $allowed_extensions, 'proimg', $nid, "personalPhoto");
     if (empty($personalPhoto)) {
         $errors['traineePicempty'] = "Please upload a photo of the trainee.";
     }
 
-    $idPhoto = uploadImages($_FILES['idPhoto'], $allowed_extensions, $name , $nid, $errors, "idPhoto");
+    $idPhoto = uploadImages($_FILES['idPhoto'], $allowed_extensions, 'certimg' , $nid, "idPhoto");
     if (empty($idPhoto)) {
         $errors['bdimgempty'] = "Please upload a Birth Certificate or National ID photo.";
     }
@@ -238,7 +238,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <a href="index.php" class="nav-item nav-link ">Home</a>
                     <a href="about.php" class="nav-item nav-link">About</a>                    
                     <a href="contact.php" class="nav-item nav-link">Contact</a>
-        </nav>
+                </div>
+            </div>
+
+                </nav>
     </div>
     <div class="container">
         <h2 class="about_text_2"><strong>In order to enroll, please create your profile first!</strong></h2>
@@ -369,7 +372,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <p class="help-block text-danger"></p>
                             </div>
                                 <div>
-                                <button type="submit" name="submit" id="submit" style="background-color: #063547" class="btn btn-primary">Register</button>
+                                <button type="submit" name="submit" id="submit" class="btn btn-primary rounded">Register</button>
                             </form>
                             <br>
                         </div>

@@ -85,11 +85,11 @@ if (isset($_POST['submit'])) {
     $allowed_extensions = ["jpg", "jpeg", "png", "gif"];
 
    
-    function uploadImages($imageFile, $allowed_extensions, $name, $NID, &$errors ,$fileInputName ) {
+    function uploadImages($imageFile, $allowed_extensions, $name, $NID,$fileInputName ) {
       if ($imageFile["name"] != "") {
           $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
           if (in_array($extension, $allowed_extensions)) {
-              $newImageName = $NID .'-'. $name. $fileInputName . '.' . $extension;
+              $newImageName = $NID .'-'. $name. '.' . $extension;
               move_uploaded_file($imageFile["tmp_name"], "images/" . $newImageName);
               return $newImageName;
           } else {
@@ -101,12 +101,12 @@ if (isset($_POST['submit'])) {
     }
 
 //var_dump($_FILES);
-    $traineePhoto = uploadImages($_FILES["traineePic"], $allowed_extensions, $name, $NID, $errors, 'traineePic');
+    $traineePhoto = uploadImages($_FILES["traineePic"], $allowed_extensions,'proimg', $NID, 'traineePic');
     if (empty($traineePhoto)){
       $errors['traineePicempty'] = "Please upload trainee Photo.";
     }
 
-    $bdImage = uploadImages($_FILES["bdimg"], $allowed_extensions, $name, $NID, $errors, 'bdimg');
+    $bdImage = uploadImages($_FILES["bdimg"], $allowed_extensions, 'certimg', $NID, 'bdimg');
     if (empty($bdImage)){
       $errors['bdimgempty'] = "Please upload Birth Certificate or National ID photo.";
     }

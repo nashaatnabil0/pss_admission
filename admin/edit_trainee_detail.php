@@ -93,11 +93,11 @@ if (strlen($_SESSION['sportadmission']==0)) {
     $allowed_extensions = ["jpg", "jpeg", "png", "gif"];
     
    //&$error to modify the errors array outside the function
-   function uploadImages($imageFile, $allowed_extensions, $name, $NID, &$errors ,$fileInputName ) {
+   function uploadImages($imageFile, $allowed_extensions, $name, $NID,$fileInputName ) {
      if ($imageFile["name"] != "") {
          $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
          if (in_array($extension, $allowed_extensions)) {
-             $newImageName = $NID .'-'. $name. $fileInputName . '.' . $extension;
+             $newImageName = $NID .'-'. $name.'.' . $extension;
              move_uploaded_file($imageFile["tmp_name"], "images/" . $newImageName);
              return $newImageName;
          } else {
@@ -109,12 +109,12 @@ if (strlen($_SESSION['sportadmission']==0)) {
    }
 
 //var_dump($_FILES);
-   $traineePhoto = uploadImages($_FILES["traineePic"], $allowed_extensions, $name, $NID, $errors, 'traineePic');
+   $traineePhoto = uploadImages($_FILES["traineePic"], $allowed_extensions, 'proimg', $NID,  'traineePic');
    if (empty($traineePhoto)){
      $traineePhoto= $existing_TraineePhoto;
    }
 
-   $bdImage = uploadImages($_FILES["bdimg"], $allowed_extensions, $name, $NID, $errors, 'bdimg');
+   $bdImage = uploadImages($_FILES["bdimg"], $allowed_extensions, 'certimg', $NID, 'bdimg');
    if (empty($bdImage)){
      $bdImage = $existing_birthcertificate;
    }
