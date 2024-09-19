@@ -267,7 +267,7 @@ else {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Enrollment State:</label>
                     <div class="col-sm-10">
-                    <input class="" id="enrolltate" name="enrollstate"  type="radio" value="on" style="margin:7px" required > Active <span style="margin: 35px"></span>
+                    <input class="" id="enrollstate" name="enrollstate"  type="radio" value="on" style="margin:7px" required > Active <span style="margin: 35px"></span>
                     <input class="" id="enrollstateoff" name="enrollstate"  type="radio" value="off" style="margin:7px" required> Inactive  <span style="margin: 35px"></span>
                     <input class="" id="enrollstatewait" name="enrollstate"  type="radio" value="waiting" style="margin:7px" required> Waiting   
                     <?php if (isset($_POST['submit']) && isset($errors['enrollstate'])){ ?>
@@ -348,41 +348,42 @@ else {
 <!-- get the groups based on the sport selected -->
 <script>
    // All groups with their associated sport ID
-    const groups = [
-        <?php
-        $groupquery = $pdoConnection->query("SELECT g.ID, g.Title, sp.ID as sportId, sp.name as sportName, g.maxAge, g.minAge 
-                                            FROM groups g 
-                                            JOIN sport sp ON g.sportId = sp.ID");
-        while ($row2 = $groupquery->fetch(PDO::FETCH_ASSOC)) {
-        ?>
-            { 
-              id: "<?php echo $row2['ID']; ?>", 
-              title: "<?php echo $row2['Title']; ?>", 
-              sportId: "<?php echo $row2['sportId']; ?>",
-              minAge: "<?php echo $row2['minAge']; ?>",
-              maxAge: "<?php echo $row2['maxAge']; ?>",
-            },
-        <?php
-        }
-        ?>
-    ];
+   const groups = [
+    <?php
+    $groupquery = $pdoConnection->query("SELECT g.ID, g.Title, sp.ID as sportId, sp.name as sportName, g.maxAge, g.minAge , g.state as groupstate
+                                        FROM groups g 
+                                        JOIN sport sp ON g.sportId = sp.ID");
+    while ($row2 = $groupquery->fetch(PDO::FETCH_ASSOC)) {
+    ?>
+        { 
+          id: "<?php echo $row2['ID']; ?>", 
+          title: "<?php echo $row2['Title']; ?>", 
+          sportId: "<?php echo $row2['sportId']; ?>",
+          minAge: "<?php echo $row2['minAge']; ?>",
+          maxAge: "<?php echo $row2['maxAge']; ?>",
+          groupstate: "<?php echo $row2['groupstate']; ?>" 
+        },
+    <?php
+    }
+    ?>
+];
 
-    // Function to update groups based on selected sport
-    document.getElementById('sport').addEventListener('change', function() {
-        const sportId = this.value;
-        const groupSelect = document.getElementById('group');
+document.getElementById('sport').addEventListener('change', function() {
+    const sportId = this.value;
+    const groupSelect = document.getElementById('group');
 
-        // Clear previous options
-        groupSelect.innerHTML = '<option value="">Choose a Group</option>';
+    // Clear previous options
+    groupSelect.innerHTML = '<option value="">Choose a Group</option>';
 
-        // Filter and add new group options based on the selected sport
-        groups.filter(group => group.sportId === sportId).forEach(group => {
-            const option = document.createElement('option');
-            option.value = group.id;
-            option.textContent = group.title + " / " + " ( " + group.minAge + "-" + group.maxAge + " ) " + " Y " ;
-            groupSelect.appendChild(option);
-        });
+    // Filter and add new group options based on the selected sport
+    groups.filter(group => group.sportId === sportId).forEach(group => {
+        const option = document.createElement('option');
+        option.value = group.id;
+        option.textContent = group.title + " - " + " ( " + group.minAge + "-" + group.maxAge + " ) " + " Y " + " - " + group.groupstate;
+        groupSelect.appendChild(option);
     });
+});
+
 
 </script>
 </body>
