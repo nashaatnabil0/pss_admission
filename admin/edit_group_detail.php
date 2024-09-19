@@ -139,8 +139,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
                       <?php
                       $query=$pdoConnection-> query("select * from groups where ID='$cid'");
                       $row=$query ->fetch(PDO:: FETCH_ASSOC);
-                      if($row>0){
-                      ?>
+                      if($row>0) { ?>
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Group Title</label>
                     <div class="col-sm-10">
@@ -261,8 +260,8 @@ if (strlen($_SESSION['sportadmission']==0)) {
                     <div class="form-group">
                     <label class="col-sm-2 control-label">Group State</label>
                     <div class="col-sm-10">
-                    <input class="" id="groupstate" name="groupstate" type="radio" value="open" <?php if($row['groupstate'] == 'open') { echo 'checked'; } ?> style="margin:7px" required> Open  <span style="margin: 35px"></span>
-                    <input class="" id="groupstateoff" name="groupstate" type="radio" value="closed"  <?php if($row['groupstate'] == 'closed') { echo 'checked'; } ?> style="margin:7px" required> Closed
+                    <input class="" id="groupstate" name="groupstate" type="radio" value="open" <?php if($row['state'] == 'open') { echo 'checked'; } ?> style="margin:7px" required> Open  <span style="margin: 35px"></span>
+                    <input class="" id="groupstateoff" name="groupstate" type="radio" value="closed"  <?php if($row['state'] == 'closed') { echo 'checked'; } ?> style="margin:7px" required> Closed
                     <?php if (isset($_POST['submit']) && isset($errors['groupstate'])) { ?>
                     <span style="color:red;display:block;text-align:left"><?php echo $errors['groupstate']; ?></span>                        
                         <?php } ?>
