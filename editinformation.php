@@ -122,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
                     echo "<script>alert('Something Went Wrong. Please try again.');</script>";
                     }
             }    else {
-                var_dump($errors);
+                // var_dump($errors);
               
         } 
 
