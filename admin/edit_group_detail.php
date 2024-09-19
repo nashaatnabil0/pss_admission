@@ -53,13 +53,19 @@ if (strlen($_SESSION['sportadmission']==0)) {
         $errors['price'] = "Capacity can't be empty";
       }
       $place = trim($_POST['place']);
+      if ($place == "") {
+        $place = null ; 
+      }
+
+      $groupState = $_POST['groupstate'];
+      if (empty($groupState)) {
+        $errors['groupstate'] = "Please choose group state";
+      }
 
       if (empty($errors)) {
-        if ($place == "") {
-          $query = $pdoConnection->query("UPDATE groups SET Title='$title',days='$days',Timeslot='$timing',minAge='$minAge',maxAge='$maxAge',trainerId='$trainer',sportId='$sport',seasonId='$season',price='$price',capacity='$capacity' WHERE ID = '$cid';");
-        }else{
-          $query = $pdoConnection->query("UPDATE groups SET Title='$title',days='$days',Timeslot='$timing',minAge='$minAge',maxAge='$maxAge',trainerId='$trainer',sportId='$sport',seasonId='$season',price='$price',capacity='$capacity', place = '$place' WHERE ID = '$cid';");
-        }
+ 
+          $query = $pdoConnection->query("UPDATE groups SET Title='$title',days='$days',Timeslot='$timing',minAge='$minAge',maxAge='$maxAge',trainerId='$trainer',sportId='$sport',seasonId='$season',price='$price',capacity='$capacity', place = '$place', state = '$groupState' WHERE ID = '$cid';");
+        
               if ($query) {
                   echo "<script>alert('Group has been Updated.');</script>";
                   echo "<script>window.location.href ='viewall_groups.php'</script>";
@@ -187,20 +193,6 @@ if (strlen($_SESSION['sportadmission']==0)) {
                     </div>
                   </div>
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Trainer</label>
-                    <div class="col-sm-10">
-                      <select class="form-control m-bot15" name="trainer" id="trainer">
-                        <option value="">Choose a trainer</option>
-                          <?php $query=$pdoConnection-> query("select * from trainers");
-                            while($row1=$query ->fetch(PDO:: FETCH_ASSOC))
-                            {
-                            ?>    
-                            <option value="<?php echo $row1['ID'];?>" <?php if($row1['ID'] == $row['trainerId']){ echo "selected='selected'";}?>><?php echo $row1['name'];?></option>
-                            <?php } ?> 
-                      </select>
-                    </div>
-                  </div>
-                  <div class="form-group">
                     <label class="col-sm-2 control-label">Sport</label>
                     <div class="col-sm-10">
                       <select class="form-control m-bot15" name="sport" id="sport">
@@ -215,6 +207,20 @@ if (strlen($_SESSION['sportadmission']==0)) {
                       <?php if(isset($_POST['submit']) && isset($errors['sport'])) { ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['sport']; ?></span>
                         <?php } ?>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Trainer</label>
+                    <div class="col-sm-10">
+                      <select class="form-control m-bot15" name="trainer" id="trainer">
+                        <option value="">Choose a trainer</option>
+                          <?php $query=$pdoConnection-> query("select * from trainers");
+                            while($row1=$query ->fetch(PDO:: FETCH_ASSOC))
+                            {
+                            ?>    
+                            <option value="<?php echo $row1['ID'];?>" <?php if($row1['ID'] == $row['trainerId']){ echo "selected='selected'";}?>><?php echo $row1['name'];?></option>
+                            <?php } ?> 
+                      </select>
                     </div>
                   </div>
                   <div class="form-group">
@@ -249,6 +255,16 @@ if (strlen($_SESSION['sportadmission']==0)) {
                       <input class="form-control" id="capacity" name="capacity" type="number" value="<?php  echo $row['capacity'];?>">
                       <?php if(isset($_POST['submit']) && isset($errors['capacity'])) { ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['capacity']; ?></span>
+                        <?php } ?>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                    <label class="col-sm-2 control-label">Group State</label>
+                    <div class="col-sm-10">
+                    <input class="" id="groupstate" name="groupstate" type="radio" value="open" <?php if($row['groupstate'] == 'open') { echo 'checked'; } ?> style="margin:7px" required> Open  <span style="margin: 35px"></span>
+                    <input class="" id="groupstateoff" name="groupstate" type="radio" value="closed"  <?php if($row['groupstate'] == 'closed') { echo 'checked'; } ?> style="margin:7px" required> Closed
+                    <?php if (isset($_POST['submit']) && isset($errors['groupstate'])) { ?>
+                    <span style="color:red;display:block;text-align:left"><?php echo $errors['groupstate']; ?></span>                        
                         <?php } ?>
                       </div>
                     </div>
