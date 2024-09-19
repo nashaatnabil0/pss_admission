@@ -102,37 +102,34 @@ include('includes/dbconnection.php');
                     <h1 class="mb-4">Leave us a message here!</h1>
                     <div class="contact-form bg-secondary" style="padding: 30px;">
                         <div id="success"></div>
-                        <form action="https://formsubmit.co/el/mulamo" method="POST">
-                            <!-- <div class="control-group">
-                                <input type="text" class="form-control border-0 p-4" id="name" placeholder="Your Name"
+                        <form id="contactform" action="https://formsubmit.io/send/nashaatnabil8@gmail.com" method="POST">
+                            <div class="control-group">
+                                <input type="text" class="form-control border-0 p-4" name="name" id="name" placeholder="Your Name"
                                     required="required" data-validation-required-message="Please enter your name" />
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="control-group">
-                                <input type="email" class="form-control border-0 p-4" id="phoneNumber" placeholder="Your Phone Number"
-                                    required="required" data-validation-required-message="Please enter your phone number" />
+                                <input type="text" class="form-control border-0 p-4" id="phoneNumber" name="phoneNumber" placeholder="Your Phone Number"/>
                                 <p class="help-block text-danger"></p>
-                            </div> -->
+                            </div>
                             <div class="control-group">
                                 <input type="email" class="form-control border-0 p-4" id="email" name="email" placeholder="Your Email"
                                     required="required" data-validation-required-message="Please enter your email" />
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="control-group">
-                                <input type="text" class="form-control border-0 p-4" id="subject" name="_subject" placeholder="Subject"
+                                <input type="text" class="form-control border-0 p-4" id="subject" name="subject" placeholder="Subject"
                                     required="required" data-validation-required-message="Please enter a subject" />
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="control-group">
-                                <textarea class="form-control border-0 py-3 px-4" rows="3" id="message" name="message" placeholder="Message"
+                                <textarea class="form-control border-0 py-3 px-4" rows="3" id="comment" name="comment" placeholder="Message"
                                     required="required"
                                     data-validation-required-message="Please enter your message"></textarea>
                                 <p class="help-block text-danger"></p>
                             </div>
-                            <input type="hidden" name="_template" value="table">
-                            <input type="hidden" name="_next" value="http://localhost/pss_admission/thanku.php">
                             <div>
-                            <button class="btn btn-primary py-3 px-4 rounded" type="button" id="sendMessageButton" onclick="redirectToThankYou()">Send Message</button>
+                            <button class="btn btn-primary py-3 px-4 rounded" type="submit" id="sendMessageButton" >Send Message</button>
                             </div>
                         </form>
                     </div>
