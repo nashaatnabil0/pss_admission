@@ -52,15 +52,21 @@ else {
     }
     $capacity = trim($_POST['capacity']);
     if (empty($capacity)) {
-      $errors['capacity'] = "Capacity can't be empty";
+      $errors['capacity'] = "Please enter the group's capacity";
     }
     $place = trim($_POST['place']);
-   if(empty($errors)){
     if ($place == "") {
-      $query = $pdoConnection->query("INSERT INTO groups (Title ,days, timeslot, minAge, maxAge, trainerId, sportId, seasonId, price, capacity) VALUES ('$title', '$days', '$timing', '$minAge', '$maxAge', '$trainer', '$sport', '$season', '$price', '$capacity')");
-    }else{
-          $query = $pdoConnection->query("INSERT INTO groups (Title,place ,days, timeslot, minAge, maxAge, trainerId, sportId, seasonId, price, capacity) VALUES ('$title', '$place', '$days', '$timing', '$minAge', '$maxAge', '$trainer', '$sport', '$season', '$price', '$capacity')");
+      $place = NULL;
     }
+    $groupState = $_POST['groupstate'];
+      if (empty($groupState)) {
+        $errors['groupstate'] = "Please choose group state";
+      }
+
+      if(empty($errors)){
+
+          $query = $pdoConnection->query("INSERT INTO groups (Title,place ,days, timeslot, minAge, maxAge, trainerId, sportId, seasonId, price, capacity, state) VALUES ('$title', '$place', '$days', '$timing', '$minAge', '$maxAge', '$trainer', '$sport', '$season', '$price', '$capacity', '$groupState')");
+    
           if ($query) {
               echo "<script>alert('Group has been added.');</script>";
               echo "<script>window.location.href ='viewall_groups.php'</script>";
@@ -132,7 +138,7 @@ else {
              Add Group Details
               </header>
               <div class="panel-body">
-                <form class="form-horizontal " method="post" action="" enctype="multipart/form-data" >
+                <form class="form-horizontal " method="post" action="" enctype="multipart/form-data" novalidate>
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Group Title</label>
                     <div class="col-sm-10">
@@ -185,23 +191,6 @@ else {
                     </div>
                   </div>
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Trainer</label>
-                    <div class="col-sm-10">
-                      <select class="form-control m-bot15" name="trainer" id="trainer">
-                        <option value="">Choose a trainer</option>
-                          <?php $query=$pdoConnection-> query("select * from trainers");
-                            while($row=$query ->fetch(PDO:: FETCH_ASSOC))
-                            {
-                            ?>    
-                          <option value="<?php echo $row['ID'];?>"><?php echo $row['name'];?></option>
-                            <?php } ?> 
-                      </select>
-                      <?php if(isset($_POST['submit']) && isset($errors['trainer'])) { ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['trainer']; ?></span>
-                        <?php } ?>
-                    </div>
-                  </div>
-                  <div class="form-group">
                     <label class="col-sm-2 control-label">Sport</label>
                     <div class="col-sm-10">
                       <select class="form-control m-bot15" name="sport" id="sport">
@@ -215,6 +204,23 @@ else {
                       </select>
                       <?php if(isset($_POST['submit']) && isset($errors['sport'])) { ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['sport']; ?></span>
+                        <?php } ?>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Trainer</label>
+                    <div class="col-sm-10">
+                      <select class="form-control m-bot15" name="trainer" id="trainer">
+                        <option value="">Choose a trainer</option>
+                          <?php $query=$pdoConnection-> query("select * from trainers");
+                            while($row=$query ->fetch(PDO:: FETCH_ASSOC))
+                            {
+                            ?>    
+                          <option value="<?php echo $row['ID'];?>"><?php echo $row['name'];?></option>
+                            <?php } ?> 
+                      </select>
+                      <?php if(isset($_POST['submit']) && isset($errors['trainer'])) { ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['trainer']; ?></span>
                         <?php } ?>
                     </div>
                   </div>
@@ -250,6 +256,16 @@ else {
                       <input class="form-control" id="capacity" name="capacity" type="number" value = "">
                       <?php if(isset($_POST['submit']) && isset($errors['capacity'])) { ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['capacity']; ?></span>
+                        <?php } ?>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                    <label class="col-sm-2 control-label">Group State</label>
+                    <div class="col-sm-10">
+                    <input class="" id="groupstate" name="groupstate"  type="radio" value="open" style="margin:7px" required > Open<span style="margin: 35px"></span>
+                    <input class="" id="groupstateoff" name="groupstate"  type="radio" value="closed" style="margin:7px" required> Closed  <span style="margin: 35px"></span>
+                      <?php if (isset($_POST['submit']) && isset($errors['groupstate'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['groupstate']; ?></span>                        
                         <?php } ?>
                       </div>
                     </div>
