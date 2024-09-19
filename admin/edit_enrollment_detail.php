@@ -333,7 +333,7 @@ else {
    // All groups with their associated sport ID
     const groups = [
         <?php
-        $groupquery = $pdoConnection->query("SELECT g.ID, g.Title, sp.ID as sportId, sp.name as sportName, g.maxAge, g.minAge 
+        $groupquery = $pdoConnection->query("SELECT g.ID, g.Title, sp.ID as sportId, sp.name as sportName, g.maxAge, g.minAge , g.state as groupstate
                                             FROM groups g 
                                             JOIN sport sp ON g.sportId = sp.ID");
         while ($row3 = $groupquery->fetch(PDO::FETCH_ASSOC)) {
@@ -344,6 +344,7 @@ else {
               sportId: "<?php echo $row3['sportId']; ?>",
               minAge: "<?php echo $row3['minAge']; ?>",
               maxAge: "<?php echo $row3['maxAge']; ?>",
+              groupstate: "<?php echo $row3['groupstate']; ?>" ,
             },
         <?php
         }
@@ -365,10 +366,9 @@ else {
         groups.filter(group => group.sportId === sportId).forEach(group => {
             const option = document.createElement('option');
             option.value = group.id;
-            option.textContent = group.title + " / " + " ( " + group.minAge + "-" + group.maxAge + " ) " + " Y ";
-
+            option.textContent = group.title + " - " + " ( " + group.minAge + "-" + group.maxAge + " ) " + " Y " + " - " + group.groupstate;
             // Check if this is the selected group and mark it as selected
-            if (group.id === selectedGroupId) {
+            if (group.id === selectedGroupId) {0
                 option.selected = true;
             }
 
