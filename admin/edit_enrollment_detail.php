@@ -171,7 +171,7 @@ else {
               <div class="panel-body">
               <form class="form-horizontal " method="post" action="" enctype="multipart/form-data" novalidate>
               <?php
-              $query=$pdoConnection-> query("select e.* , g.* , s.name as seasonName from enrollment e JOIN groups g on g.ID = e.groupId JOIN season s on g.seasonId= s.ID WHERE e.ID='$cid'");
+              $query=$pdoConnection-> query("select e.*, e.state as estate , g.* , s.name as seasonName from enrollment e JOIN groups g on g.ID = e.groupId JOIN season s on g.seasonId= s.ID WHERE e.ID='$cid'");
                       $row2=$query ->fetch(PDO:: FETCH_ASSOC);
                       if($row2 > 0) {
                       ?>  
@@ -248,9 +248,9 @@ else {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Enrollment State:</label>
                     <div class="col-sm-10">
-                    <input class="" id="enrolltate" name="enrollstate"  type="radio" value="on" <?php if($row2['state']==='on'){echo 'checked';} ?> style="margin:7px" required > Active <span style="margin: 35px"></span>
-                    <input class="" id="enrollstateoff" name="enrollstate"  type="radio" value="off" <?php if($row2['state']==='off'){echo 'checked';} ?> style="margin:7px" required> Inactive  <span style="margin: 35px"></span>
-                    <input class="" id="enrollstatewait" name="enrollstate"  type="radio" value="waiting" <?php if($row2['state']==='waiting'){echo 'checked';} ?> style="margin:7px" required> Waiting   
+                    <input class="" id="enrolltate" name="enrollstate"  type="radio" value="on" <?php if($row2['estate']==='on'){echo 'checked';} ?> style="margin:7px" required > Active <span style="margin: 35px"></span>
+                    <input class="" id="enrollstateoff" name="enrollstate"  type="radio" value="off" <?php if($row2['estate']==='off'){echo 'checked';} ?> style="margin:7px" required> Inactive  <span style="margin: 35px"></span>
+                    <input class="" id="enrollstatewait" name="enrollstate"  type="radio" value="waiting" <?php if($row2['estate']==='waiting'){echo 'checked';} ?> style="margin:7px" required> Waiting   
                     <?php if (isset($_POST['submit']) && isset($errors['enrollstate'])){ ?>
                     <span style="color:red;display:block;text-align:left"><?php echo $errors['enrollstate']; ?></span>
                   <?php } ?>

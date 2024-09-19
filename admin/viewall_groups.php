@@ -83,6 +83,7 @@ $sql= $pdoConnection -> query("DELETE FROM groups WHERE ID='$rid'");
                       <th>Season</th>
                       <th>Trainer</th>
                       <th>Price</th>
+                      <th>State</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -97,6 +98,7 @@ $sql= $pdoConnection -> query("DELETE FROM groups WHERE ID='$rid'");
                           g.maxAge,
                           g.price,
                           g.capacity,
+                          g.state,
                           t.name AS trainer_name,  
                           s.name AS sport_name,    
                           se.name AS season_name   
@@ -126,6 +128,7 @@ $sql= $pdoConnection -> query("DELETE FROM groups WHERE ID='$rid'");
                       <td><?php  echo $row['season_name'];?></td>
                       <td><?php  echo 'C. '.$row['trainer_name'];?></td>
                       <td><?php  echo $row['price'];?></td>
+                      <td><?php  echo $row['state'];?></td>
                       <td><a href="edit_group_detail.php?editid=<?php echo $row['ID'];?>" class="btn btn-success">Edit</a> || <a href="viewall_groups.php?delid=<?php echo $row['ID'];?>" class="btn btn-danger confirm">Delete</a></td>
                     </tr>
                   <?php $cnt=$cnt+1;}?>
