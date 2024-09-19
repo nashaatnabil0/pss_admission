@@ -4,86 +4,130 @@ session_start();
 
 include('includes/dbconnection.php');  
 
-// Allowed extensions
-$allowed_extensions = array (".jpg", "jpeg", ".png", ".gif");
-
-// Function to handle image uploads
-function uploadImages($imageFile, $allowed_extensions) {
-    if ($imageFile["name"] != "") {
-        $extension = strtolower(substr($imageFile["name"], strrpos($imageFile["name"], '.')));
-        if (in_array($extension, $allowed_extensions)) {
-            $newImageName = md5($imageFile["name"]) . time() . $extension;
-            move_uploaded_file($imageFile["tmp_name"], "images/" . $newImageName);
-            return $newImageName;
-        } else {
-            echo "<script>alert('Image " . $imageFile["name"] . " has an invalid format. Only jpg / jpeg / png / gif formats are allowed.');</script>";
-            return null;
-        }
+if(!empty($_GET['editid'])){
+    $user_id = $_GET['editid'];     
+    }else{
+        echo "<script>alert('Wrong Path');</script>";
+        echo "<script>location.href='index.php'</script>";
     }
-    return null;
-}
 
+    $errors = [];
 
-if(isset($_POST['update']))
+if ($_SERVER['REQUEST_METHOD'] === 'POST') 
   {
-    $user_id = $_GET['editid'];
-    $id = $user_id;
-    $name = $_POST['registerName'];
-    $fatherName = $_POST['fatherName'];
-    $fatherNum = $_POST['fatherNum'];
-    $fatherJob = $_POST['fatherJob'];
-    $motherName = $_POST['motherName'];
-    $motherNum = $_POST['motherNum'];
-    $motherJob = $_POST['motherJob'];
-    $notes = isset($_POST['notes']) ? $_POST['notes'] : '';  // Assuming 'notes' is an optional field
-    $contactMobNum = $_POST['contactMobNum'];  // Add a new field if it is in the form
-    $update = " UPDATE trainees SET name ='$name' , photo ='$personalPhoto'  , birthCertificate ='$idPhoto' , contactMobNum ='$contactMobNum' , fatherName='$fatherName' , fatherMobNum='$fatherNum' , fatherJob='$fatherJob' ,
-     motherName='$motherName' , motherMobNum='$motherNum' , motherJob='$motherJob' ,Notes='$notes' ,  WHERE id =$id" ;
-    // Upload the images
-    $personalPhoto = uploadImages($_FILES['personalPhoto'], $allowed_extensions);
-    $idPhoto = uploadImages($_FILES['idPhoto'], $allowed_extensions);
-    $query = $pdoConnection -> $update;
-//     $query = $pdoConnection -> query("UPDATE INTO trainees (Name, NID, birthDate, gender, photo, birthCertificate, contactMobNum, fatherName, fatherMobNum, fatherJob, motherName, motherMobNum, motherJob, Notes) 
-//                 VALUES ('$name', '$nid','$dob', '$gender', '$personalPhoto', '$idPhoto', '$contactMobNum', '$fatherName', '$fatherNum', '$fatherJob', '$motherName', '$motherNum', '$motherJob', '$notes')");
-//     if ($query) {
-//       echo "<script>alert('Artist details has been updated.');  location.href='manage-artist.php'</script>";
-//   }
-//   else
-//     {
-//       echo "<script>alert('Something Went Wrong. Please try again.');</script>";
-//     }
+        // Trainee
+        $name = trim($_POST['Name']);
+        if (empty($name)) {
+            $errors['Name'] = "Name cannot be empty";
+        }
+        
+        
+        $contactmobnum = trim($_POST['contactMobNum']);
+        $mobnumPattern = '/^(011|010|015|012)[0-9]{8}$/';
+        if (empty($contactmobnum)) {
+            $errors['contactMobNum'] = "Phone number cannot be empty";
+        } elseif (!preg_match($mobnumPattern, $contactmobnum)) {
+            $errors['contactMobNum'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
+        }
+    
+        
+        // Father
+        $fatherName = trim($_POST['fatherName']);
+        if (empty($fatherName)) {
+          $errors['fatherName'] = "Father full name can't be empty";
+        }
+        $fatherJob = trim($_POST['fatherJob']);
+        if (empty($fatherJob)) {
+          $errors['fatherJob'] = "Father job can't be empty";
+        }
+        $fathermobnum = trim($_POST['fatherMobNum']);
+        if (empty($fathermobnum)) {
+            $errors['fatherMobNum'] = "Phone number cannot be empty";
+        } elseif (!preg_match($mobnumPattern, $fathermobnum)) {
+            $errors['fatherMobNum'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
+        }
+    
+        // Mother
+        $motherName = trim($_POST['motherName']);
+        if (empty($motherName)) {
+          $errors['motherName'] = "Mother full name can't be empty";
+        }
+        $motherJob = trim($_POST['motherJob']);
+        if (empty($motherJob)) {
+          $errors['motherJob'] = "Mother job can't be empty";
+        }
+        $mothermobnum =trim($_POST['motherMobNum']);
+        if (empty($mothermobnum)) {
+            $errors['motherMobNum'] = "Phone number cannot be empty";
+        } elseif (!preg_match($mobnumPattern, $mothermobnum)) {
+            $errors['motherMobNum'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
+        }
+    
+            //notes
+        $notes = trim($_POST['Notes']);
+        if ($notes == "") {
+            $notes = null;
+        }
+    
+        // Photo & Birth Certificate/NID
+        //fetching photos from the database to update
+        $delete_image = $pdoConnection -> query("select photo , birthCertificate from trainees where NID='$user_id'");
+        $image_data = $delete_image-> fetch(PDO:: FETCH_ASSOC);
+      
+        $existing_TraineePhoto = $image_data['photo'];
+        $existing_birthcertificate = $image_data['birthCertificate'];
+
+        $allowed_extensions = ["jpg", "jpeg", "png", "gif"];
+
+       //&$error to modify the errors array outside the function
+       function uploadImages($imageFile, $allowed_extensions, $name, $NID ,$fileInputName ) {
+         if ($imageFile["name"] != "") {
+             $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
+             if (in_array($extension, $allowed_extensions)) {
+                 $newImageName = $NID .'-'. $name.'.' . $extension;
+                 move_uploaded_file($imageFile["tmp_name"], "admin/images/" . $newImageName);
+                 return $newImageName;
+             } else {
+               $errors[$fileInputName] = "Invalid format. Only jpg / jpeg / png / gif format allowed.";
+               return null;
+             }
+         }
+         return null;
+       }
+       $traineePhoto = uploadImages($_FILES["personalPhoto"], $allowed_extensions, 'proimg', $user_id, 'traineePic');
+       if (empty($traineePhoto)){
+         $traineePhoto= $existing_TraineePhoto;
+       }
+    
+       $bdImage = uploadImages($_FILES["idPhoto"], $allowed_extensions, 'certimg', $user_id, 'bdimg');
+       if (empty($bdImage)){
+         $bdImage = $existing_birthcertificate;
+       }
+    
+        if(empty($errors)){
+        //insert into databse
+                $query = $pdoConnection->query("UPDATE trainees SET Name= '$name', photo='$traineePhoto', birthCertificate='$bdImage',contactMobNum='$contactmobnum',fatherName='$fatherName',fatherMobNum='$fathermobnum',fatherJob='$fatherJob',motherName='$motherName',motherMobNum='$mothermobnum',motherJob='$motherJob', Notes ='$notes' WhERE NID = $user_id;");
+            
+                if ($query) {
+                    if ($traineePhoto != $existing_TraineePhoto) {
+                    unlink("admin/images/" . $existing_TraineePhoto);
+                    }
+                
+                if ($bdImage != $existing_birthcertificate) {
+                    unlink("admin/images/" . $existing_birthcertificate);
+                    }   
+                    echo "<script>alert('Profile information have been updated.');</script>";
+                    echo "<script>window.location.href ='account.php?nid=$user_id'</script>";
+                } else {
+                    echo "<script>alert('Something Went Wrong. Please try again.');</script>";
+                    }
+            }    else {
+                var_dump($errors);
+              
+        } 
+
 
   }
-
-// Initialize message variable
-$message = '';
-
-// $nationalId = $_SESSION['user_id'];
-$nationalId=$_GET['editid'];
-        // Extract birth date from the ID (assuming a specific format)
-        $gen = substr($nationalId, 0, 1);
-        $birthDate = substr($nationalId, 1, 6);
-        $birthYear = substr($birthDate, 0, 2);
-        $birthMonth = substr($birthDate, 2, 2);
-        $birthDay = substr($birthDate, 4, 2);
-
-        // Calculate the birth date as a DateTime object
-        $birthDate = new DateTime("$birthYear-$birthMonth-$birthDay");
-
-        // Get the current date
-        $currentDate = new DateTime();
-
-        // Calculate the age in years
-        $age = $currentDate->diff($birthDate)->y;
-        if($gen ==2){
-            $dateOfBirthFormatted = "19$birthYear-$birthMonth-$birthDay";
-        }else{
-            $dateOfBirthFormatted = "20$birthYear-$birthMonth-$birthDay";
-        }
-
-        $genderDigit = $nationalId[12]; // Get the 13th digit (index 12)
-
-
 
 ?>
 
@@ -104,7 +148,7 @@ $nationalId=$_GET['editid'];
         }
     </script>
     <meta charset="utf-8">
-    <title>P.S.S - Register</title>
+    <title>P.S.S - Update Profile</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Free HTML Templates" name="keywords">
     <meta content="Free HTML Templates" name="description">
@@ -140,21 +184,15 @@ $nationalId=$_GET['editid'];
             </div>
             <div class="col-lg-6 text-center text-lg-right">
                 <div class="d-inline-flex align-items-center">
-                    <a class="text-white px-2" href="https://www.facebook.com/people/Peace-Sports-School-Assuit/100091623236982/">
+                    <a class="text-white px-2" href="https://www.facebook.com/people/Peace-Sports-School-Assuit/100091623236982/" target="_blank">
                         <i class="fab fa-facebook-f"></i>
                     </a>
-                    <!-- <a class="text-white px-2" href="">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a class="text-white px-2" href="">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a> -->
-                    <a class="text-white px-2" href="https://www.instagram.com/pss_assuit/">
+                    <a class="text-white px-2" href="https://www.instagram.com/pss_assuit/" target="_blank">
                         <i class="fab fa-instagram"></i>
                     </a>
-                    <!-- <a class="text-white pl-2" href="">
-                        <i class="fab fa-youtube"></i>
-                    </a> -->
+                    <a class="text-white pl-2" href="https://wa.me/201205557683" target="_blank">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
                 </div>
             </div>
         </div>
@@ -173,15 +211,21 @@ $nationalId=$_GET['editid'];
             </button>
             <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
                 <div class="navbar-nav m-auto py-0">
-                    <a href="index.php" class="nav-item nav-link active">Home</a>
+                    <a href="index.php" class="nav-item nav-link">Home</a>
                     <a href="about.php" class="nav-item nav-link">About</a>
                     <a href="contact.php" class="nav-item nav-link">Contact</a>
         </nav>
-    </div>    <!-- header section end -->
+    </div>    
+    <!-- header section end -->
                     <?php
-                    $eid=$_GET['editid'];
-                    $ret= $pdoConnection-> query("SELECT * FROM trainees where NID='$eid'");
-                    while ($row=$ret->fetch(PDO:: FETCH_ASSOC)) {
+                    $ret= $pdoConnection-> query("SELECT * FROM trainees where NID='$user_id'");
+                    $userData = $ret->fetchAll();
+                    if (empty($userData)) {
+                        echo "<script>alert('you do not have an account with us yet');  location.href='login.php'</script>";
+                        exit();
+                    }else{
+                    // while ($row=$ret->fetch(PDO::FETCH_ASSOC)) {
+                        foreach($userData as $row) {
                   ?>
     <div class="container">
         <h1 class="center-text text-center mb-4"><strong>Update Information</strong></h1>
@@ -199,7 +243,10 @@ $nationalId=$_GET['editid'];
                             <form id="registerForm" method="POST" enctype="multipart/form-data">
                                 <div class="form-group">
                                     <label for="registerName">Full Name</label>
-                                    <input type="text" class="form-control" name="registerName" id="registerName" placeholder="Enter full name" value="<?php  echo $row['Name'];?>" required>
+                                    <input type="text" class="form-control" name="Name" id="Name" placeholder="Enter full name" value="<?php  echo $row['Name'];?>" required>
+                                    <?php if( isset($errors['Name'])){ ?>
+                                        <span style="color:red;display:block;text-align:left"><?php echo $errors['Name']; ?></span>
+                                    <?php } ?>
                                 </div>
                                 <div class="form-group">
                                     <label for="NID">National ID</label>
@@ -213,76 +260,124 @@ $nationalId=$_GET['editid'];
                                     required>
                                     <!-- Error message placeholder -->
                                      <span id="nidError" style="color: red; display: none;">Please enter a valid 14-digit National ID where the 4th and 5th digits form a number less than or equal to 12, and the 6th and 7th digits form a number less than or equal to 31.</span>
-                                     <?php echo "Your age is: " . $age;?> 
-                                    </div>
+                                     <?php
+                                      $currentDate = new DateTime();
+                                      $birthDate = new DateTime($row['birthDate']);
+                                      $age = $currentDate->diff($birthDate)->y;
+                                     echo "Your age is: " . $age;?> 
+                                </div>
                                     
-                                     <div class="form-group">
-                                     <label for="gender" class="form-label"> Gender</label> 
-                                <div class="form-control">
+                                <div class="form-group">
+                                    <label for="gender" class="form-label"> Gender</label> 
                                     <input type="radio" name="gender" value="male" required <?php 
-                                    if ($genderDigit % 2 != 0) {
+                                    if ($row['gender']==='male') {
                                         echo "checked";
                                     } 
                                     ?> disabled > Male
                                     <input type="radio" name="gender" value="female" required <?php 
-                                    if ($genderDigit % 2 == 0) {
+                                    if ($row['gender']==='female') {
                                         echo "checked";
                                     } 
                                     ?> disabled style="margin-left:40px"> Female
-                                </div> 
                                 </div>
+
                                 <div class="form-group">
                                     <label for="phoneNum">Enter phone number that has WhatsApp</label>
                                     <input type="text" class="form-control" name="contactMobNum" id="contactMobNum" placeholder="Enter phone number" value="<?php  echo $row['contactMobNum'];?>" required>
+                                    <?php if(isset($errors['contactMobNum'])) { ?>
+                                        <span style="color:red;display:block;text-align:left"><?php echo $errors['contactMobNum']; ?></span>
+                                    <?php } ?>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="dob">Date of Birth</label>
                                     <input type="date" class="form-control"  id="dob" value="<?php  echo $row['birthDate'];?>" disabled required>
                                 </div>
+                                
                                 <div class="form-group">
-                                    <label class="control-label">Personal Photo</label>
-                                    <input type="file" class="form-control" name="personalPhoto" id="personalPhoto" value="<?php  echo $row['photo'];?>" required>
+                                    <label>Trainee Photo</label>
+                                    <div class="col-sm-10">
+                                    <img src="admin/images/<?php echo $row['photo'];?>" width="150" height="200" >
+                                    </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label">National ID/Birth Certificate Photo</label>
-                                    <input type="file" class="form-control" name="idPhoto" id="idPhoto" value="<?php  echo $row['birthCertificate'];?>" required>
+                                    <label>Change Trainee Photo</label>
+                                    <div>
+                                        <input type="file" class="form-control" name="personalPhoto" id="personalPhoto" >
+                                        <?php if(isset($errors['traineePic'])) { ?>
+                                            <span style="color:red;display:block;text-align:left"><?php echo $errors['traineePic']; ?></span>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                                </div><div class="form-group">
+                                    <label>Birth Certificate / National ID Image</label>
+                                    <div class="col-sm-10 ">
+                                    <img src="admin/images/<?php echo $row['birthCertificate'];?>" width="150" height="200">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label >Update Birth Certificate / National ID Image</label>
+                                    <div>
+                                        <input type="file" class="form-control" name="idPhoto" id="idPhoto" value="<?php echo $row['birthCertificate']; ?>">
+                                        <?php if( isset($errors['bdimg'])) { ?>
+                                            <span style="color:red;display:block;text-align:left"><?php echo $errors['bdimg']; ?></span>
+                                        <?php } ?>
+                                    </div>
                                 </div>
                                 
-                                <h4 class="text-primary">Personal Information</h4>
+                                <h4 class="text-primary">Family Information</h4>
 
                                 <div class="form-group">
                                     <label for="fatherName">Father Name</label>
                                     <input type="text" class="form-control" name="fatherName" id="fatherName" placeholder="Enter father name" value="<?php  echo $row['fatherName'];?>" required>
+                                    <?php if( isset($errors['fatherName'])){ ?>
+                                        <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherName']; ?></span>
+                                    <?php } ?>
                                 </div>
                                 <div class="form-group">
-                                    <label for="fatherNum">Father Phone Number</label>
-                                    <input type="text" class="form-control" name="fatherNum" id="fatherNum" placeholder="Enter father phone number" value="<?php  echo $row['fatherMobNum'];?>" required>
+                                    <label for="fatherMobNum">Father Phone Number</label>
+                                    <input type="text" class="form-control" name="fatherMobNum" id="fatherMobNum" placeholder="Enter father phone number" value="<?php  echo $row['fatherMobNum'];?>" required>
+                                    <?php if( isset($errors['fatherMobNum'])){  ?>
+                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherMobNum'];  ?></span>
+                                    <?php } ?>
                                 </div>
                                 <div class="form-group">
                                     <label for="fatherJob">Father Job</label>
                                     <input type="text" class="form-control" name="fatherJob" id="fatherJob" placeholder="Enter father job" value="<?php  echo $row['fatherJob'];?>" required>
+                                    <?php if( isset($errors['fatherJob'])){  ?>
+                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['fatherJob'];  ?></span>
+                                    <?php } ?>
                                 </div>
                                 <div class="form-group">
                                     <label for="motherName">Mother Name</label>
                                     <input type="text" class="form-control" name="motherName" id="motherName" placeholder="Enter mother name" value="<?php  echo $row['motherName'];?>" required>
+                                    <?php if( isset($errors['motherName'])){  ?>
+                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['motherName'];  ?></span>
+                                    <?php } ?>
                                 </div>
                                 <div class="form-group">
-                                    <label for="motherNum">Mother Phone Number</label>
-                                    <input type="text" class="form-control" name="motherNum" id="motherNum" placeholder="Enter mother phone number" value="<?php  echo $row['motherMobNum'];?>" required>
+                                    <label for="motherMobNum">Mother Phone Number</label>
+                                    <input type="text" class="form-control" name="motherMobNum" id="motherMobNum" placeholder="Enter mother phone number" value="<?php  echo $row['motherMobNum'];?>" required>
+                                    <?php if( isset($errors['motherMobNum'])){  ?>
+                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['motherMobNum'];  ?></span>
+                                    <?php } ?>
                                 </div>
                                 <div class="form-group">
                                     <label for="motherJob">Mother Job</label>
                                     <input type="text" class="form-control" name="motherJob" id="motherJob" placeholder="Enter mother job" value="<?php  echo $row['motherJob'];?>" required>
+                                    <?php if( isset($errors['motherJob'])){  ?>
+                                    <span style="color:red;display:block;text-align:left"><?php echo $errors['motherJob'];  ?></span>
+                                    <?php } ?>
                                 </div>
                                 <div class="control-group">
-                                <textarea class="form-control border-1 py-3 px-4" rows="3" id="Notes" name ="notes" placeholder="Notes"
+                                <textarea class="form-control border-1 py-3 px-4" rows="3" id="Notes" name="Notes"
                                 value="<?php  echo $row['Notes'];?>"   
                                 placeholder="If you have notes regarding health or any thing, please write it here."></textarea>
                                 <p class="help-block text-danger"></p>
                             </div>
-                            <?php } ?>
+                            <?php } } ?>
                                 <div>
-                                <button type="update" style="background-color: #063547" class="btn btn-primary">Update</button>
+                                <button type="submit" class="btn btn-primary rounded" >Update</button>
                             </form>
                             <br>
                         </div>
@@ -312,25 +407,6 @@ $nationalId=$_GET['editid'];
 
         <!-- Template Javascript -->
         <script src="js/main.js"></script>
-
-        <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const nidInput = document.getElementById("NID");
-        const nidError = document.getElementById("nidError");
-
-        // Regular expression for validating National ID
-        const nidPattern = /^\d{3}(0[0-9]|1[0-2])([0-2][0-9]|3[01])\d{7}$/;
-
-        nidInput.addEventListener("input", function () {
-            // Check if the input value matches the pattern
-            if (!nidPattern.test(nidInput.value)) {
-                nidError.style.display = "block"; // Show error message
-            } else {
-                nidError.style.display = "none"; // Hide error message
-            }
-        });
-    });
-</script>
 
 </body>
 
