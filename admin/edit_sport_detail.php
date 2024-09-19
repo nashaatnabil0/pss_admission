@@ -6,7 +6,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
   }
   else{
-
+$errors = [];
 if(isset($_POST['submit']))
   {
   $spname=trim($_POST['sportname']);
@@ -17,16 +17,18 @@ if(isset($_POST['submit']))
   $superID= $_POST['supervisor'];
   $eid=$_GET['editid'];
   if($superID==""){
-    $query=$pdoConnection-> query("update sport set name='$spname',supervisorID= NULL where ID='$eid'");
-  }else{
-    $query=$pdoConnection-> query("update sport set name='$spname',supervisorID='$superID' where ID='$eid'");
+    $superID = null;
   }
-    if ($query) {
-      echo "<script>alert('Sport Data has been updated.');  location.href='viewall_sports.php'</script>";
-  }
-  else
-    {
-      echo "<script>alert('Something Went Wrong. Please try again.');</script>";
+    if(empty($errors)){
+      $query=$pdoConnection-> query("update sport set name='$spname',supervisorID='$superID' where ID='$eid'");
+    
+      if ($query) {
+        echo "<script>alert('Sport Data has been updated.');  location.href='viewall_sports.php'</script>";
+    }
+    else
+      {
+        echo "<script>alert('Something Went Wrong. Please try again.');</script>";
+      }
     }
   }
   ?>

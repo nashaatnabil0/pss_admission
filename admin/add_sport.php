@@ -16,12 +16,13 @@ if (strlen($_SESSION['sportadmission']==0)) {
     
     $supervisor = trim($_POST['supervisorID']);
     
-    if (empty($errors)) {
+   
       if ($supervisor == "") {
-        $query = $pdoConnection->query("INSERT INTO sport (name) VALUES ('$sportName')");
-      } else {
+        $supervisor = null;
+      } 
+        if (empty($errors)) {
         $query = $pdoConnection->query("INSERT INTO sport (name, supervisorID) VALUES ('$sportName', '$supervisor')");
-      }
+      
       
       if ($query) {
         echo "<script>alert('Sport has been added.');</script>";
