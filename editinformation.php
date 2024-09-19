@@ -26,11 +26,9 @@ function uploadImages($imageFile, $allowed_extensions) {
 
 if(isset($_POST['update']))
   {
-    
+    $user_id = $_GET['editid'];
+    $id = $user_id;
     $name = $_POST['registerName'];
-    $nid = $_POST['NID'];
-    $gender = $_POST['gender'];
-    $dob = $_POST['dob'];
     $fatherName = $_POST['fatherName'];
     $fatherNum = $_POST['fatherNum'];
     $fatherJob = $_POST['fatherJob'];
@@ -39,20 +37,21 @@ if(isset($_POST['update']))
     $motherJob = $_POST['motherJob'];
     $notes = isset($_POST['notes']) ? $_POST['notes'] : '';  // Assuming 'notes' is an optional field
     $contactMobNum = $_POST['contactMobNum'];  // Add a new field if it is in the form
-
+    $update = " UPDATE trainees SET name ='$name' , photo ='$personalPhoto'  , birthCertificate ='$idPhoto' , contactMobNum ='$contactMobNum' , fatherName='$fatherName' , fatherMobNum='$fatherNum' , fatherJob='$fatherJob' ,
+     motherName='$motherName' , motherMobNum='$motherNum' , motherJob='$motherJob' ,Notes='$notes' ,  WHERE id =$id" ;
     // Upload the images
     $personalPhoto = uploadImages($_FILES['personalPhoto'], $allowed_extensions);
     $idPhoto = uploadImages($_FILES['idPhoto'], $allowed_extensions);
-   
-    $query = $pdoConnection -> query("UPDATE INTO trainees (Name, NID, birthDate, gender, photo, birthCertificate, contactMobNum, fatherName, fatherMobNum, fatherJob, motherName, motherMobNum, motherJob, Notes) 
-                VALUES ('$name', '$nid','$dob', '$gender', '$personalPhoto', '$idPhoto', '$contactMobNum', '$fatherName', '$fatherNum', '$fatherJob', '$motherName', '$motherNum', '$motherJob', '$notes')");
-    if ($query) {
-      echo "<script>alert('Artist details has been updated.');  location.href='manage-artist.php'</script>";
-  }
-  else
-    {
-      echo "<script>alert('Something Went Wrong. Please try again.');</script>";
-    }
+    $query = $pdoConnection -> $update;
+//     $query = $pdoConnection -> query("UPDATE INTO trainees (Name, NID, birthDate, gender, photo, birthCertificate, contactMobNum, fatherName, fatherMobNum, fatherJob, motherName, motherMobNum, motherJob, Notes) 
+//                 VALUES ('$name', '$nid','$dob', '$gender', '$personalPhoto', '$idPhoto', '$contactMobNum', '$fatherName', '$fatherNum', '$fatherJob', '$motherName', '$motherNum', '$motherJob', '$notes')");
+//     if ($query) {
+//       echo "<script>alert('Artist details has been updated.');  location.href='manage-artist.php'</script>";
+//   }
+//   else
+//     {
+//       echo "<script>alert('Something Went Wrong. Please try again.');</script>";
+//     }
 
   }
 
@@ -85,42 +84,7 @@ $nationalId=$_GET['editid'];
         $genderDigit = $nationalId[12]; // Get the 13th digit (index 12)
 
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Retrieve form data
-    $name = $_POST['registerName'];
-    $nid = $_POST['NID'];
-    $gender = $_POST['gender'];
-    $dob = $_POST['dob'];
-    $fatherName = $_POST['fatherName'];
-    $fatherNum = $_POST['fatherNum'];
-    $fatherJob = $_POST['fatherJob'];
-    $motherName = $_POST['motherName'];
-    $motherNum = $_POST['motherNum'];
-    $motherJob = $_POST['motherJob'];
-    $notes = isset($_POST['notes']) ? $_POST['notes'] : '';  // Assuming 'notes' is an optional field
-    $contactMobNum = $_POST['contactMobNum'];  // Add a new field if it is in the form
 
-    // Upload the images
-    $personalPhoto = uploadImages($_FILES['personalPhoto'], $allowed_extensions);
-    $idPhoto = uploadImages($_FILES['idPhoto'], $allowed_extensions);
-
-    // Check if all required fields are filled
-    if (!empty($name) && !empty($nid) && !empty($gender) && !empty($dob) && !empty($fatherName) && !empty($fatherNum) && !empty($fatherJob) && !empty($motherName) && !empty($motherNum) && !empty($motherJob) && $personalPhoto !== null && $idPhoto !== null) {
-        $sql = "INSERT INTO trainees (Name, NID, birthDate, gender, photo, birthCertificate, contactMobNum, fatherName, fatherMobNum, fatherJob, motherName, motherMobNum, motherJob, Notes) 
-                VALUES ('$name', '$nid','$dob', '$gender', '$personalPhoto', '$idPhoto', '$contactMobNum', '$fatherName', '$fatherNum', '$fatherJob', '$motherName', '$motherNum', '$motherJob', '$notes')";
-        
-        $query = $pdoConnection->query($sql);
-
-        // Execute query
-        if ($query) {
-            echo "<script>alert('Registration successful!');</script>";
-        } else {
-            echo "<script>alert('Something went wrong. Please try again.');</script>";
-        }
-    } else {
-        echo "<script>alert('Please fill all the fields correctly and upload all required images.');</script>";
-    }
-}
 ?>
 
 
