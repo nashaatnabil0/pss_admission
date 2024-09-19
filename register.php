@@ -30,7 +30,7 @@ try {
             $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
             if (in_array($extension, $allowed_extensions)) {
                 $newImageName = $NID .'-'. $name. $fileInputName . '.' . $extension;
-                move_uploaded_file($imageFile["tmp_name"], "images/" . $newImageName);
+                move_uploaded_file($imageFile["tmp_name"], "admin/images/" . $newImageName);
                 return $newImageName;
             } else {
               $errors[$fileInputName] = "Invalid format. Only jpg / jpeg / png / gif format allowed.";
