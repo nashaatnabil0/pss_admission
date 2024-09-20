@@ -10,8 +10,11 @@ else {
   if(isset($_POST['submit'])){
    
     $title = trim($_POST['title']);
+    $alphapet_NumPattern = '/^([a-zA-Z0-9\s]+|[\p{Arabic}0-9\s]+)$/u';
     if (empty($title)) {
       $errors['title'] = "Please enter a group name";
+    }elseif(!preg_match($alphapet_NumPattern, $title)){
+      $errors['title'] = "Group title should be arabic letters or english letters and numbers only.";
     }
     $days = trim($_POST['days']);
     if (empty($days)) {
@@ -19,9 +22,11 @@ else {
     }
     
     $timing = trim($_POST['timing']);
-
+    $timePattern = '/^(\d{1,2}(:\d{2})?\s?[صم]|(\d{1,2}(:\d{2})?\s?(am|pm)))$/iu';
     if (empty($timing)) {
       $errors['timing'] = "Please enter a Training time";
+    }elseif(!preg_match($timePattern, $timing)){
+      $errors['timing'] = "please enter a valid time format.";
     }
     
     $minAge = trim($_POST['minAge']);
@@ -57,7 +62,10 @@ else {
     $place = trim($_POST['place']);
     if ($place == "") {
       $place = NULL;
+    }elseif(!preg_match($alphapet_NumPattern, $place)){
+      $errors['place'] = "Place should be letters and numbers only.";
     }
+
     $groupState = $_POST['groupstate'];
       if (empty($groupState)) {
         $errors['groupstate'] = "Please choose group state";

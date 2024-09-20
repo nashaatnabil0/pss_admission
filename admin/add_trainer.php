@@ -8,12 +8,12 @@ if (strlen($_SESSION['sportadmission']==0)) {
 else {
   $errors = [];
   if(isset($_POST['submit'])){
-    $namePattern = '/^[a-zA-Z]+(?:\s+[a-zA-Z]+)+$/';
+    $namePattern = '/^([a-zA-Z]+(?:\s+[a-zA-Z]+)*|[\p{Arabic}]+(?:\s+[\p{Arabic}]+)*)$/u';
     $name = trim($_POST['name']);
     if (empty($name)) {
       $errors['name'] = "Name cannot be empty";
   }elseif (!preg_match( $namePattern , $name)) {
-    $errors['name'] = "Name must be two words at least  and contain letters only ";
+    $errors['name'] = "Name must be two words at least and contain letters only ";
    }
 
     $mobnum = trim($_POST['mobnum']);

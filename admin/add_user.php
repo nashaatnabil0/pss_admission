@@ -9,24 +9,25 @@ else {
   $errors = [];
   if(isset($_POST['submit'])){
     $name = $_POST['name'];
+    $alphapet_NumPattern = '/^([a-zA-Z0-9\s]+|[\p{Arabic}0-9\s]+)$/u';
     if (empty($name)) {
       $errors['name'] = "Name cannot be empty";
+  }elseif(!preg_match($alphapet_NumPattern, $name)){
+    $errors['name'] = "Name should be letters and numbers only.";
   }
     $mobnum = trim($_POST['mobnum']);
     $monnumPattern='/^(011|010|015|012)[0-9]{8}$/';
     if (empty($mobnum)) {
       $errors['mobnum'] = "phone number cannot be empty";
-  }
-  if(!preg_match($monnumPattern,$mobnum)){
+  }elseif(!preg_match($monnumPattern,$mobnum)){
      $errors['mobnuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
  }
 
-    $email = trim($_POST['email']);
+    $email = trim(strtolower($_POST['email']));
 
     if (empty($email)) {
       $errors['email'] = "Email cannot be empty";
-     }
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+     }elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
           $errors['emailinvalid'] = "Invalid email format";
       }
   
@@ -36,17 +37,15 @@ else {
     $errors['role'] = "Please choose a role";
   }
 
+  $passwordPattern= '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/';
   $password=trim($_POST['password']);
   if(empty($password)){
     $errors['password'] = "Password can't be empty";
-      }
-  $Confpassword=trim($_POST['confirmpassword']);
-
-  $passwordPattern= '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/';
-  
-  if (!preg_match($passwordPattern, $password)) {
-    $errors['PassWeak'] = "Password must have uppercase, lowercase, number, special character, and length must be 8 or more";
-   } 
+      }elseif (!preg_match($passwordPattern, $password)) {
+        $errors['PassWeak'] = "Password must have uppercase, lowercase, number, special character, and length must be 8 or more";
+       }
+ 
+  $Confpassword=trim($_POST['confirmpassword']); 
    
    if ($Confpassword !== $password) {
     $errors['PassMatch'] = "Passwords don't match";

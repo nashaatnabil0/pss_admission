@@ -11,9 +11,13 @@ if(isset($_POST['submit']))
   {
    
     $Name=trim($_POST['Name']);
+    $alphapet_NumPattern = '/^([a-zA-Z0-9\s]+|[\p{Arabic}0-9\s]+)$/u';
     if (empty($Name)){
       $errors['Name'] = "Please enter a season name";
+    }elseif (!preg_match($alphapet_NumPattern, $Name)){
+      $errors['Name']='Name must be letters only'; 
     }
+
     $State = $_POST['seasonstate'];
     if (empty($State)){
       $errors['seasonstate'] = "Please choose state for the season";

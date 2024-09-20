@@ -1,6 +1,6 @@
 <?php
 session_start();
-// error_reporting(0);
+error_reporting(0);
 include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
@@ -12,8 +12,11 @@ if (strlen($_SESSION['sportadmission']==0)) {
     if (isset($_POST['submit'])) {
     // Trainee
     $name = trim($_POST['Name']);
+    $namePattern = '/^([a-zA-Z]+(?:\s+[a-zA-Z]+)*|[\p{Arabic}]+(?:\s+[\p{Arabic}]+)*)$/u';
     if (empty($name)) {
-        $errors['Name'] = "Name cannot be empty";
+      $errors['Name'] = "Name cannot be empty";
+    }elseif (!preg_match( $namePattern , $name)) {
+    $errors['Name'] = "Name must be two words at least and contain letters only ";
     }
     
     $gender = $_POST['gender'];
@@ -47,11 +50,19 @@ if (strlen($_SESSION['sportadmission']==0)) {
     $fatherName = trim($_POST['fatherName']);
     if (empty($fatherName)) {
       $errors['fatherName'] = "Father full name can't be empty";
-    }
+    }elseif (!preg_match( $namePattern , $fatherName)) {
+      $errors['fatherName'] = "Name must be two words at least and contain letters only ";
+     }
+
+    $alphapetPattern = '/^([a-zA-Z\s]+|[\p{Arabic}\s]+)$/u';
+    
     $fatherJob = trim($_POST['fatherJob']);
     if (empty($fatherJob)) {
       $errors['fatherJob'] = "Father job can't be empty";
+    }elseif(!preg_match($alphapetPattern , $fatherJob)){
+      $errors['fatherJob'] = "Father job should be letters only.";
     }
+
     $fathermobnum = trim($_POST['fatherMobNum']);
     if (empty($fathermobnum)) {
         $errors['fatherMobNum'] = "Phone number cannot be empty";
@@ -63,11 +74,17 @@ if (strlen($_SESSION['sportadmission']==0)) {
     $motherName = trim($_POST['motherName']);
     if (empty($motherName)) {
       $errors['motherName'] = "Mother full name can't be empty";
-    }
+    }elseif (!preg_match( $namePattern , $motherName)) {
+      $errors['fatherName'] = "Name must be two words at least  and contain letters only ";
+     }
+
     $motherJob = trim($_POST['motherJob']);
-    if (empty($motherName)) {
+    if (empty($motherJob)) {
       $errors['motherJob'] = "Mother job can't be empty";
+    }elseif(!preg_match($alphapetPattern , $motherJob)){
+      $errors['motherJob'] = "Mother job should be letters only.";
     }
+
     $mothermobnum =trim($_POST['motherMobNum']);
     if (empty($mothermobnum)) {
         $errors['motherMobNum'] = "Phone number cannot be empty";
@@ -81,7 +98,6 @@ if (strlen($_SESSION['sportadmission']==0)) {
         $notes = null;
     }
         
-
     // Photo & Birth Certificate/NID
     //fetching photos from the database to update
     $delete_image = $pdoConnection -> query("select photo , birthCertificate from trainees where NID='$cid'");
@@ -115,8 +131,6 @@ if (strlen($_SESSION['sportadmission']==0)) {
   }
 
 //var_dump($_FILES);
-  
-  
   $traineePhoto = trim($_FILES['traineePic']['name']);
   if (empty($traineePhoto)){
      $traineePhoto= $existing_TraineePhoto;
