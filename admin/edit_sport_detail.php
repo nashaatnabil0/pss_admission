@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(0);
+//error_reporting(0);
 include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
@@ -11,8 +11,11 @@ $eid=$_GET['editid'];
 if(isset($_POST['submit']))
   {
   $spname=trim($_POST['sportname']);
+  $alphapetPattern = '/^([a-zA-Z\s]+|[\p{Arabic}\s]+)$/u';
   if (empty($spname)) {
     $errors['sportname'] = "sport name cannot be empty";
+  }elseif (!preg_match($alphapetPattern, $spname)){
+    $errors['sportname']='Name must be letters only';
   }
 
   $superID= $_POST['supervisor'];
