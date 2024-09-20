@@ -1,27 +1,28 @@
 <?php
 session_start();
-error_reporting(0);
+//error_reporting(0);
 include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
   }
   else{
 $errors = [];
+$eid=$_GET['editid'];
 if(isset($_POST['submit']))
   {
   $spname=trim($_POST['sportname']);
-  if (empty($sportName)) {
+  if (empty($spname)) {
     $errors['sportname'] = "sport name cannot be empty";
   }
 
   $superID= $_POST['supervisor'];
-  $eid=$_GET['editid'];
-  if($superID==""){
-    $superID = null;
-  }
+
     if(empty($errors)){
+      if($superID==""){
+        $query = $pdoConnection->query("UPDATE sport SET name='$spname', supervisorID=NULL WHERE ID='$eid'");
+      }else{
       $query=$pdoConnection-> query("update sport set name='$spname',supervisorID='$superID' where ID='$eid'");
-    
+      }
       if ($query) {
         echo "<script>alert('Sport Data has been updated.');  location.href='viewall_sports.php'</script>";
     }

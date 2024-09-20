@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(0);
+//error_reporting(0);
 include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
@@ -16,13 +16,13 @@ if (strlen($_SESSION['sportadmission']==0)) {
     
     $supervisor = trim($_POST['supervisorID']);
     
-   
-      if ($supervisor == "") {
-        $supervisor = null;
-      } 
         if (empty($errors)) {
-        $query = $pdoConnection->query("INSERT INTO sport (name, supervisorID) VALUES ('$sportName', '$supervisor')");
-      
+          if ($supervisor == "") {
+            $query = $pdoConnection->query("INSERT INTO sport (name) VALUES ('$sportName')");
+          } else {
+            $query = $pdoConnection->query("INSERT INTO sport (name, supervisorID) VALUES ('$sportName', '$supervisor')");
+          }
+    
       
       if ($query) {
         echo "<script>alert('Sport has been added.');</script>";
