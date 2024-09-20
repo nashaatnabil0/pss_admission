@@ -261,7 +261,7 @@ else {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Discount</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="discount" name="discount"  type="text" value="">
+                      <input class="form-control" id="discount" name="discount"  type="number" value="">
                     </div>
                   </div>
                   <div class="form-group">
