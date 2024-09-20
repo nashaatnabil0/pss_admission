@@ -14,7 +14,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
     {
       $delete_image = $pdoConnection -> query("select image from season where ID='$cid'");
       $image_data = $delete_image-> fetch(PDO:: FETCH_ASSOC);
-      $image_name = $image_data['image'];
+      $exist_image_name = $image_data['image'];
 
       $Name=trim($_POST['Name']);
       if (empty($Name)){
@@ -30,35 +30,44 @@ if (strlen($_SESSION['sportadmission']==0)) {
       if(empty($stDate)){
         $stDate = null;
       }
-      $seasonImg = $_FILES['image']['name'];
-      // if (empty($seasonImg)){
-      //   $errors['image'] = "Please upload season image";
-      // }
 
+      $allowed_extensions = ["jpg", "jpeg", "png", "gif"];
+
+   
+    function uploadImages($imageFile, $name) {
+      if ($imageFile["name"] != "") {
+        $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
+              $newImageName =  $name. '-poster.' . $extension;
+              move_uploaded_file($imageFile["tmp_name"], "images/" . $newImageName);
+              return $newImageName;
+          } else {
+            return null;
+          }
+      
+      return null;
+    }
+
+      $seasonImg = $_FILES['image']['name'];
       if($seasonImg!=""){
         $extension = strtolower(pathinfo($seasonImg, PATHINFO_EXTENSION));
-        $allowed_extensions = array("jpg", "jpeg", "png", "gif");
         // Validation for allowed extensions
         if (!in_array($extension, $allowed_extensions)) {
-          $errors['image'] = "Image Extension not acceptable use one of (jpg, jpeg, png, gif)";
-        }else{
-          // $renameSeasonImg = md5($seasonImg) . '.' . $extension;
-          $renameSeasonImg = $Name .'-poster'. '.' . $extension;
-          move_uploaded_file($_FILES["image"]["tmp_name"], "images/" . $renameSeasonImg);
+          $errors['imageinvalid'] = "Image Extension not acceptable use one of (jpg, jpeg, png, gif)";
         }
+
+      }else {
+        $seasonImg = $exist_image_name;
       }
 
       if (empty($errors)) {
-        if(!empty($seasonImg)){
-         
-          $query = $pdoConnection->query("UPDATE season SET name='$Name',state='$State',startDate='$stDate',image='$renameSeasonImg' WHERE ID = $cid;");
+          if ($seasonImg != $exist_image_name) {
+            $seasonImg = uploadImages($_FILES["image"],$Name);
+        }        
+        $query = $pdoConnection->query("UPDATE season SET name='$Name',state='$State',startDate='$stDate',image='$seasonImg' WHERE ID = $cid;");
 
-        }else{
-         
-          $query = $pdoConnection->query("UPDATE season SET name='$Name',state='$State',startDate='$stDate' WHERE ID = $cid;");
-        }
+
           if ($query) {
-            if(!empty($seasonImg)){unlink("images/$image_name");}
+            if ($seasonImg != $exist_image_name) {unlink("images/$exist_image_name");}
             echo "<script>alert('Season Data has been Updated.');</script>";
             echo "<script>window.location.href ='viewall_seasons.php'</script>";
           }
@@ -172,9 +181,6 @@ if (strlen($_SESSION['sportadmission']==0)) {
                     <label class="col-sm-2 control-label">Change Poster</label>
                     <div class="col-sm-10">
                        <input type="file" class="form-control" name="image" id="image" value="">
-                       <?php if( isset($errors['image'])){ ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['image'] ?></span>
-                       <?php } ?>
                        <?php if( isset($errors['imageinvalid'])){ ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['imageinvalid'] ?></span>
                        <?php } ?>

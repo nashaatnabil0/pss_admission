@@ -38,7 +38,7 @@ if(isset($_POST['submit']))
      }
 
     if (empty($errors)) {
-      $renameSeasonImg = md5($seasonImg) . '.' . $extension;
+      $renameSeasonImg = $Name .'-poster'. '.' . $extension;
       move_uploaded_file($_FILES["image"]["tmp_name"], "images/" . $renameSeasonImg);
     
         $query = $pdoConnection->query("INSERT INTO season (name, state, startDate, image) VALUES ('$Name', '$State', '$stDate', '$renameSeasonImg')");

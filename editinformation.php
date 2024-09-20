@@ -79,21 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 
         $allowed_extensions = ["jpg", "jpeg", "png", "gif"];
 
-    //    //&$error to modify the errors array outside the function
-    //    function uploadImages($imageFile, $allowed_extensions, $name, $NID ,$fileInputName ) {
-    //      if ($imageFile["name"] != "") {
-    //          $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
-    //          if (in_array($extension, $allowed_extensions)) {
-    //              $newImageName = $NID .'-'. $name.'.' . $extension;
-    //              move_uploaded_file($imageFile["tmp_name"], "admin/images/" . $newImageName);
-    //              return $newImageName;
-    //          } else {
-    //            $errors[$fileInputName] = "Invalid format. Only jpg / jpeg / png / gif format allowed.";
-    //            return null;
-    //          }
-    //      }
-    //      return null;
-    //    }
+    
     function uploadImages($imageFile, $name, $NID ) {
       
         if ($imageFile["name"] != "") {
@@ -117,18 +103,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
       }
 
 
-    //    $traineePhoto = uploadImages($_FILES["personalPhoto"], $allowed_extensions, 'proimg', $user_id, 'traineePic');
     $traineePhoto = trim($_FILES['personalPhoto']['name']);
        if (empty($traineePhoto)){
          $traineePhoto= $existing_TraineePhoto;
        }else{
         checkExtensions($_FILES["personalPhoto"], $allowed_extensions,'traineePic');
        }    
-    //    $bdImage = uploadImages($_FILES["idPhoto"], $allowed_extensions, 'certimg', $user_id, 'bdimg');
     $bdImage = trim($_FILES['idPhoto']['name']);
     if (empty($bdImage)){
          $bdImage = $existing_birthcertificate;
-       }{
+       }else{
         checkExtensions($_FILES["idPhoto"], $allowed_extensions,'bdimg');
        }
     
