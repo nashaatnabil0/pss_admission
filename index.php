@@ -80,6 +80,7 @@ try {
             padding-left: 20px;
         }
 
+
         .image-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -92,6 +93,36 @@ try {
             height: auto;
             border-radius: 10px;
         }
+        .grid-img:hover {
+            transform: scale(1.05);
+        }
+
+        .lightbox {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.8);
+                justify-content: center;
+                align-items: center;
+            }
+            
+        .lightbox-img {
+            max-width: 90%;
+            max-height: 90%;
+            }
+
+            .close {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                font-size: 30px;
+                color: white;
+                cursor: pointer;
+            }
+
     </style>
 </head>
 
@@ -136,12 +167,19 @@ try {
     <!-- New Content Section End -->
 
     <div class="image-grid">
-        <img src="img/image1.jpg" alt="Image 1">
-        <img src="img/image2.jpg" alt="Image 2">
-        <img src="img/image3.jpg" alt="Image 3">
-        <img src="img/image4.jpg" alt="Image 4">
-        <img src="img/image5.jpg" alt="Image 5">
-    </div>
+    <img src="img/image1.jpg" alt="Image 1" class="grid-img">
+    <img src="img/image2.jpg" alt="Image 2" class="grid-img">
+    <img src="img/image3.jpg" alt="Image 3" class="grid-img">
+    <img src="img/image4.jpg" alt="Image 4" class="grid-img">
+    <img src="img/image5.jpg" alt="Image 5" class="grid-img">
+</div>
+
+<!-- Lightbox overlay -->
+<div id="lightbox" class="lightbox">
+    <span class="close">&times;</span>
+    <img class="lightbox-img" id="expanded-img">
+</div>
+
 
     <!-- Footer Start -->
     <?php include('includes/footer.php'); ?>
@@ -164,5 +202,34 @@ try {
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+
+    <script>
+        // Get elements
+const images = document.querySelectorAll('.grid-img');
+const lightbox = document.getElementById('lightbox');
+const expandedImg = document.getElementById('expanded-img');
+const closeBtn = document.querySelector('.close');
+
+// Add click event for each image
+images.forEach(image => {
+    image.addEventListener('click', function() {
+        lightbox.style.display = 'flex';
+        expandedImg.src = this.src;
+    });
+});
+
+// Close the lightbox
+closeBtn.addEventListener('click', function() {
+    lightbox.style.display = 'none';
+});
+
+// Close lightbox when clicking outside of the image
+lightbox.addEventListener('click', function(e) {
+    if (e.target !== expandedImg) {
+        lightbox.style.display = 'none';
+    }
+});
+
+    </script>
 </body>
 </html>
