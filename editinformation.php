@@ -16,10 +16,13 @@ if(!empty($_GET['editid'])){
 if ($_SERVER['REQUEST_METHOD'] === 'POST') 
   {
         // Trainee
+        $namePattern = '/^([a-zA-Z]+(?:\s+[a-zA-Z]+)*|[\p{Arabic}]+(?:\s+[\p{Arabic}]+)*)$/u';
         $name = trim($_POST['Name']);
         if (empty($name)) {
             $errors['Name'] = "Name cannot be empty";
-        }
+        }elseif (!preg_match( $namePattern , $name)) {
+            $errors['Name'] = "Name must be two words at least and contain letters only ";
+         }
         
         
         $contactmobnum = trim($_POST['contactMobNum']);
@@ -35,11 +38,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
         $fatherName = trim($_POST['fatherName']);
         if (empty($fatherName)) {
           $errors['fatherName'] = "Father full name can't be empty";
-        }
+        }elseif (!preg_match( $namePattern , $fatherName)) {
+            $errors['fatherName'] = "Name must be two words at least and contain letters only ";
+           }
+        
+        $alphapetPattern = '/^([a-zA-Z\s]+|[\p{Arabic}\s]+)$/u';
+
         $fatherJob = trim($_POST['fatherJob']);
         if (empty($fatherJob)) {
           $errors['fatherJob'] = "Father job can't be empty";
-        }
+        }elseif(!preg_match($alphapetPattern , $fatherJob)){
+         $errors['fatherJob'] = "Father job should be letters only.";
+         }
         $fathermobnum = trim($_POST['fatherMobNum']);
         if (empty($fathermobnum)) {
             $errors['fatherMobNum'] = "Phone number cannot be empty";
@@ -51,11 +61,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
         $motherName = trim($_POST['motherName']);
         if (empty($motherName)) {
           $errors['motherName'] = "Mother full name can't be empty";
-        }
+        }elseif (!preg_match( $namePattern , $motherName)) {
+            $errors['motherName'] = "Name must be two words at least and contain letters only ";
+           }
+
         $motherJob = trim($_POST['motherJob']);
         if (empty($motherJob)) {
           $errors['motherJob'] = "Mother job can't be empty";
+        }elseif(!preg_match($alphapetPattern , $motherJob)){
+        $errors['motherJob'] = "Mother job should be letters only.";
         }
+
         $mothermobnum =trim($_POST['motherMobNum']);
         if (empty($mothermobnum)) {
             $errors['motherMobNum'] = "Phone number cannot be empty";
