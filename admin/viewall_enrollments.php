@@ -67,14 +67,58 @@ $sql= $pdoConnection -> query("DELETE FROM enrollment WHERE ID='$rid'");
             <section class="panel">
               <header class="panel-heading">
                 Search Enrollment
-                <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search by Trainee Name, Enrol Group, Payment Plan, or State..." class="form-control" style="margin-bottom: 10px;">
+                <!-- <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search by Trainee Name, Enrol Group, Payment Plan, or State..." class="form-control" style="margin-bottom: 10px;"> -->
+                <input type="text" id="searchBar" placeholder="Search by Trainee Name or NID" onkeyup="filterTable()" class="form-control" style="margin-bottom: 10px;">
+
+                <!-- Group Filter Dropdown -->
+                <select id="groupFilter" onchange="filterTable()" style="margin-bottom: 10px;">
+                    <option value="">All Groups</option>
+                    <?php
+                  $rettt= $pdoConnection-> query("SELECT
+                    g.Title as Gtilte,
+                    g.days as Gdays,
+                    g.minAge as gminAge,
+                    g.maxAge as gmaxAge,
+                    g.Timeslot as Timing,
+                    sp.name as spname
+                  FROM 
+                    groups g
+                  JOIN
+                    sport sp on g.sportId = sp.ID;");
+                  $cnt=1;
+                  while ($row=$rettt-> fetch(PDO:: FETCH_ASSOC)) {
+                  ?>
+                    <option 
+                      value="<?php  echo $row['Gtilte'];?>">
+                      <?php  echo $row['Gtilte'];?>
+                    </option>
+                  <?php } ?>
+                </select>
+                
+                <!-- Payment State Filter Dropdown -->
+                <select id="paymentStateFilter" onchange="filterTable()" style="margin-bottom: 10px;">
+                    <option value="">All Payment States</option>
+                    <option value="complete">complete</option>
+                    <option value="partial">Partial</option>
+                    <option value="No Payment">No Payment</option>
+                </select>
+                
+                <!-- Enrollment State Filter Dropdown -->
+                <select id="enrollmentStateFilter" onchange="filterTable()" style="margin-bottom: 10px;">
+                    <option value="">All Enrollment States</option>
+                    <option value="on">On</option>
+                    <option value="Waiting">Waiting</option>
+                    <option value="off">OFF</option>
+                </select>
+                <button onclick="resetFilters()" class="btn btn-primary" style="margin-bottom: 10px;">Reset Filters</button>
               </header>
-              <table class="table">
+              <table class="table" id="dataTable">
                 <thead>                        
                   <tr>
                     <th>S.NO</th>
                     <th>Trainee Name</th>
-                    <th>Enrol Group</th>
+                    <th>NID</th>
+                    <th>Enrolld Group</th>
                     <th>Payment Plan</th>
                     <th>Payment State</th>
                     <th>Enrollment State</th>
@@ -88,7 +132,7 @@ $sql= $pdoConnection -> query("DELETE FROM enrollment WHERE ID='$rid'");
                     en.traineeNID,
                     en.groupId,
                     en.paymentPlan,
-                    en.paymentState,
+                    COALESCE(en.paymentState, 'No Payment') as paymentState,
                     en.state,
                     en.discount,
                     en.date,
@@ -113,6 +157,7 @@ $sql= $pdoConnection -> query("DELETE FROM enrollment WHERE ID='$rid'");
                   <tr>
                     <td><?php echo $cnt;?></td>
                     <td><?php  echo $row['Tname'];?></td>
+                    <td><?php  echo $row['traineeNID'];?></td>
                     <td><?php  echo $row['Gtilte'].' / '.$row['spname'].' / '.$row['Gdays'].' / '.$row['gminAge'].' to '.$row['gmaxAge'].' / '.$row['Timing'];?></td> 
                     <td><?php  echo $row['paymentPlan'];?></td>
                     <td><?php  echo $row['paymentState'];?></td>
@@ -157,6 +202,49 @@ $sql= $pdoConnection -> query("DELETE FROM enrollment WHERE ID='$rid'");
     }
   </script>
 
+  <!-- filter script -->
+  <script>
+        // JavaScript function to filter table based on search and dropdowns
+        function filterTable() {
+            var searchBar = document.getElementById('searchBar').value.toLowerCase();
+            var groupFilter = document.getElementById('groupFilter').value.toLowerCase();
+            var paymentStateFilter = document.getElementById('paymentStateFilter').value.toLowerCase();
+            var enrollmentStateFilter = document.getElementById('enrollmentStateFilter').value.toLowerCase();
+
+            var table = document.getElementById('dataTable');
+            var rows = table.getElementsByTagName('tr');
+
+            // Loop through table rows and filter based on inputs
+            for (var i = 1; i < rows.length; i++) { // Start from index 1 to skip header
+                var cells = rows[i].getElementsByTagName('td');
+                var traineeName = cells[1].innerText.toLowerCase();
+                var nid = cells[2].innerText.toLowerCase(); // NID column index is 2
+                var group = cells[3].innerText.toLowerCase();
+                var paymentState = cells[5].innerText.toLowerCase();
+                var enrollmentState = cells[6].innerText.toLowerCase();
+
+                // Check if each row matches the filters
+                var nameOrNidMatch = traineeName.includes(searchBar) || nid.includes(searchBar);
+                var groupMatch = group.includes(groupFilter) || groupFilter === "";
+                var paymentStateMatch = paymentState.includes(paymentStateFilter) || paymentStateFilter === "";
+                var enrollmentStateMatch = enrollmentState.includes(enrollmentStateFilter) || enrollmentStateFilter === "";
+
+                // Show/hide the row based on match results
+                if (nameOrNidMatch && groupMatch && paymentStateMatch && enrollmentStateMatch) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
+        function resetFilters() {
+            document.getElementById('groupFilter').selectedIndex = 0; // Reset group dropdown
+            document.getElementById('paymentStateFilter').selectedIndex = 0; // Reset payment state dropdown
+            document.getElementById('enrollmentStateFilter').selectedIndex = 0; // Reset enrollment state dropdown
+
+            filterTable(); // Re-apply filter with default values
+        }
+    </script>
 </body>
 
 </html>

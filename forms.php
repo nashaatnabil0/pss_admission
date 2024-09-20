@@ -28,7 +28,7 @@ try {
             $errors['Name'] = "Name cannot be empty";
         }
         $group = $_POST['group'];
-        $enrollstate = $_POST['enrollStat'];
+        $enrollstate = $_POST['enrollState'];
         var_dump($_POST);
         if(empty($errors)){    
             try{            
@@ -311,8 +311,8 @@ try {
                                         <?php if(isset($_POST['submit']) && isset($errors['sport'])) { ?>
                                             <span style="color:red;display:block;text-align:left"><?php echo $errors['sport']; ?></span>
                                             <?php } ?>
-                                </div>
-                                <div class="radio-card-container">
+                                            </div>
+                                            <div class="radio-card-container">
 
                                         <?php 
                                         $query=$pdoConnection-> query("Select g.*,(SELECT COUNT(*) FROM enrollment en WHERE en.groupId = g.ID AND en.state = 'on') as totalEnrollments from groups g WHERE g.state = 'open';");
@@ -324,7 +324,7 @@ try {
                                         ?>    
                                                 <!-- Option 1 -->
                                                 <label class="radio-card" style="display: none;" Sportdata="<?php echo $row['sportId'];?>" >
-                                                    <input type="radio" name="group" id="group" value="<?php echo $row['ID'];?>" required>
+                                                    <input type="radio" name="group" id="group" value="<?php echo $row['ID'];?>" required onclick="setEnrollStat('<?php echo $isWaiting ? 'waiting' : 'on'; ?>')">
                                                     <div class="card-content">
                                                         <h5 class="text-primary"><?php echo $row['Title'];?></h5>
                                                         <p style="text-align: left;"><strong>Days:</strong> <?php echo $row['days'];?> - timing: <?php echo $row['Timeslot'];?></p>
@@ -335,10 +335,8 @@ try {
                                                         <!-- Show "Waiting" label if totalEnrollments exceed 30 -->
                                                         <?php if ($isWaiting) { ?>
                                                             <p style="color: red; text-align: left;"><strong>Status:</strong> Waiting List</p>
-                                                            <input value='waiting' name="enrollStat" id="enrollStat" readonly hidden>
                                                         <?php } else { ?>
                                                             <p style="color: green; text-align: left;"><strong>Status:</strong> Available</p>
-                                                            <input value='on' name="enrollStat" id="enrollStat" readonly hidden>
                                                         <?php } ?>
                                                     
                                                     </div>
@@ -349,7 +347,8 @@ try {
                                         <?php if(isset($_POST['submit']) && isset($errors['groups'])) { ?>
                                             <span style="color:red;display:block;text-align:left"><?php echo $errors['sport']; ?></span>
                                         <?php } ?>
-                                            
+                                    <input type="hidden" name="enrollState" id="enrollStatVal" value="">
+
                                 <button type="submit"  class="btn btn-primary">Register</button>
                             </form>
                         </div>
@@ -380,6 +379,13 @@ try {
 
         <!-- Template Javascript -->
         <script src="js/main.js"></script>
+     
+        <!-- // JavaScript function to set enrollStat based on the selected group status -->
+        <script>
+            function setEnrollStat(status) {
+                document.getElementById('enrollStatVal').value = status;
+            }
+        </script>
         
         <!-- JavaScript to Filter Cards -->
         <script>
