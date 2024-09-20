@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(0);
+// error_reporting(0);
 include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
@@ -85,30 +85,42 @@ if (isset($_POST['submit'])) {
     $allowed_extensions = ["jpg", "jpeg", "png", "gif"];
 
    
-    function uploadImages($imageFile, $allowed_extensions, $name, $NID,$fileInputName ) {
+    function uploadImages($imageFile, $name, $NID ) {
+      
       if ($imageFile["name"] != "") {
-          $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
-          if (in_array($extension, $allowed_extensions)) {
+        $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
               $newImageName = $NID .'-'. $name. '.' . $extension;
               move_uploaded_file($imageFile["tmp_name"], "images/" . $newImageName);
               return $newImageName;
           } else {
-            $errors[$fileInputName] = "Invalid format. Only jpg / jpeg / png / gif format allowed.";
             return null;
           }
-      }
+      
       return null;
     }
 
-//var_dump($_FILES);
-    $traineePhoto = uploadImages($_FILES["traineePic"], $allowed_extensions,'proimg', $NID, 'traineePic');
-    if (empty($traineePhoto)){
-      $errors['traineePicempty'] = "Please upload trainee Photo.";
+    function checkExtensions($imageFile, $allowed_extensions, $fileInputName ) {
+      if ($imageFile["name"] != "") {
+          $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
+          if (!in_array($extension, $allowed_extensions)) {
+            $errors[$fileInputName] = "Invalid format. Only jpg / jpeg / png / gif format allowed.";
+          }
+      }
     }
 
-    $bdImage = uploadImages($_FILES["bdimg"], $allowed_extensions, 'certimg', $NID, 'bdimg');
-    if (empty($bdImage)){
+    //var_dump($_FILES);
+    $traineeImg = trim($_FILES['traineePic']['name']);
+    if (empty($traineeImg)){
+      $errors['traineePicempty'] = "Please upload trainee Photo.";
+    }else{
+      checkExtensions($_FILES["traineePic"], $allowed_extensions,'traineePic');
+    }
+    
+    $certImg = trim($_FILES['bdimg']['name']);
+    if (empty($certImg)){
       $errors['bdimgempty'] = "Please upload Birth Certificate or National ID photo.";
+    }else{
+      checkExtensions($_FILES["bdimg"], $allowed_extensions,'bdimg');
     }
 
   
@@ -120,14 +132,20 @@ if (isset($_POST['submit'])) {
   
   if(empty($errors)){
   //insert into databse
+  $traineePhoto = uploadImages($_FILES["traineePic"],'proimg', $NID);
+  $bdImage = uploadImages($_FILES["bdimg"], 'certimg', $NID);
+
   $query = $pdoConnection->query("INSERT INTO trainees (Name, NID, birthDate, gender, photo, birthCertificate,contactMobNum,fatherName,fatherMobNum,fatherJob,motherName,motherMobNum,motherJob,Notes) VALUES ('$name', '$NID','$birthdate', '$gender', '$traineePhoto','$bdImage','$contactmobnum','$fatherName','$fathermobnum','$fatherJob','$motherName','$mothermobnum','$motherJob','$notes')");
   
           if ($query) {
+            
               echo "<script>alert('Trainee has been added.');</script>";
               echo "<script>window.location.href ='viewall_trainees.php'</script>";
           } else {
               echo "<script>alert('Something Went Wrong. Please try again.');</script>";
             }
+   }else{
+
    }
 }
 ?>
