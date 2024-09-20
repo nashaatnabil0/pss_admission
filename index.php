@@ -94,34 +94,36 @@ try {
             border-radius: 10px;
         }
         .grid-img:hover {
-            transform: scale(1.05);
-        }
+    transform: scale(1.05);
+}
 
-        .lightbox {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.8);
-                justify-content: center;
-                align-items: center;
-            }
-            
-        .lightbox-img {
-            max-width: 90%;
-            max-height: 90%;
-            }
+/* Lightbox styles */
+.lightbox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;  /*lightbox appear on top*/ 
+}
 
-            .close {
-                position: absolute;
-                top: 20px;
-                right: 20px;
-                font-size: 30px;
-                color: white;
-                cursor: pointer;
-            }
+.lightbox-img {
+    max-width: 90%;
+    max-height: 90%;
+}
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+}
 
     </style>
 </head>
@@ -167,11 +169,11 @@ try {
     <!-- New Content Section End -->
 
     <div class="image-grid">
-    <img src="img/image1.jpg" alt="Image 1" class="grid-img">
-    <img src="img/image2.jpg" alt="Image 2" class="grid-img">
-    <img src="img/image3.jpg" alt="Image 3" class="grid-img">
-    <img src="img/image4.jpg" alt="Image 4" class="grid-img">
-    <img src="img/image5.jpg" alt="Image 5" class="grid-img">
+    <img src="img/1.jpg" alt="Image 1" class="grid-img">
+    <img src="img/2.jpg" alt="Image 2" class="grid-img">
+    <img src="img/3.jpg" alt="Image 3" class="grid-img">
+    <img src="img/4.jpg" alt="Image 4" class="grid-img">
+    <img src="img/5.jpg" alt="Image 5" class="grid-img">
 </div>
 
 <!-- Lightbox overlay -->
@@ -180,30 +182,7 @@ try {
     <img class="lightbox-img" id="expanded-img">
 </div>
 
-
-    <!-- Footer Start -->
-    <?php include('includes/footer.php'); ?>
-    <!-- Footer End -->
-
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
-
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="lib/counterup/counterup.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-
-    <!-- Contact Javascript File -->
-    <script src="mail/jqBootstrapValidation.min.js"></script>
-    <script src="mail/contact.js"></script>
-
-    <!-- Template Javascript -->
-    <script src="js/main.js"></script>
-
-    <script>
+<script>
         // Get elements
 const images = document.querySelectorAll('.grid-img');
 const lightbox = document.getElementById('lightbox');
@@ -231,5 +210,29 @@ lightbox.addEventListener('click', function(e) {
 });
 
     </script>
+
+
+    <!-- Footer Start -->
+    <?php include('includes/footer.php'); ?>
+    <!-- Footer End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/counterup/counterup.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Contact Javascript File -->
+    <script src="mail/jqBootstrapValidation.min.js"></script>
+    <script src="mail/contact.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+
 </body>
 </html>
