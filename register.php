@@ -22,27 +22,9 @@ try {
     echo "Error: " . $e->getMessage();
     exit();
 }
-    // Allowed extensions
-    $allowed_extensions = array ("jpg", "jpeg", "png", "gif");
-    // Function to handle image uploads
-    function uploadImages($imageFile, $allowed_extensions, $name, $NID ,$fileInputName ) {
-        if ($imageFile["name"] != "") {
-            $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
-            if (in_array($extension, $allowed_extensions)) {
-                $newImageName = $NID .'-'. $name. '.' . $extension;
-                move_uploaded_file($imageFile["tmp_name"], "admin/images/" . $newImageName);
-                return $newImageName;
-            } else {
-              $errors[$fileInputName] = "Invalid format. Only jpg / jpeg / png / gif format allowed.";
-              return null;
-            }
-        }
-        return null;
-      }
-
         $nationalId = $_GET['nid'];
 
-        // Extract birth date from the ID (assuming a specific format)
+    // Extract birth date from the ID (assuming a specific format)
         $gen = substr($nationalId, 0, 1);
         $birthDate = substr($nationalId, 1, 6);
         $birthYear = substr($birthDate, 0, 2);
@@ -64,6 +46,33 @@ try {
         }
 
         $genderDigit = $nationalId[12]; // Get the 13th digit (index 12)
+    // end of extract birthdate
+
+    $allowed_extensions = ["jpg", "jpeg", "png", "gif"];
+
+   
+    function uploadImages($imageFile, $name, $NID ) {
+      
+      if ($imageFile["name"] != "") {
+        $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
+              $newImageName = $NID .'-'. $name. '.' . $extension;
+              move_uploaded_file($imageFile["tmp_name"], "admin/images/" . $newImageName);
+              return $newImageName;
+          } else {
+            return null;
+          }
+      
+      return null;
+    }
+
+    function checkExtensions($imageFile, $allowed_extensions, $fileInputName ) {
+      if ($imageFile["name"] != "") {
+          $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
+          if (!in_array($extension, $allowed_extensions)) {
+            $errors[$fileInputName] = "Invalid format. Only jpg / jpeg / png / gif format allowed.";
+          }
+      }
+    }
 
  $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -124,17 +133,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!preg_match($mobnumPattern, $motherNum)) {
         $errors['motherMobNuminvalid'] = "Invalid phone number format Must be 11 digits & start with (012 / 011 / 015 / 010)";
     }
+            
+    // $personalPhoto = uploadImages($_FILES['personalPhoto'], $allowed_extensions, 'proimg', $nid, "personalPhoto");
+    // if (empty($personalPhoto)) {
+    //     $errors['traineePicempty'] = "Please upload a photo of the trainee.";
+    // }
 
-    $personalPhoto = uploadImages($_FILES['personalPhoto'], $allowed_extensions, 'proimg', $nid, "personalPhoto");
-    if (empty($personalPhoto)) {
-        $errors['traineePicempty'] = "Please upload a photo of the trainee.";
-    }
-
-    $idPhoto = uploadImages($_FILES['idPhoto'], $allowed_extensions, 'certimg' , $nid, "idPhoto");
-    if (empty($idPhoto)) {
-        $errors['bdimgempty'] = "Please upload a Birth Certificate or National ID photo.";
+    // $idPhoto = uploadImages($_FILES['idPhoto'], $allowed_extensions, 'certimg' , $nid, "idPhoto");
+    // if (empty($idPhoto)) {
+    //     $errors['bdimgempty'] = "Please upload a Birth Certificate or National ID photo.";
+    // }
+    
+    $traineeImg = trim($_FILES['personalPhoto']['name']);
+    if (empty($traineeImg)){
+    $errors['traineePicempty'] = "Please upload trainee Photo.";
+    }else{
+    checkExtensions($_FILES["traineePic"], $allowed_extensions,'traineePic');
     }
     
+    $certImg = trim($_FILES['idPhoto']['name']);
+    if (empty($certImg)){
+    $errors['bdimgempty'] = "Please upload Birth Certificate or National ID photo.";
+    }else{
+    checkExtensions($_FILES["bdimg"], $allowed_extensions,'bdimg');
+    }
+
     $notes =trim($_POST['notes']);
     if ($notes == "") {
         $notes = null;
@@ -143,7 +166,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     //var_dump($errors);
 
     if(empty($errors)){
-
+        $personalPhoto = uploadImages($_FILES["personalPhoto"],'proimg', $nid);
+        $idPhoto = uploadImages($_FILES["idPhoto"], 'certimg', $nid);
             $query = $pdoConnection->query("INSERT INTO trainees (Name, NID, birthDate, gender, photo, birthCertificate,contactMobNum,fatherName,fatherMobNum,fatherJob,motherName,motherMobNum,motherJob,Notes) VALUES ('$name', '$nationalId','$dob', '$gender', '$personalPhoto','$idPhoto','$contactMobNum','$fatherName','$fatherNum','$fatherJob','$motherName','$motherNum','$motherJob','$notes')");
         
                 if ($query) {
