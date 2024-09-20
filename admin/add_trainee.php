@@ -10,7 +10,7 @@ else {
 if (isset($_POST['submit'])) {
     // Trainee
     $name =trim($_POST['Name']);
-    $namePattern = '/^[a-zA-Z]+(?:\s+[a-zA-Z]+)+$/';
+    $namePattern = '/^([a-zA-Z]+(?:\s+[a-zA-Z]+)*|[\p{Arabic}]+(?:\s+[\p{Arabic}]+)*)$/u';
     if (empty($name)) {
         $errors['Name'] = "Name cannot be empty";
     }elseif (!preg_match( $namePattern , $name)) {
@@ -48,13 +48,18 @@ if (isset($_POST['submit'])) {
     if (empty($fatherName)) {
       $errors['fatherName'] = "Father full name can't be empty";
     }elseif (!preg_match( $namePattern , $fatherName)) {
-      $errors['fatherName'] = "Name must be two words at least  and contain letters only ";
+      $errors['fatherName'] = "Name must be two words at least and contain letters only ";
      }
 
+    $alphapetPattern = '/^([a-zA-Z\s]+|[\p{Arabic}\s]+)$/u';
+    
     $fatherJob = trim($_POST['fatherJob']);
     if (empty($fatherJob)) {
       $errors['fatherJob'] = "Father job can't be empty";
+    }elseif(!preg_match($alphapetPattern , $fatherJob)){
+      $errors['fatherJob'] = "Father job should be letters only.";
     }
+
     $fathermobnum = trim($_POST['fatherMobNum']);
     if (empty($fathermobnum)) {
         $errors['fatherMobNum'] = "Phone number cannot be empty";
@@ -71,9 +76,12 @@ if (isset($_POST['submit'])) {
      }
 
     $motherJob = trim($_POST['motherJob']);
-    if (empty($motherName)) {
+    if (empty($motherJob)) {
       $errors['motherJob'] = "Mother job can't be empty";
+    }elseif(!preg_match($alphapetPattern , $motherJob)){
+      $errors['motherJob'] = "Mother job should be letters only.";
     }
+    
     $mothermobnum = trim( $_POST['motherMobNum']);
     if (empty($mothermobnum)) {
         $errors['motherMobNum'] = "Phone number cannot be empty";
@@ -144,8 +152,6 @@ if (isset($_POST['submit'])) {
           } else {
               echo "<script>alert('Something Went Wrong. Please try again.');</script>";
             }
-   }else{
-
    }
 }
 ?>
