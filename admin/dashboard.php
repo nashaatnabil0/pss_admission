@@ -6,6 +6,10 @@ if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
 
   } 
+  if ($_SESSION['role']=='accountant' ) {
+    header('location:make_payment.php');
+  
+    } 
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -90,7 +90,7 @@ $sql= $pdoConnection -> query("DELETE FROM users WHERE ID='$rid'");
                   <td><?php echo $cnt;?></td>
                   <td><?php  echo $row['name'];?></td>
                   <td><?php  echo $row['Email'];?></td> 
-                  <td><?php  echo '0'.$row['MobileNumber'];?></td>
+                  <td><?php  echo $row['MobileNumber'];?></td>
                   <td><?php  echo $row['role'];?></td>
                   <td><a href="edit_user_detail.php?editid=<?php echo $row['ID'];?>" class="btn btn-success">Edit</a> || <a href="Viewall_users.php?delid=<?php echo $row['ID'];?>" class="btn btn-danger confirm">Delete</a></td>
                 </tr>

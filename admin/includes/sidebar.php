@@ -7,6 +7,7 @@
       <div id="sidebar" class="nav-collapse ">
         <!-- sidebar menu start-->
         <ul class="sidebar-menu">
+        <?php if($Urole != 'accountant'): ?>
           <li class="active" >
             <a class="" href="dashboard.php">
               <i class="icon_house_alt"></i>
@@ -80,24 +81,18 @@
               <li><a class="" href="viewall_enrollments.php">Manage Enrollments</a></li>
             </ul>
           </li>
+          <?php endif; ?>
           <li class="sub-menu">
             <a href="javascript:;" class="">
-                          <i class="icon_table"></i>
-                          <span>Payment</span>
-                          <span class="menu-arrow arrow_carrot-right"></span>
-                      </a>
+                <i class="icon_table"></i>
+                  <span>Payment</span>
+                  <span class="menu-arrow arrow_carrot-right"></span>
+            </a>
             <ul class="sub">
               <li><a class="" href="make_payment.php">Add Payment</a></li>
               <li><a class="" href="viewall_payments.php">Manage Payments</a></li>
             </ul>
-          </li>
-         <!-- <li>
-            <a class="" href="search.php">
-              <i class="icon_genius"></i>
-              <span>Search </span>
-            </a>
-          </li>-->
-          
+          </li>          
           <?php if($Urole == 'admin'): ?>
           <li class="sub-menu">
             <a href="javascript:;" class="">
@@ -111,18 +106,6 @@
               </ul>
           </li>
           <?php endif; ?>
-
-          <!--<li class="sub-menu">
-            <a href="javascript:;" class="">
-                          <i class="icon_documents_alt"></i>
-                          <span>Pages</span>
-                          <span class="menu-arrow arrow_carrot-right"></span>
-                      </a>
-            <ul class="sub">
-              <li><a class="" href="aboutus.php"><span>About Us</span></a></li>
-              <li><a class="" href="contactus.php"><span>Contact Us</span></a></li>
-            </ul>
-          </li>-->
         </ul>
         <!-- sidebar menu end-->
       </div>

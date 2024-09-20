@@ -34,7 +34,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
   }
     if(empty($errors)){
       // $query = $pdoConnection->query("INSERT INTO users (Name, MobileNumber, Email, role ,password ) VALUES ('$name', '$mobnum', '$email', '$role','$password')");
-      $query = $pdoConnection->query("UPDATE users SET name='$name',MobileNumber='0$mobnum',Email='$email',role='$role' WHERE ID = $cid;");
+      $query = $pdoConnection->query("UPDATE users SET name='$name',MobileNumber='$mobnum',Email='$email',role='$role' WHERE ID = $cid;");
   
       if ($query) {
           echo "<script>alert('Admin/ Moderator Data has been Updated.');</script>";
@@ -124,7 +124,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Mobile Number</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="mobnum" name="mobnum"  type="text" value="<?php  echo '0'.$row['MobileNumber'];?>" required>
+                      <input class="form-control" id="mobnum" name="mobnum"  type="text" value="<?php  echo $row['MobileNumber'];?>" required>
                       <?php if(isset($_POST['submit'])){ if(isset($errors['mobnum'])){  ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['mobnum'];?></span>
                        <?php } elseif($errors['mobnuminvalid']!=""){ ?>
