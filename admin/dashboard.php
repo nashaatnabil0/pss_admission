@@ -78,7 +78,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
 
         <div class="row">
           <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-            <div class="info-box green-bg">
+            <div class="info-box brown-bg">
               <?php 
               $query=$pdoConnection-> query("Select * from season");
               $seasoncount = $query ->rowCount();  ?>
@@ -107,8 +107,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
               <?php 
                $query1=$pdoConnection-> query("Select * from trainers");
                $trainerscount = $query1 ->rowCount();
-
-?>
+                ?>
               <i class="fa fa-users"></i>
               <div class="count"><?php echo $trainerscount;?></div>
               <div class="title"> <a class="dropdown-item" href="viewall_trainers.php">All Trainers</a></div>
@@ -121,9 +120,8 @@ if (strlen($_SESSION['sportadmission']==0)) {
             <div class="info-box dark-bg">
               <?php 
               $query2=$pdoConnection-> query("Select * from trainees");
-$traineescount=$query2 ->rowCount();
-              
-?>
+              $traineescount=$query2 ->rowCount();
+              ?>
               <i class="fa fa-folder"></i>
               <div class="count"><?php echo $traineescount;?></div>
              <div class="title"> <a class="dropdown-item" href="viewall_trainees.php">All Trainees</a></div>
@@ -133,7 +131,7 @@ $traineescount=$query2 ->rowCount();
           <!--/.col-->
 
           <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-            <div class="info-box brown-bg">
+            <div class="info-box dark-bg">
               <?php 
                $query2=$pdoConnection-> query("Select * from groups where state = 'open'");
                $groupscount=$query2  ->rowCount();
