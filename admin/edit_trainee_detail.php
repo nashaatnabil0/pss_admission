@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(0);
+// error_reporting(0);
 include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
@@ -92,36 +92,57 @@ if (strlen($_SESSION['sportadmission']==0)) {
 
     $allowed_extensions = ["jpg", "jpeg", "png", "gif"];
     
-   //&$error to modify the errors array outside the function
-   function uploadImages($imageFile, $allowed_extensions, $name, $NID,$fileInputName ) {
-     if ($imageFile["name"] != "") {
-         $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
-         if (in_array($extension, $allowed_extensions)) {
-             $newImageName = $NID .'-'. $name.'.' . $extension;
-             move_uploaded_file($imageFile["tmp_name"], "images/" . $newImageName);
-             return $newImageName;
-         } else {
-           $errors[$fileInputName] = "Invalid format. Only jpg / jpeg / png / gif format allowed.";
-           return null;
-         }
-     }
-     return null;
-   }
+  function uploadImages($imageFile, $name, $NID ) {
+      
+    if ($imageFile["name"] != "") {
+      $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
+            $newImageName = $NID .'-'. $name. '.' . $extension;
+            move_uploaded_file($imageFile["tmp_name"], "images/" . $newImageName);
+            return $newImageName;
+        } else {
+          return null;
+        }
+    return null;
+  }
+
+  function checkExtensions($imageFile, $allowed_extensions, $fileInputName ) {
+    if ($imageFile["name"] != "") {
+        $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
+        if (!in_array($extension, $allowed_extensions)) {
+          $errors[$fileInputName] = "Invalid format. Only jpg / jpeg / png / gif format allowed.";
+        }
+    }
+  }
 
 //var_dump($_FILES);
-   $traineePhoto = uploadImages($_FILES["traineePic"], $allowed_extensions, 'proimg', $NID,  'traineePic');
-   if (empty($traineePhoto)){
+  
+  
+  $traineePhoto = trim($_FILES['traineePic']['name']);
+  if (empty($traineePhoto)){
      $traineePhoto= $existing_TraineePhoto;
+   }else{
+    checkExtensions($_FILES["traineePic"], $allowed_extensions,'traineePic');
    }
 
-   $bdImage = uploadImages($_FILES["bdimg"], $allowed_extensions, 'certimg', $NID, 'bdimg');
-   if (empty($bdImage)){
+  $bdImage = trim($_FILES['bdimg']['name']);
+  if (empty($bdImage)){
      $bdImage = $existing_birthcertificate;
+   }else {
+    checkExtensions($_FILES["bdimg"], $allowed_extensions,'bdimg');
    }
 
   if(empty($errors)){
-  //insert into databse
-  $query = $pdoConnection->query("UPDATE trainees SET Name= '$name', NID='$NID', birthDate='$birthdate', gender='$gender', photo='$traineePhoto', birthCertificate='$bdImage',contactMobNum='$contactmobnum',fatherName='$fatherName',fatherMobNum='$fathermobnum',fatherJob='$fatherJob',motherName='$motherName',motherMobNum='$mothermobnum',motherJob='$motherJob', Notes ='$notes' WhERE NID = $cid;");
+
+     if ($traineePhoto != $existing_TraineePhoto) {
+        $traineePhoto = uploadImages($_FILES["traineePic"],'proimg', $NID);
+      }
+ 
+    if ($bdImage != $existing_birthcertificate) {
+      $bdImage = uploadImages($_FILES["bdimg"], 'certimg', $NID);
+     } 
+    
+    //insert into databse
+    $query = $pdoConnection->query("UPDATE trainees SET Name= '$name', NID='$NID', birthDate='$birthdate', gender='$gender', photo='$traineePhoto', birthCertificate='$bdImage',contactMobNum='$contactmobnum',fatherName='$fatherName',fatherMobNum='$fathermobnum',fatherJob='$fatherJob',motherName='$motherName',motherMobNum='$mothermobnum',motherJob='$motherJob', Notes ='$notes' WhERE NID = $cid;");
       
           if ($query) {
             if ($traineePhoto != $existing_TraineePhoto) {

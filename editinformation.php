@@ -79,32 +79,69 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 
         $allowed_extensions = ["jpg", "jpeg", "png", "gif"];
 
-       //&$error to modify the errors array outside the function
-       function uploadImages($imageFile, $allowed_extensions, $name, $NID ,$fileInputName ) {
-         if ($imageFile["name"] != "") {
-             $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
-             if (in_array($extension, $allowed_extensions)) {
-                 $newImageName = $NID .'-'. $name.'.' . $extension;
-                 move_uploaded_file($imageFile["tmp_name"], "admin/images/" . $newImageName);
-                 return $newImageName;
-             } else {
-               $errors[$fileInputName] = "Invalid format. Only jpg / jpeg / png / gif format allowed.";
-               return null;
-             }
-         }
-         return null;
-       }
-       $traineePhoto = uploadImages($_FILES["personalPhoto"], $allowed_extensions, 'proimg', $user_id, 'traineePic');
+    //    //&$error to modify the errors array outside the function
+    //    function uploadImages($imageFile, $allowed_extensions, $name, $NID ,$fileInputName ) {
+    //      if ($imageFile["name"] != "") {
+    //          $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
+    //          if (in_array($extension, $allowed_extensions)) {
+    //              $newImageName = $NID .'-'. $name.'.' . $extension;
+    //              move_uploaded_file($imageFile["tmp_name"], "admin/images/" . $newImageName);
+    //              return $newImageName;
+    //          } else {
+    //            $errors[$fileInputName] = "Invalid format. Only jpg / jpeg / png / gif format allowed.";
+    //            return null;
+    //          }
+    //      }
+    //      return null;
+    //    }
+    function uploadImages($imageFile, $name, $NID ) {
+      
+        if ($imageFile["name"] != "") {
+          $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
+                $newImageName = $NID .'-'. $name. '.' . $extension;
+                move_uploaded_file($imageFile["tmp_name"], "admin/images/" . $newImageName);
+                return $newImageName;
+            } else {
+              return null;
+            }
+        return null;
+      }
+    
+      function checkExtensions($imageFile, $allowed_extensions, $fileInputName ) {
+        if ($imageFile["name"] != "") {
+            $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
+            if (!in_array($extension, $allowed_extensions)) {
+              $errors[$fileInputName] = "Invalid format. Only jpg / jpeg / png / gif format allowed.";
+            }
+        }
+      }
+
+
+    //    $traineePhoto = uploadImages($_FILES["personalPhoto"], $allowed_extensions, 'proimg', $user_id, 'traineePic');
+    $traineePhoto = trim($_FILES['personalPhoto']['name']);
        if (empty($traineePhoto)){
          $traineePhoto= $existing_TraineePhoto;
-       }
-    
-       $bdImage = uploadImages($_FILES["idPhoto"], $allowed_extensions, 'certimg', $user_id, 'bdimg');
-       if (empty($bdImage)){
+       }else{
+        checkExtensions($_FILES["personalPhoto"], $allowed_extensions,'traineePic');
+       }    
+    //    $bdImage = uploadImages($_FILES["idPhoto"], $allowed_extensions, 'certimg', $user_id, 'bdimg');
+    $bdImage = trim($_FILES['idPhoto']['name']);
+    if (empty($bdImage)){
          $bdImage = $existing_birthcertificate;
+       }{
+        checkExtensions($_FILES["idPhoto"], $allowed_extensions,'bdimg');
        }
     
         if(empty($errors)){
+            
+            if ($traineePhoto != $existing_TraineePhoto) {
+                $traineePhoto = uploadImages($_FILES["personalPhoto"],'proimg', $user_id);
+              }
+         
+            if ($bdImage != $existing_birthcertificate) {
+              $bdImage = uploadImages($_FILES["idPhoto"], 'certimg', $user_id);
+             } 
+
         //insert into databse
                 $query = $pdoConnection->query("UPDATE trainees SET Name= '$name', photo='$traineePhoto', birthCertificate='$bdImage',contactMobNum='$contactmobnum',fatherName='$fatherName',fatherMobNum='$fathermobnum',fatherJob='$fatherJob',motherName='$motherName',motherMobNum='$mothermobnum',motherJob='$motherJob', Notes ='$notes' WhERE NID = $user_id;");
             
