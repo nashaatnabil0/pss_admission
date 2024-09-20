@@ -242,7 +242,7 @@ else {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Discount</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="discount" name="discount"  type="text" value="<?php echo $row2['discount'] === null ? 0 : $row2['discount']; ?>">
+                      <input class="form-control" id="discount" name="discount"  type="number" value="<?php echo $row2['discount'] === null ? 0 : $row2['discount']; ?>">
                     </div>
                   </div>
                   <div class="form-group">
