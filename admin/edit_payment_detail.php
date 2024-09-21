@@ -271,7 +271,7 @@ if ($formSubmitted) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Notes</label>
                     <div class="col-sm-10">
-                      <textarea class="form-control" name="notes" ><?php echo $row5['notes']; ?></textarea>
+                      <textarea class="form-control" name="notes" placeholder="Explain your edit here" ><?php echo $row5['notes']; ?></textarea>
                       <?php if( $formSubmitted && isset($errors['notes'])){ ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['notes'] ?></span>
                        <?php } ?>
