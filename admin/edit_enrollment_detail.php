@@ -324,8 +324,10 @@ else {
                       ('0' + (today.getMonth() + 1)).slice(-2) + '-' + 
                       ('0' + today.getDate()).slice(-2);
 
-  // Set the value of the input as today's date
-  dateElement.value = formattedDate;  
+  // Only set today's date if the value from the database is empty
+  if (!dateElement.value) {
+      dateElement.value = formattedDate;
+  }  
 </script>
 
 <!-- get the groups based on the sport selected -->
