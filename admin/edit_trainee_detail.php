@@ -131,14 +131,14 @@ if (strlen($_SESSION['sportadmission']==0)) {
   }
 
 //var_dump($_FILES);
-  $traineePhoto = trim($_FILES['traineePic']['name']);
+  $traineePhoto = $_FILES['traineePic']['name'];
   if (empty($traineePhoto)){
      $traineePhoto= $existing_TraineePhoto;
    }else{
     checkExtensions($_FILES["traineePic"], $allowed_extensions,'traineePic', $errors);
    }
 
-  $bdImage = trim($_FILES['bdimg']['name']);
+  $bdImage = $_FILES['bdimg']['name'];
   if (empty($bdImage)){
      $bdImage = $existing_birthcertificate;
    }else {
@@ -147,13 +147,25 @@ if (strlen($_SESSION['sportadmission']==0)) {
 
   if(empty($errors)){
 
-     if ($traineePhoto != $existing_TraineePhoto) {
-        $traineePhoto = uploadImages($_FILES["traineePic"],'proimg', $NID);
-      }
- 
-    if ($bdImage != $existing_birthcertificate) {
-      $bdImage = uploadImages($_FILES["bdimg"], 'certimg', $NID);
-     } 
+      // Upload only if photo is provided
+    if (!empty($_FILES['traineePic']['name'])) {
+      $traineePhoto = uploadImages($_FILES["traineePic"], 'proimg', $NID);
+         if (!$traineePhoto) {
+             $traineePhoto = $existing_TraineePhoto;  // Use existing photo if upload fails
+          }
+          } else {
+              $traineePhoto = $existing_TraineePhoto;  // Keep the existing photo if no new file
+          }
+
+      if (!empty($_FILES['bdimg']['name'])) {
+          $bdImage = uploadImages($_FILES["bdimg"], 'certimg', $NID);
+          if (!$bdImage) {
+              $bdImage = $existing_birthcertificate; 
+          }
+          } else {
+              $bdImage = $existing_birthcertificate;  
+          }
+
     
     //insert into databse
     $query = $pdoConnection->query("UPDATE trainees SET Name= '$name', NID='$NID', birthDate='$birthdate', gender='$gender', photo='$traineePhoto', birthCertificate='$bdImage',contactMobNum='$contactmobnum',fatherName='$fatherName',fatherMobNum='$fathermobnum',fatherJob='$fatherJob',motherName='$motherName',motherMobNum='$mothermobnum',motherJob='$motherJob', Notes ='$notes' WhERE NID = $cid;");
