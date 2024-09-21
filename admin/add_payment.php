@@ -60,11 +60,9 @@ if ($formSubmitted) {
 
     // Only proceed with inserting into the database if there are no errors
     if (empty($errors)) {
-        // $query = $pdoConnection->query("INSERT INTO payment (enrollmentId, paymentAmount, paymentMethod, date, userId, notes) VALUES ('$enrollId', '$pymntAmount', '$pymntMethod', '$pymntdate', '$adminid', '$notes')");
-        $sql = "INSERT INTO payment (enrollmentId, paymentAmount, paymentMethod, date, userId, notes) VALUES ('$enrollId', '$pymntAmount', '$pymntMethod', '$pymntdate', '$adminid', ?)";
-        $stmt = $pdoConnection->prepare($sql);
-        $stmt->execute([$notes]);
-
+        $stmt = $pdoConnection->prepare("INSERT INTO payment (enrollmentId, paymentAmount, paymentMethod, date, userId, notes) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$enrollId, $pymntAmount, $pymntMethod, $pymntdate, $adminid, $notes]);
+        
         if ($stmt) {
             // Calculate remaining amount after the new payment
             $paidquery = $pdoConnection->query("SELECT SUM(paymentAmount) AS totalPaidAmount FROM payment WHERE enrollmentId = $enrollId;");
@@ -78,7 +76,7 @@ if ($formSubmitted) {
             $remainingAmount = $feesAfterDiscount - $totalPaidAmount;
 
             // If remaining amount is 0, update the payment state to "complete"
-            if ($remainingAmount <= 0) {
+            if ($remainingAmount == 0) {
                 $pdoConnection->query("UPDATE enrollment SET paymentState = 'complete' WHERE ID = $enrollId;");
             }
             if ($remainingAmount !=0 && $totalPaidAmount !=$feesAfterDiscount ) {

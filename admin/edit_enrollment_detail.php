@@ -370,7 +370,7 @@ else {
             option.value = group.id;
             option.textContent = group.title + " - " + " ( " + group.minAge + "-" + group.maxAge + " ) " + " Y " + " - " + group.groupstate;
             // Check if this is the selected group and mark it as selected
-            if (group.id === selectedGroupId) {0
+            if (group.id === selectedGroupId) {
                 option.selected = true;
             }
 
