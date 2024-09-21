@@ -315,8 +315,11 @@ try {
                                             <div class="radio-card-container">
 
                                         <?php 
-                                        $query=$pdoConnection-> query("Select g.*,(SELECT COUNT(*) FROM enrollment en WHERE en.groupId = g.ID AND en.state = 'on') as totalEnrollments from groups g WHERE g.state = 'open';");
-                                        while($row=$query ->fetch(PDO:: FETCH_ASSOC))
+                                        // $query=$pdoConnection-> query("Select g.*,(SELECT COUNT(*) FROM enrollment en WHERE en.groupId = g.ID AND en.state = 'on') as totalEnrollments from groups g WHERE g.state = 'open' AND g.minAge <= ? AND g.maxAge >= ?;");
+                                        $query="Select g.*,(SELECT COUNT(*) FROM enrollment en WHERE en.groupId = g.ID AND en.state = 'on') as totalEnrollments from groups g WHERE g.state = 'open' AND g.minAge <= ? AND g.maxAge >= ?;";
+                                        $stmtg = $pdoConnection->prepare($query);
+                                        $stmtg->execute([$ageY, $ageY]);
+                                        while($row=$stmtg ->fetch(PDO:: FETCH_ASSOC))
                                         // foreach($SportsResult as $row)
                                         {
                                             $totalEnrollments = $row['totalEnrollments'];
