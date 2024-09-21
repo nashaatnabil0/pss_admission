@@ -65,7 +65,7 @@ try {
       return null;
     }
 
-    function checkExtensions($imageFile, $allowed_extensions, $fileInputName ) {
+    function checkExtensions($imageFile, $allowed_extensions, $fileInputName, &$errors ) {
       if ($imageFile["name"] != "") {
           $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
           if (!in_array($extension, $allowed_extensions)) {
@@ -156,14 +156,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($traineeImg)){
     $errors['traineePicempty'] = "Please upload trainee Photo.";
     }else{
-    checkExtensions($_FILES["traineePic"], $allowed_extensions,'traineePic');
+    checkExtensions($_FILES["traineePic"], $allowed_extensions,'traineePic', $errors);
     }
     
     $certImg = trim($_FILES['idPhoto']['name']);
     if (empty($certImg)){
     $errors['bdimgempty'] = "Please upload Birth Certificate or National ID photo.";
     }else{
-    checkExtensions($_FILES["bdimg"], $allowed_extensions,'bdimg');
+    checkExtensions($_FILES["bdimg"], $allowed_extensions,'bdimg', $errors);
     }
 
     $notes =trim($_POST['notes']);

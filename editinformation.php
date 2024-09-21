@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
         return null;
       }
     
-      function checkExtensions($imageFile, $allowed_extensions, $fileInputName ) {
+      function checkExtensions($imageFile, $allowed_extensions, $fileInputName, &$errors ) {
         if ($imageFile["name"] != "") {
             $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
             if (!in_array($extension, $allowed_extensions)) {
@@ -123,13 +123,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
        if (empty($traineePhoto)){
          $traineePhoto= $existing_TraineePhoto;
        }else{
-        checkExtensions($_FILES["personalPhoto"], $allowed_extensions,'traineePic');
+        checkExtensions($_FILES["personalPhoto"], $allowed_extensions,'traineePic', $errors);
        }    
     $bdImage = trim($_FILES['idPhoto']['name']);
     if (empty($bdImage)){
          $bdImage = $existing_birthcertificate;
        }else{
-        checkExtensions($_FILES["idPhoto"], $allowed_extensions,'bdimg');
+        checkExtensions($_FILES["idPhoto"], $allowed_extensions,'bdimg', $errors);
        }
     
         if(empty($errors)){

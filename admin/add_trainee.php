@@ -72,7 +72,7 @@ if (isset($_POST['submit'])) {
     if (empty($motherName)) {
       $errors['motherName'] = "Mother full name can't be empty";
     }elseif (!preg_match( $namePattern , $motherName)) {
-      $errors['fatherName'] = "Name must be two words at least  and contain letters only ";
+      $errors['motherName'] = "Name must be two words at least  and contain letters only ";
      }
 
     $motherJob = trim($_POST['motherJob']);
@@ -81,7 +81,7 @@ if (isset($_POST['submit'])) {
     }elseif(!preg_match($alphapetPattern , $motherJob)){
       $errors['motherJob'] = "Mother job should be letters only.";
     }
-    
+
     $mothermobnum = trim( $_POST['motherMobNum']);
     if (empty($mothermobnum)) {
         $errors['motherMobNum'] = "Phone number cannot be empty";
@@ -90,7 +90,7 @@ if (isset($_POST['submit'])) {
     }
 
     // Photo & Birth Certificate/NID
-    $allowed_extensions = ["jpg", "jpeg", "png", "gif"];
+    $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];
 
    
     function uploadImages($imageFile, $name, $NID ) {
@@ -107,7 +107,7 @@ if (isset($_POST['submit'])) {
       return null;
     }
 
-    function checkExtensions($imageFile, $allowed_extensions, $fileInputName ) {
+    function checkExtensions($imageFile, $allowed_extensions, $fileInputName, &$errors ) {
       if ($imageFile["name"] != "") {
           $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
           if (!in_array($extension, $allowed_extensions)) {
@@ -117,18 +117,18 @@ if (isset($_POST['submit'])) {
     }
 
     //var_dump($_FILES);
-    $traineeImg = trim($_FILES['traineePic']['name']);
+    $traineeImg = $_FILES['traineePic']['name'];
     if (empty($traineeImg)){
       $errors['traineePicempty'] = "Please upload trainee Photo.";
     }else{
-      checkExtensions($_FILES["traineePic"], $allowed_extensions,'traineePic');
+      checkExtensions($_FILES["traineePic"], $allowed_extensions,'traineePic',$errors);
     }
     
-    $certImg = trim($_FILES['bdimg']['name']);
+    $certImg = $_FILES['bdimg']['name'];
     if (empty($certImg)){
       $errors['bdimgempty'] = "Please upload Birth Certificate or National ID photo.";
     }else{
-      checkExtensions($_FILES["bdimg"], $allowed_extensions,'bdimg');
+      checkExtensions($_FILES["bdimg"], $allowed_extensions,'bdimg', $errors);
     }
 
   
