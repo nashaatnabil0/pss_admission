@@ -399,6 +399,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <?php } ?>
                                 </div>
                                 <div class="control-group">
+                                <label for="motherJob">Additional Notes</label>
                                 <textarea class="form-control border-1 py-3 px-4" rows="3" id="notes" name ="notes" 
                                 placeholder="If you have notes regarding health or any thing, please write it here."></textarea>
                                 <p class="help-block text-danger"></p>
