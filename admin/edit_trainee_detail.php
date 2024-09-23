@@ -43,7 +43,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
     }
     $nidPattern ='/^\d{3}(0[0-9]|1[0-2])([0-2][0-9]|3[01])\d{7}$/';
     if (!preg_match($nidPattern, $NID)){
-      $errors['NIDinvalid'] = "Please enter a valid 14-digit National ID where the 4th and 5th digits form a number less than or equal to 12, and the 6th and 7th digits form a number less than or equal to 31.";
+      $errors['NIDinvalid'] = "Please enter a valid 14-digit National ID Number.";
     }
 
     // Father
