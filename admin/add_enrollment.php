@@ -23,7 +23,7 @@ if (empty($traineeNID)) {
 } 
 // Check if matches the pattern
 elseif (!preg_match($nidPattern, $traineeNID)) {
-    $errors['traineeNIDinvalid'] = "Please enter a valid 14-digit National ID where the 4th and 5th digits form a number less than or equal to 12, and the 6th and 7th digits form a number less than or equal to 31.";
+    $errors['traineeNIDinvalid'] = "Please enter a valid 14-digit National ID number.";
 } 
 else {
     // Check if exists in the list
@@ -40,11 +40,11 @@ else {
 
     $sport = trim($_POST['sport']);
     if (empty($sport)) {
-      $errors['sport'] = "Please select a group";
+      $errors['sport'] = "Please select a sport";
     }
     $season = trim( $_POST['season']);
     if (empty($season)) {
-      $errors['season'] = "Please select a group";
+      $errors['season'] = "Please select a season";
     }
     $group = trim($_POST['group']);
     if (empty($group)) {
@@ -80,10 +80,11 @@ else {
       }
   
       // Check if the trainee is already enrolled in the selected group
-      $checkSameGroupEnrollment = $pdoConnection->prepare("SELECT COUNT(*) FROM enrollment WHERE traineeNID = :traineeNID AND groupId = :groupId");
+      $checkSameGroupEnrollment = $pdoConnection->prepare("SELECT COUNT(*) FROM enrollment e join groups g on e.groupId = g.ID WHERE e.traineeNID = :traineeNID AND e.groupId = :groupId AND g.seasonId = :seasonId ");
       $checkSameGroupEnrollment->execute([
           'traineeNID' => $traineeNID,
-          'groupId' => $group
+          'groupId' => $group,
+          'seasonId' => $seasonId
       ]);
   
       $sameGroupEnrollmentExists = $checkSameGroupEnrollment->fetchColumn();

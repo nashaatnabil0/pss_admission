@@ -29,48 +29,6 @@ else {
       if (empty($group)) {
         $errors['group'] = "Please select a group";
       }
-  
-      // Check for the sport and season based on the selected group
-      $groupQuery = $pdoConnection->prepare("SELECT sportId, seasonId FROM groups WHERE ID = :groupId");
-      $groupQuery->execute(['groupId' => $group]);
-      $groupDetails = $groupQuery->fetch(PDO::FETCH_ASSOC);
-      
-      if ($groupDetails) {
-        $sportId = $groupDetails['sportId'];
-        $seasonId = $groupDetails['seasonId'];
-    
-        // Check if the trainee is already enrolled in the same sport and season in any group
-        /*$checkEnrollment = $pdoConnection->prepare("SELECT COUNT(*) FROM enrollment e 
-            JOIN groups g ON e.groupId = g.ID 
-            WHERE e.traineeNID = :traineeNID 
-            AND g.sportId = :sportId 
-            AND g.seasonId = :seasonId");
-    
-        $checkEnrollment->execute([
-            'traineeNID' => $traineeNID,
-            'sportId' => $sportId,
-            'seasonId' => $seasonId
-        ]);
-    
-        $enrollmentExists = $checkEnrollment->fetchColumn();
-    
-        if ($enrollmentExists) {
-            $errors['traineeNIDinvalid'] = "The trainee is already enrolled in this sport this season in a different group. Go to manage enrollment page for any edits.";
-        }*/
-    
-        // Check if the trainee is already enrolled in the selected group
-        $checkSameGroupEnrollment = $pdoConnection->prepare("SELECT COUNT(*) FROM enrollment WHERE traineeNID = :traineeNID AND groupId = :groupId");
-        $checkSameGroupEnrollment->execute([
-            'traineeNID' => $traineeNID,
-            'groupId' => $group
-        ]);
-    
-        $sameGroupEnrollmentExists = $checkSameGroupEnrollment->fetchColumn();
-    
-        if ($sameGroupEnrollmentExists) {
-            $errors['traineeNIDinvalid'] = "The trainee is already enrolled in this group this season.";
-        }
-      }
         
       $pymntPlan = trim($_POST['pymntplan']);
       if (empty($pymntPlan)) {
