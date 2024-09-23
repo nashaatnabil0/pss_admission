@@ -48,7 +48,7 @@ try {
         $genderDigit = $nationalId[12]; // Get the 13th digit (index 12)
     // end of extract birthdate
 
-    $allowed_extensions = ["jpg", "jpeg", "png", "gif"];
+    $allowed_extensions = ["jpg", "jpeg", "png"];
 
    
     function uploadImages($imageFile, $name, $NID ) {
@@ -69,7 +69,7 @@ try {
       if ($imageFile["name"] != "") {
           $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
           if (!in_array($extension, $allowed_extensions)) {
-            $errors[$fileInputName] = "Invalid format. Only jpg / jpeg / png / gif format allowed.";
+            $errors[$fileInputName] = "Invalid format. Only jpg / jpeg / png format allowed.";
           }
       }
     }
@@ -156,14 +156,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($traineeImg)){
     $errors['traineePicempty'] = "Please upload trainee Photo.";
     }else{
-    checkExtensions($_FILES["traineePic"], $allowed_extensions,'traineePic', $errors);
+    checkExtensions($_FILES["personalPhoto"], $allowed_extensions,'traineePic', $errors);
     }
     
     $certImg = trim($_FILES['idPhoto']['name']);
     if (empty($certImg)){
     $errors['bdimgempty'] = "Please upload Birth Certificate or National ID photo.";
     }else{
-    checkExtensions($_FILES["bdimg"], $allowed_extensions,'bdimg', $errors);
+    checkExtensions($_FILES["idPhoto"], $allowed_extensions,'bdimg', $errors);
     }
 
     $notes =trim($_POST['notes']);
