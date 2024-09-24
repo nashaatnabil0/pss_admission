@@ -319,6 +319,10 @@ legend {
   }
 }
 
+.lang {
+  display: none;
+}
+
 progress {
   vertical-align: baseline;
 }

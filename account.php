@@ -203,6 +203,9 @@ try {
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+
+        <!-- Language Function -->
+        <script src="js/lang.js"></script>
 </body>
 
 </html>

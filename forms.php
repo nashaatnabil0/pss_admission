@@ -382,6 +382,9 @@ try {
 
         <!-- Template Javascript -->
         <script src="js/main.js"></script>
+
+            <!-- Language Function -->
+    <script src="js/lang.js"></script>
      
         <!-- // JavaScript function to set enrollStat based on the selected group status -->
         <script>

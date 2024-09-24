@@ -91,6 +91,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             text-align: center;
             flex-direction: column; /* Stack elements vertically */
         }
+
+
     </style>
         <!-- check NID Validation -->
         <script>
@@ -122,16 +124,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php include('includes/header.php'); ?>
     <!-- Header End -->
 
+
+
+    <div id="content">
         <div class="center-text text-center pt-5">
-        <h1 class="text-primary mb-4">Enroll / Register</h1>
-                <h1 class="text-white display-3 mb-5" style="color: black !important;">Enter Your National ID Number</h1>
+        <h1 class="lang en text-primary mb-4">Enroll / Register</h1>
+        <h1 class="lang ar text-primary mb-4">سجل\التحق</h1>
+                <h1 class="lang en text-white display-3 mb-5" style="color: black !important;">Enter Your National ID Number</h1>
+                <h1 class="lang ar text-white display-3 mb-5" style="color: black !important;">ادخل الرقم القومي</h1>
+
             </div>
             <div class="mx-auto" style="width: 100%; max-width: 600px;">
                 <form method="post" action="">
                     <div class="input-group pt-5" >
-                        <input type="text" id="NID" name="nid" class="form-control border-light" style="padding: 30px;" placeholder="Enter NID" >
+                        <input type="text" id="NID" name="nid" class="lang en form-control border-light" style="padding: 30px;" placeholder="Enter NID" >
+                        <input type="text" id="NID" name="nid" class="lang ar form-control border-light" style="padding: 30px;" placeholder="ادخل الرقم القومي" >
                         <div class="input-group-append">
-                            <button type="submit" id="subBtn" class="btn btn-primary px-3">Submit</button>
+                            <button type="submit" id="subBtn" class="lang en btn btn-primary px-3">Submit</button>
+                            <button type="submit" id="subBtn" class="lang ar btn btn-primary px-3">ادخل</button>
                         </div>
                     </div>
                 </form>
@@ -141,6 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="alert alert-info mt-3"><?php echo $message; ?></div>
                 <?php endif; ?>
             </div>
+    </div>
 
     <!-- Footer Start -->
     <?php include('includes/footer.php'); ?>
@@ -163,6 +174,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+
+    <!-- Language Function -->
+    <script src="js/lang.js"></script>
+
+
+
 
 </body>
 
