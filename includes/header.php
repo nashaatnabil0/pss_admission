@@ -13,10 +13,7 @@ $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
                 </div>
             </div>
             <div class="col-lg-6 text-center text-lg-right">
-            <select id="languageSwitcher">
-        <option value="en">En</option>
-        <option value="ar">Ar</option>
-    </select>
+
                 <div class="d-inline-flex align-items-center">
                     <a class="text-white px-2" href="https://www.facebook.com/people/Peace-Sports-School-Assuit/100091623236982/" target="_blank">
                         <i class="fab fa-facebook-f"></i>
@@ -48,9 +45,6 @@ $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
                     <a href="index.php" class="lang en nav-item nav-link <?php if (strpos($url,'index') == true) { echo ' active'; } ?>">Home</a>
                     <a href="about.php" class="lang en nav-item nav-link <?php if (strpos($url,'about') == true) { echo ' active'; } ?>" >About</a>
                     <a href="contact.php" class="lang en nav-item nav-link <?php if (strpos($url,'contact') == true) { echo ' active'; } ?>">Contact</a>
-                    <a href="index.php" class="lang ar nav-item nav-link <?php if (strpos($url,'index') == true) { echo ' active'; } ?>">الرئيسية</a>
-                    <a href="about.php" class="lang ar nav-item nav-link <?php if (strpos($url,'about') == true) { echo ' active'; } ?>" >عن المكان</a>
-                    <a href="contact.php" class="lang ar nav-item nav-link <?php if (strpos($url,'contact') == true) { echo ' active'; } ?>">تواصل معنا</a>
                 </div>
                 <a href="login.php" class="btn btn-primary py-2 px-4 d-none d-lg-block rounded">Register / Enroll</a>
                 <a href="login.php" class="btn btn-primary py-2 px-4 d-block d-lg-none">Register / Enroll</a>
@@ -59,23 +53,7 @@ $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
         </nav>
     </div>
 
-    <script>
-        document.getElementById('languageSwitcher').addEventListener('change', function() {
-    var selectedLang = this.value;
-    var elements = document.querySelectorAll('.lang');
-    
-    elements.forEach(function(element) {
-        if (element.classList.contains(selectedLang)) {
-            element.style.display = 'block';
-        } else {
-            element.style.display = 'none';
-        }
-    });
-});
 
-// Initialize the default language
-document.getElementById('languageSwitcher').dispatchEvent(new Event('change'));
-</script>
     <!-- Navbar End -->
      <!-- Header Start -->
 
