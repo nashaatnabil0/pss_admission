@@ -2,13 +2,12 @@
 session_start();
 error_reporting(0);
 include('includes/dbconnection.php');
-include ('includes/validation.php');
-if (strlen($_SESSION['sportadmission']==0)) {
+if (strlen($_SESSION['sportadmission']== 0)) {
   header('location:logout.php');
   } else{
+    $errors = [];
     if(isset($_POST['submit']))
   {
-    $errors = [];
       $adminid=$_SESSION['sportadmission'];
       $aname=$_POST['name'];
       if (empty($aname)) {

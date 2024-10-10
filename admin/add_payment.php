@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(0);
+//error_reporting(0);
 include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
@@ -58,6 +58,11 @@ if ($formSubmitted) {
         $notes = NULL;
     }
 
+     $discount = $_POST['discount'];
+     $groupDestails = $_POST['groupDetails'];
+     $name = $_POST['name'];
+     $subscriptionFees = $_POST['price'];
+     
     // Only proceed with inserting into the database if there are no errors
     if (empty($errors)) {
         $stmt = $pdoConnection->prepare("INSERT INTO payment (enrollmentId, paymentAmount, paymentMethod, date, userId, notes) VALUES (?, ?, ?, ?, ?, ?)");
@@ -82,8 +87,23 @@ if ($formSubmitted) {
             if ($remainingAmount !=0 && $totalPaidAmount !=$feesAfterDiscount ) {
               $pdoConnection->query("UPDATE enrollment SET paymentState = 'partial' WHERE ID = $enrollId;");
           }
+
+          // Use session to store the summary details
+           $summary= $_SESSION['payment_summary'] = [
+              'name' => $name,
+              'group_details' => $groupDestails,
+              'amount_of_payment' => $pymntAmount,
+              'total_fees' => $subscriptionFees,
+              'fees_after_discount' => $feesAfterDiscount,
+              'total_paid_amount' => $totalPaidAmount,
+              'remaining_amount' => $remainingAmount,
+              'payment_method' => $pymntMethod,
+              'discount' => $discount,
+              'payment_date' => $pymntdate,
+             ];
+
             echo "<script>alert('Payment has been added.');</script>";
-            echo "<script>window.location.href ='make_payment.php'</script>";
+            echo "<script>window.location.href ='payment_summary.php'</script>";
         }else {
           echo "<script>alert('Something Went Wrong. Please try again.');</script>";
         } 
@@ -152,7 +172,12 @@ if ($formSubmitted) {
               <div class="panel-body">
                 <form class="form-horizontal " method="POST" action="" enctype="multipart/form-data" >
                 <?php
-                 $traineeinfo= $pdoConnection->query("SELECT t.Name, e.traineeNID, g.price, e.discount from enrollment e JOIN trainees t on e.traineeNID = t.NID JOIN groups g on g.ID = e.groupId WHERE e.ID = $enrollId;");
+              $traineeinfo = $pdoConnection->query("SELECT t.Name, e.traineeNID, g.price, g.Title , g.minAge, g.maxAge, sp.name as sportName, s.name as seasonName, e.discount FROM enrollment e 
+                                                                                                                                                                              JOIN trainees t ON e.traineeNID = t.NID 
+                                                                                                                                                                              JOIN groups g ON g.ID = e.groupId 
+                                                                                                                                                                              JOIN sport sp ON g.sportId = sp.ID 
+                                                                                                                                                                              JOIN season s ON g.seasonId = s.ID  
+                                                                                                                                                                              WHERE e.ID = $enrollId;");
                  $cnt=1;
                 while ($row2=$traineeinfo-> fetch(PDO:: FETCH_ASSOC)) { ?>
                   <div class="form-group">
@@ -164,6 +189,12 @@ if ($formSubmitted) {
                        <?php } ?>
                     </div>
                   </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Group </label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="groupDetails" name="groupDetails"  type="text" value = "<?php echo $row2['Title'] . " (" . $row2['minAge'] . " - " . $row2['maxAge'] . ") " . "- " . $row2['sportName'] . "- season: " . $row2['seasonName'] ; ?>" readonly/> 
+                    </div>
+                    </div>
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Subscription Fees</label>
                     <div class="col-sm-10">

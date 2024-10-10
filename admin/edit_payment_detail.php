@@ -150,8 +150,13 @@ if ($formSubmitted) {
               <div class="panel-body">
               <form class="form-horizontal " method="POST" action="" enctype="multipart/form-data" >
                 <?php
-                 $traineeinfo= $pdoConnection->query("SELECT t.Name, e.traineeNID, g.price, e.discount from enrollment e JOIN trainees t on e.traineeNID = t.NID JOIN groups g on g.ID = e.groupId WHERE e.ID = $enrollId;");
-                 $cnt=1;
+                $traineeinfo = $pdoConnection->query("SELECT t.Name, e.traineeNID, g.price, g.Title , g.minAge, g.maxAge, sp.name as sportName, s.name as seasonName, e.discount FROM enrollment e 
+                                                                                                                                                                                  JOIN trainees t ON e.traineeNID = t.NID 
+                                                                                                                                                                                  JOIN groups g ON g.ID = e.groupId 
+                                                                                                                                                                                  JOIN sport sp ON g.sportId = sp.ID 
+                                                                                                                                                                                  JOIN season s ON g.seasonId = s.ID  
+                                                                                                                                                                                  WHERE e.ID = $enrollId;"); 
+                $cnt=1;
                 while ($row2=$traineeinfo-> fetch(PDO:: FETCH_ASSOC)) { ?>
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Name</label>
@@ -162,6 +167,12 @@ if ($formSubmitted) {
                        <?php } ?>
                     </div>
                   </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Group Details</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="groupDetails" name="groupDetails"  type="text" value = "<?php echo $row2['Title'] . " (" . $row2['minAge'] . " - " . $row2['maxAge'] . ") " . "- " . $row2['sportName'] . "- season: " . $row2['seasonName'] ; ?>" readonly/> 
+                    </div>
+                    </div>
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Subscription Fees</label>
                     <div class="col-sm-10">
