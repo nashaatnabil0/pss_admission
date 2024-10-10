@@ -308,11 +308,7 @@ if ($formSubmitted) {
             
           </div>
         </div>
-        <!-- Basic Forms & Horizontal Forms-->
-
-        
-         
-      
+        <!-- Basic Forms & Horizontal Forms-->      
         <!-- page end-->
       </section>
     </section>
