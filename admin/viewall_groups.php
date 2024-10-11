@@ -22,7 +22,7 @@ $sql= $pdoConnection -> query("DELETE FROM groups WHERE ID='$rid'");
 
 <head>
 
-  <title>Manage Groups | Peace Sports School Admission System</title>
+  <title>Manage Groups | Peace Sports School </title>
 
   <!-- Bootstrap CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -98,7 +98,8 @@ $sql= $pdoConnection -> query("DELETE FROM groups WHERE ID='$rid'");
                           g.maxAge,
                           g.price,
                           g.capacity,
-                          g.state,
+                          g.state as groupState,
+                          se.state as seasonState,
                           t.name AS trainer_name,  
                           s.name AS sport_name,    
                           se.name AS season_name   
@@ -125,10 +126,10 @@ $sql= $pdoConnection -> query("DELETE FROM groups WHERE ID='$rid'");
                       <td><?php  echo $row['capacity'];?></td>
                       <td><?php  echo $enrollmentcount;?></td>
                       <td><?php  echo $row['sport_name'];?></td>
-                      <td><?php  echo $row['season_name'];?></td>
+                      <td><?php  echo $row['season_name'] . "(" . $row['seasonState'] . ")";?></td>
                       <td><?php  echo 'C. '.$row['trainer_name'];?></td>
                       <td><?php  echo $row['price'];?></td>
-                      <td><?php  echo $row['state'];?></td>
+                      <td><?php  echo $row['groupState'];?></td>
                       <td><a href="edit_group_detail.php?editid=<?php echo $row['ID'];?>" class="btn btn-success">Edit</a> || <a href="viewall_groups.php?delid=<?php echo $row['ID'];?>" class="btn btn-danger confirm">Delete</a></td>
                     </tr>
                   <?php $cnt=$cnt+1;}?>
