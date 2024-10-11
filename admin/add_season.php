@@ -32,9 +32,10 @@ if(isset($_POST['submit']))
       $stDate = null;
     }
     $notes = trim($_POST['notes']);
-    if (empty($notes) || $notes == ""){
-      $notes= null;
-    };
+    if (empty($notes)) {
+        $notes = null; 
+    }
+    
     $seasonImg = trim($_FILES['image']['name']);
     if (empty($seasonImg)){
       $errors['image'] = "Please upload season image";

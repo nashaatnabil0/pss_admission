@@ -53,7 +53,7 @@ if ($formSubmitted) {
         $errors['addedby'] = "Admin not found";
     }
 
-    $notes = $_POST['notes'];
+    $notes = trim($_POST['notes']);
     if (empty($notes)) {
         $notes = NULL;
     }
