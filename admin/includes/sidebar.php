@@ -81,6 +81,17 @@
               <li><a class="" href="viewall_enrollments.php">Manage Enrollments</a></li>
             </ul>
           </li>
+          <li class="sub-menu">
+            <a href="javascript:;" class="">
+                          <i class="icon_genius"></i>
+                          <span>Slider Images</span>
+                          <span class="menu-arrow arrow_carrot-right"></span>
+                      </a>
+            <ul class="sub">
+              <li><a class="" href="add_slider_image.php">Add Image</a></li>
+              <li><a class="" href="viewall_slider_image.php">Manage Images</a></li>
+            </ul>
+          </li>
           <?php endif; ?>
           <li class="sub-menu">
             <a href="javascript:;" class="">
