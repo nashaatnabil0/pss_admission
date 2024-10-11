@@ -9,12 +9,11 @@ else {
 // Check if the clear_session flag is set and clear only the payment_summary
 if (isset($_GET['clear_session']) && $_GET['clear_session'] == 'true') {
   unset($_SESSION['payment_summary']);
-  //header('Location: make_payment.php'); // Redirect back to make paymrnt page after clearing
   exit;
 }
 
 if (!isset($_SESSION['payment_summary'])) {
-    header('Location: add_payment.php');     // Redirect back if there's no summary
+    header('Location: make_payment.php');     // Redirect back if there's no summary
     exit;
 }
 
@@ -264,7 +263,7 @@ $summary = $_SESSION['payment_summary'];
 
     // Prevent session clearing on page reload
     window.onload = function() {
-      window.reloading = true;
+     window.reloading = true;
     };
     
     // Clear session and navigate to view all payments page

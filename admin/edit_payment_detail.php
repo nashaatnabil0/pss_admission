@@ -100,8 +100,9 @@ if ($formSubmitted) {
             'payment_date' => $pymntdate,
            ];
 
-            echo "<script>alert('Payment has been updated.');</script>";
-            echo "<script>window.location.href ='payment_summary.php'</script>";
+           echo "<script>alert('Payment has been updated.');</script>";
+           echo "<script>window.location.href ='payment_summary.php'</script>";
+
         }else {
           echo "<script>alert('Something Went Wrong. Please try again.');</script>";
         } 
