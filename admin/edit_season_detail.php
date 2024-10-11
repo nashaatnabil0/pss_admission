@@ -38,11 +38,11 @@ if (strlen($_SESSION['sportadmission']==0)) {
         $stDate = null;
       }
       $notes = trim($_POST['notes']);
-      if (empty($notes) || $notes == ""){
-        $notes= null;
-      };
+      if (empty($notes)) {
+          $notes = null; 
+      }
+      
       $allowed_extensions = ["jpg", "jpeg", "png", "gif"];
-
    
     function uploadImages($imageFile, $name) {
       if ($imageFile["name"] != "") {
@@ -78,7 +78,12 @@ if (strlen($_SESSION['sportadmission']==0)) {
 
           if ($query) {
             if ($seasonImg != $exist_image_name) {unlink("images/$exist_image_name");}
+            if($State == 'off' || $State== 'OFF'){
+                $groupstate = $pdoConnection -> query(" UPDATE groups SET state= 'closed' WHERE seasonId = $cid ;") ;
+                echo "<script>alert('Season Data has been Updated. all groups related to this season are now closed.');</script>";
+            }else{
             echo "<script>alert('Season Data has been Updated.');</script>";
+            }
             echo "<script>window.location.href ='viewall_seasons.php'</script>";
           }
           else
@@ -200,7 +205,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Notes</label>
                     <div class="col-sm-10">
-                      <textarea class="form-control" name="notes" value=" <?php echo $row['notes']; ?> "></textarea>
+                    <textarea class="form-control" name="notes"><?php echo htmlspecialchars($row['notes']); ?></textarea>
                     </div>
                   </div>
                 <?php } ?>

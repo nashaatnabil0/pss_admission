@@ -53,7 +53,7 @@ if ($formSubmitted) {
         $errors['addedby'] = "Admin not found";
     }
 
-    $notes = $_POST['notes'];
+    $notes = trim($_POST['notes']);
     if (empty($notes)) {
         $notes = NULL;
     }
@@ -114,7 +114,7 @@ if ($formSubmitted) {
 <html lang="en">
 
 <head>
-  <title>Add Payment | Peace Sports School Admission System</title>
+  <title>Add Payment | Peace Sports School</title>
 
   <!-- Bootstrap CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
