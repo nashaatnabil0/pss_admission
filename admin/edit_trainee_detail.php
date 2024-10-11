@@ -94,7 +94,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
 
         //notes
     $notes = trim($_POST['Notes']);
-    if ($notes == "") {
+    if ($notes == "" || empty($notes)) {
         $notes = null;
     }
         
@@ -194,7 +194,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
 
 <head>
   
-  <title>Edit Trainee | Peace Sports School Admission System</title>
+  <title>Edit Trainee | Peace Sports School </title>
 
   <!-- Bootstrap CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">

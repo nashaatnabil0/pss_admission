@@ -7,9 +7,13 @@ if (strlen($_SESSION['sportadmission']==0)) {
   }
   else{
 $errors = [];
+// Check if any season is active
+  $checkActiveSeason = $pdoConnection->query("SELECT * FROM season WHERE state = 'on' || state= 'ON'");
+  if ($checkActiveSeason->rowCount() > 0) {
+      $activeSeason = true;
+  }
 if(isset($_POST['submit']))
   {
-   
     $Name=trim($_POST['Name']);
     $alphapet_NumPattern = '/^([a-zA-Z0-9\s]+|[\p{Arabic}0-9\s]+)$/u';
     if (empty($Name)){
@@ -24,10 +28,13 @@ if(isset($_POST['submit']))
     }
     
     $stDate=trim($_POST['startdate']);
-    if(empty($stDate)){
+    if(empty($stDate) || $date==""){
       $stDate = null;
     }
-
+    $notes = trim($_POST['notes']);
+    if (empty($notes) || $notes == ""){
+      $notes= null;
+    };
     $seasonImg = trim($_FILES['image']['name']);
     if (empty($seasonImg)){
       $errors['image'] = "Please upload season image";
@@ -44,8 +51,7 @@ if(isset($_POST['submit']))
     if (empty($errors)) {
       $renameSeasonImg = $Name .'-poster'. '.' . $extension;
       move_uploaded_file($_FILES["image"]["tmp_name"], "images/" . $renameSeasonImg);
-    
-        $query = $pdoConnection->query("INSERT INTO season (name, state, startDate, image) VALUES ('$Name', '$State', '$stDate', '$renameSeasonImg')");
+        $query = $pdoConnection->query("INSERT INTO season (name, state, startDate, image, notes) VALUES ('$Name', '$State', '$stDate', '$renameSeasonImg', '$notes')");
         if ($query) {
            echo "<script>alert('New season has been added.');</script>";
            echo "<script>window.location.href ='viewall_seasons.php'</script>";
@@ -63,7 +69,7 @@ if(isset($_POST['submit']))
 <html lang="en">
 
 <head>
-  <title>Add Season | Peace Sports School Admission System</title>
+  <title>Add Season | Peace Sports School </title>
 
   <!-- Bootstrap CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -132,11 +138,17 @@ if(isset($_POST['submit']))
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Season State:</label>
                     <div class="col-sm-10">
-                      <input class="" id="seasonstate" name="seasonstate"  type="radio" value="on" style="margin:7px">Active <span style="margin: 30px"></span>
-                      <input class="" id="seasonstateoff" name="seasonstate"  type="radio" value="off" style="margin:7px">Inactive 
-                      <?php if( isset($errors['seasonstate'])){ ?>
+                      <?php if($activeSeason) { ?>
+                        <input class="" id="seasonstate" name="seasonstate" type="radio" value="on" style="margin:7px" disabled >Active <span style="margin: 30px"></span>
+                        <input class="" id="seasonstateoff" name="seasonstate" type="radio" value="off" checked > Inactive 
+                        <span style="color: #3d557d ;display:block;text-align:left">There is an active season already. You can only add a season with "Inactive" state.</span>
+                      <?php } else { ?>
+                        <input class="" id="seasonstate" name="seasonstate" type="radio" value="on" style="margin:7px">Active <span style="margin: 30px"></span>
+                        <input class="" id="seasonstateoff" name="seasonstate" type="radio" value="off" style="margin:7px">Inactive
+                      <?php } ?>
+                      <?php if(isset($errors['seasonstate'])) { ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['seasonstate'] ?></span>
-                       <?php } ?>
+                      <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">
@@ -156,6 +168,12 @@ if(isset($_POST['submit']))
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['imageinvalid'] ?></span>
                        <?php } ?>
                       </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Notes</label>
+                    <div class="col-sm-10">
+                      <textarea class="form-control" name="notes" value=""></textarea>
+                    </div>
                   </div>
                   <div class="form-group">
                 

@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(0);
+//error_reporting(0);
 include('includes/dbconnection.php');
 if (strlen($_SESSION['sportadmission']==0)) {
   header('location:logout.php');
@@ -9,7 +9,11 @@ if (strlen($_SESSION['sportadmission']==0)) {
     $errors = [];
     $cid=$_GET['editid'];
     
-
+    // Check if any season is active
+    $checkActiveSeason = $pdoConnection->query("SELECT * FROM season WHERE state = 'on' || state= 'ON'");
+    if ($checkActiveSeason->rowCount() > 0) {
+        $activeSeason = true;
+    }
     if(isset($_POST['submit']))
     {
       $delete_image = $pdoConnection -> query("select image from season where ID='$cid'");
@@ -30,10 +34,13 @@ if (strlen($_SESSION['sportadmission']==0)) {
       }
 
       $stDate=trim($_POST['startdate']);
-      if(empty($stDate)){
+      if(empty($stDate) || $stDate == ""){
         $stDate = null;
       }
-
+      $notes = trim($_POST['notes']);
+      if (empty($notes) || $notes == ""){
+        $notes= null;
+      };
       $allowed_extensions = ["jpg", "jpeg", "png", "gif"];
 
    
@@ -66,7 +73,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
           if ($seasonImg != $exist_image_name) {
             $seasonImg = uploadImages($_FILES["image"],$Name);
         }        
-        $query = $pdoConnection->query("UPDATE season SET name='$Name',state='$State',startDate='$stDate',image='$seasonImg' WHERE ID = $cid;");
+        $query = $pdoConnection->query("UPDATE season SET name='$Name',state='$State',startDate='$stDate',image='$seasonImg' , notes='$notes' WHERE ID = $cid;");
 
 
           if ($query) {
@@ -88,7 +95,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
 
 <head>
   
-  <title>Edit Season | Peace Sports School Admission System</title>
+  <title>Edit Season | Peace Sports School </title>
 
   <!-- Bootstrap CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -159,13 +166,14 @@ if (strlen($_SESSION['sportadmission']==0)) {
                     </div>
                   </div>
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Season State:</label>
+                    <label class="col-sm-2 control-label">Season State</label>
                     <div class="col-sm-10">
-                      <input class="" id="seasonstate" name="seasonstate"  type="radio" value="on" style="margin:7px" <?php if($row['state']==='on'){ echo 'checked';}?> >Active <span style="margin: 30px"></span>
-                      <input class="" id="seasonstateoff" name="seasonstate"  type="radio" value="off" style="margin:7px" <?php if($row['state']==='off'){ echo 'checked';}?> >Inactive 
-                      <?php if( isset($errors['seasonstate'])){ ?>
+                        <input type="radio" id="seasonstate-on" name="seasonstate" value="on" style="margin:7px" <?php if ($row['state'] === 'on') echo 'checked'; ?>> Active  <span style="margin: 30px"></span>
+                        <input type="radio" id="seasonstate-off" name="seasonstate" value="off" style="margin:7px" <?php if ($row['state'] === 'off') echo 'checked'; ?>> Inactive
+                        <span id="state-note" style="color: #3d557d ;display:block;text-align:left"></span>
+                        <?php if(isset($errors['seasonstate'])) { ?>
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['seasonstate'] ?></span>
-                       <?php } ?>
+                      <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">
@@ -188,6 +196,12 @@ if (strlen($_SESSION['sportadmission']==0)) {
                         <span style="color:red;display:block;text-align:left"><?php echo $errors['imageinvalid'] ?></span>
                        <?php } ?>
                       </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Notes</label>
+                    <div class="col-sm-10">
+                      <textarea class="form-control" name="notes" value=" <?php echo $row['notes']; ?> "></textarea>
+                    </div>
                   </div>
                 <?php } ?>
                  <p style="text-align: center;"> <button type="submit" name='submit' class="btn btn-primary">Update</button></p>
@@ -241,6 +255,21 @@ if (strlen($_SESSION['sportadmission']==0)) {
   <script src="js/form-component.js"></script>
   <!-- custome script for all page -->
   <script src="js/scripts.js"></script>
+  <!-- allow only one active season-->
+  <script>
+    window.onload = function () {
+        let activeSeason = <?php echo $activeSeason ? 'true' : 'false'; ?>; 
+        let currentSeasonState = '<?php echo $row['state']; ?>'; 
+        let stateNote = document.getElementById('state-note');
+        let stateOn = document.getElementById('seasonstate-on');
+
+        // Check if there is an active season and if it's not the current season being edited
+        if (activeSeason && currentSeasonState !== 'on') {
+            stateOn.disabled = true; // Disable activating another season
+            stateNote.innerHTML = 'Another season is active. Deactivate the active season to activate this one.';
+        }
+    }
+</script>
 
 
 </body>
