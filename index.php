@@ -160,12 +160,14 @@ try {
     background-color: rgba(0, 0, 0, 0.8);
     justify-content: center;
     align-items: center;
-    z-index: 1000;  /*lightbox appear on top*/ 
+    z-index: 1000;  /* Lightbox appears on top */
+    flex-direction: column; /* Ensure elements stack vertically */
 }
 
 .lightbox-img {
     max-width: 90%;
-    max-height: 90%;
+    max-height: 80%; /* Adjusted to leave space for the caption */
+    margin-top: 10px; /* Space between caption and image */
 }
 
 .close {
@@ -176,6 +178,19 @@ try {
     color: white;
     cursor: pointer;
 }
+
+#lightbox-caption {
+    color: white;
+    margin-top: 0;
+    margin-bottom: 10px;
+    text-align: center;
+    font-size: 1.1em; /* Slightly larger font size for better readability */
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.6); /* Optional: Semi-transparent background */
+    border-radius: 5px;
+    width: 90%; /* Adjust width to match the image width */
+}
+
 
     </style>
 </head>
@@ -233,7 +248,7 @@ try {
             if (!empty($row['title'])) {
                 echo '<h3 class="slider-title">' . htmlspecialchars($row['title']) . '</h3>';
             }
-            echo '<img src="admin/images/' . htmlspecialchars($row['image']) . '" alt="Image" class="grid-img">';
+            echo '<img src="admin/images/' . htmlspecialchars($row['image']) . '" alt="Image" class="grid-img" data-caption="' . htmlspecialchars($row['caption']) . '">';
             echo '</div>';
         }
         
@@ -245,24 +260,34 @@ try {
 
 
 
+
 <!-- Lightbox overlay -->
 <div id="lightbox" class="lightbox">
     <span class="close">&times;</span>
     <img class="lightbox-img" id="expanded-img">
+    <p id="lightbox-caption" style="color: white; margin-top: 10px; text-align: center;"></p>
 </div>
 
+
+
+
 <script>
-        // Get elements
+// Get elements
 const images = document.querySelectorAll('.grid-img');
 const lightbox = document.getElementById('lightbox');
 const expandedImg = document.getElementById('expanded-img');
 const closeBtn = document.querySelector('.close');
+const lightboxCaption = document.getElementById('lightbox-caption');
 
 // Add click event for each image
 images.forEach(image => {
     image.addEventListener('click', function() {
         lightbox.style.display = 'flex';
         expandedImg.src = this.src;
+
+        // Get the corresponding caption from the data attribute
+        const captionText = this.getAttribute('data-caption');
+        lightboxCaption.textContent = captionText;
     });
 });
 
@@ -273,10 +298,12 @@ closeBtn.addEventListener('click', function() {
 
 // Close lightbox when clicking outside of the image
 lightbox.addEventListener('click', function(e) {
-    if (e.target !== expandedImg) {
+    if (e.target !== expandedImg && e.target !== lightboxCaption) {
         lightbox.style.display = 'none';
     }
 });
+
+
 
     </script>
 
