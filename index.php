@@ -230,8 +230,8 @@ try {
         // Loop through the results and display images in the slider
         while ($row = $stmt->fetch()) {
             echo '<div class="item">';
-            if (!empty($row['caption'])) {
-                echo '<h3 class="slider-title">' . htmlspecialchars($row['caption']) . '</h3>';
+            if (!empty($row['title'])) {
+                echo '<h3 class="slider-title">' . htmlspecialchars($row['title']) . '</h3>';
             }
             echo '<img src="admin/images/' . htmlspecialchars($row['image']) . '" alt="Image" class="grid-img">';
             echo '</div>';
