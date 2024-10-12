@@ -70,7 +70,7 @@ try {
         }
 
         .photo-section img {
-            width: 100%;
+            width: 80%;
             height: auto;
             border-radius: 10px; 
         }
@@ -89,13 +89,65 @@ try {
         }
 
         .image-grid img {
-            width: 100%;
+            width: 80%;
             height: auto;
             border-radius: 10px;
         }
         .grid-img:hover {
     transform: scale(1.05);
 }
+
+/* Ensure each item in the carousel has a proper structure */
+.owl-carousel .item {
+    display: flex;
+    flex-direction: column; /* Stack title and image vertically */
+    align-items: center; /* Center both title and image */
+}
+
+/* Style for the image title */
+.slider-title {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px; /* Space between title and image */
+    font-size: 1.2em;
+}
+
+/* Fixed size for the images */
+.owl-carousel .item img {
+    width: 300px; /* Set a fixed width */
+    height: 200px; /* Set a fixed height */
+    object-fit: cover; /* Ensure images fill the set size without distortion */
+    border-radius: 10px;
+}
+
+
+.owl-prev, .owl-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%); /* Vertically center the buttons */
+    background-color: #FF4800; /* Semi-transparent background */
+    border-radius: 50%;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 24px;
+    z-index: 1000;
+}
+
+.owl-prev {
+    left: 10px; /* Move the previous button to the left side */
+}
+
+.owl-next {
+    right: 10px; /* Move the next button to the right side */
+}
+
+.owl-prev:hover, .owl-next:hover {
+    background-color: rgba(0, 0, 0, 0.8); /* Darker background on hover */
+}
+
+
+
 
 /* Lightbox styles */
 .lightbox {
@@ -168,13 +220,30 @@ try {
 
     <!-- New Content Section End -->
 
-    <div class="image-grid">
-    <img src="img/1.jpg" alt="Image 1" class="grid-img">
-    <img src="img/2.jpg" alt="Image 2" class="grid-img">
-    <img src="img/3.jpg" alt="Image 3" class="grid-img">
-    <img src="img/4.jpg" alt="Image 4" class="grid-img">
-    <img src="img/5.jpg" alt="Image 5" class="grid-img">
+    <div class="owl-carousel owl-theme">
+    <?php
+    // Fetch images from the database
+    try {
+        $query = "SELECT * FROM slider_images";
+        $stmt = $pdo->query($query);
+        
+        // Loop through the results and display images in the slider
+        while ($row = $stmt->fetch()) {
+            echo '<div class="item">';
+            if (!empty($row['caption'])) {
+                echo '<h3 class="slider-title">' . htmlspecialchars($row['caption']) . '</h3>';
+            }
+            echo '<img src="admin/images/' . htmlspecialchars($row['image']) . '" alt="Image" class="grid-img">';
+            echo '</div>';
+        }
+        
+    } catch (PDOException $e) {
+        echo "Error fetching images: " . $e->getMessage();
+    }
+    ?>
 </div>
+
+
 
 <!-- Lightbox overlay -->
 <div id="lightbox" class="lightbox">
@@ -236,6 +305,28 @@ lightbox.addEventListener('click', function(e) {
 
         <!-- Language Function -->
         <script src="js/lang.js"></script>
+
+        <script>
+$(document).ready(function(){
+    $('.owl-carousel').owlCarousel({
+        loop: true, // Loop through the images
+        margin: 10,
+        nav: true,  // Enable navigation arrows
+        navText: ["<i class='fa fa-angle-left'></i>", "<i class='fa fa-angle-right'></i>"],  // Add custom icons
+        autoplay: true,  // Enable auto-play
+        autoplayTimeout: 5000,  // 5000ms = 5 seconds
+        autoplayHoverPause: true,  // Pause on hover
+        items: 1,  // Display one image at a time
+        responsive:{
+            0:{ items: 1 },
+            600:{ items: 1 },
+            1000:{ items: 1 }
+        }
+    });
+});
+
+
+        </script>
 
 </body>
 </html>
