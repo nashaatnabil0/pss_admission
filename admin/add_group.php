@@ -90,7 +90,7 @@ else {
 <html lang="en">
 
 <head>
-  <title>Add Group |Peace Sports School Admission System</title>
+  <title>Add Group |Peace Sports School </title>
 
   <!-- Bootstrap CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -237,11 +237,11 @@ else {
                     <div class="col-sm-10">
                       <select class="form-control m-bot15" name="season" id="season">
                         <option value="">Choose a Season</option>
-                          <?php $query=$pdoConnection-> query("select * from season where season.state = 'on' ");
+                          <?php $query=$pdoConnection-> query("select * from season ");
                             while($row=$query ->fetch(PDO:: FETCH_ASSOC))
                             {
                             ?>    
-                          <option value="<?php echo $row['ID'];?>"><?php echo $row['name'];?></option>
+                          <option value="<?php echo $row['ID'];?>"><?php echo $row['name'] . "(" . $row['state'] . ")";?></option>
                             <?php } ?> 
                       </select>
                       <?php if(isset($_POST['submit']) && isset($errors['season'])) { ?>

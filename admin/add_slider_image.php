@@ -7,55 +7,42 @@ if (strlen($_SESSION['sportadmission']==0)) {
   }
   else{
 $errors = [];
-// Check if any season is active
-  $checkActiveSeason = $pdoConnection->query("SELECT * FROM season WHERE state = 'on' || state= 'ON'");
-  if ($checkActiveSeason->rowCount() > 0) {
-      $activeSeason = true;
-  }
 if(isset($_POST['submit']))
   {
-    $Name=trim($_POST['Name']);
-    $alphapet_NumPattern = '/^([a-zA-Z0-9\s]+|[\p{Arabic}0-9\s]+)$/u';
-    if (empty($Name)){
-      $errors['Name'] = "Please enter a season name";
-    }elseif (!preg_match($alphapet_NumPattern, $Name)){
-      $errors['Name']='Name must be letters only'; 
+   
+    $title=trim($_POST['title']);
+    $alphapet_NamePattern = '/^([a-zA-Z0-9\s]+|[\p{Arabic}0-9\s]+)$/u';
+    if (empty($title)){
+      $errors['title'] = "Please enter a title for the image.";
+    }elseif (!preg_match($alphapet_NamePattern, $title)){
+      $errors['title']='The title must be letters only'; 
     }
 
-    $State = $_POST['seasonstate'];
-    if (empty($State)){
-      $errors['seasonstate'] = "Please choose state for the season";
-    }
-    
-    $stDate=trim($_POST['startdate']);
-    if(empty($stDate) || $date==""){
-      $stDate = null;
-    }
-    $notes = trim($_POST['notes']);
-    if (empty($notes)) {
-        $notes = null; 
-    }
-    
-    $seasonImg = trim($_FILES['image']['name']);
-    if (empty($seasonImg)){
-      $errors['image'] = "Please upload season image";
+    $Img = trim($_FILES['image']['name']);
+    if (empty($Img)){
+      $errors['image'] = "Please upload an image";
     }else{
     
-       $extension = strtolower(pathinfo($seasonImg, PATHINFO_EXTENSION));
+       $extension = strtolower(pathinfo($Img, PATHINFO_EXTENSION));
        $allowed_extensions = array("jpg", "jpeg", "png", "gif");
        // Validation for allowed extensions
        if (!in_array($extension, $allowed_extensions)) {
         $errors['imageinvalid'] = "Invalid format. Only jpg / jpeg/ png /gif format allowed";
            }
      }
+     $caption= trim($_POST['caption']);
+     if(empty($caption)){
+        $caption = null;
+     }
 
     if (empty($errors)) {
-      $renameSeasonImg = $Name .'-poster'. '.' . $extension;
-      move_uploaded_file($_FILES["image"]["tmp_name"], "images/" . $renameSeasonImg);
-        $query = $pdoConnection->query("INSERT INTO season (name, state, startDate, image, notes) VALUES ('$Name', '$State', '$stDate', '$renameSeasonImg', '$notes')");
+      $renameImg = $title .'-slider'. '.' . $extension;
+      move_uploaded_file($_FILES["image"]["tmp_name"], "images/" . $renameImg);
+    
+        $query = $pdoConnection->query("INSERT INTO slider_images (image,title,caption) VALUES ('$renameImg', '$title', '$caption')");
         if ($query) {
-           echo "<script>alert('New season has been added.');</script>";
-           echo "<script>window.location.href ='viewall_seasons.php'</script>";
+           echo "<script>alert('New slider image has been added.');</script>";
+           echo "<script>window.location.href ='viewall_slider_image.php'</script>";
             }
             else
               {
@@ -70,7 +57,7 @@ if(isset($_POST['submit']))
 <html lang="en">
 
 <head>
-  <title>Add Season | Peace Sports School </title>
+  <title>Add Home Page Slider Image | Peace Sports School </title>
 
   <!-- Bootstrap CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -110,11 +97,11 @@ if(isset($_POST['submit']))
       <section class="wrapper">
         <div class="row">
           <div class="col-lg-12">
-            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Add Season</h3>
+            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Add slider image</h3>
             <ol class="breadcrumb">
               <li><i class="fa fa-home"></i><a href="dashboard.php">Home</a></li>
-              <li><i class="icon_document_alt"></i>Season</li>
-              <li><i class="fa fa-file-text-o"></i>Add Season</li>
+              <li><i class="icon_document_alt"></i>Slider Images</li>
+              <li><i class="fa fa-file-text-o"></i>Add Slider Image/li>
             </ol>
           </div>
         </div>
@@ -122,40 +109,18 @@ if(isset($_POST['submit']))
           <div class="col-lg-12">
             <section class="panel">
               <header class="panel-heading">
-             Add Season
+             Add Slider Image
               </header>
               <div class="panel-body">
                 <form class="form-horizontal " method="post" action="" enctype="multipart/form-data">
                   
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Season Name</label>
+                    <label class="col-sm-2 control-label">Image Title</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="Name" name="Name"  type="text">
-                      <?php if( isset($errors['Name'])){ ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['Name'] ?></span>
+                      <input class="form-control" id="title" name="title"  type="text">
+                      <?php if( isset($errors['title'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['title'] ?></span>
                        <?php } ?>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="col-sm-2 control-label">Season State:</label>
-                    <div class="col-sm-10">
-                      <?php if($activeSeason) { ?>
-                        <input class="" id="seasonstate" name="seasonstate" type="radio" value="on" style="margin:7px" disabled >Active <span style="margin: 30px"></span>
-                        <input class="" id="seasonstateoff" name="seasonstate" type="radio" value="off" checked > Inactive 
-                        <span style="color: #3d557d ;display:block;text-align:left">There is an active season already. You can only add a season with "Inactive" state.</span>
-                      <?php } else { ?>
-                        <input class="" id="seasonstate" name="seasonstate" type="radio" value="on" style="margin:7px">Active <span style="margin: 30px"></span>
-                        <input class="" id="seasonstateoff" name="seasonstate" type="radio" value="off" style="margin:7px">Inactive
-                      <?php } ?>
-                      <?php if(isset($errors['seasonstate'])) { ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['seasonstate'] ?></span>
-                      <?php } ?>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="col-sm-2 control-label">Start Date</label>
-                    <div class="col-sm-10">
-                      <input class="form-control" id="startDate" name="startdate"  type="date">
                     </div>
                   </div>
                   <div class="form-group">
@@ -171,13 +136,12 @@ if(isset($_POST['submit']))
                       </div>
                   </div>
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Notes</label>
+                    <label class="col-sm-2 control-label">Caption</label>
                     <div class="col-sm-10">
-                      <textarea class="form-control" name="notes" value=""></textarea>
+                      <textarea class="form-control" name="caption" value=""></textarea>
                     </div>
                   </div>
                   <div class="form-group">
-                
                  <p style="text-align: center;"> <button type="submit" name="submit" class="btn btn-primary">Submit</button></p>
                 </form>
               </div>

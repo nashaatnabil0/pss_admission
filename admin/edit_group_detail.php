@@ -80,7 +80,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
 
 <head>
   
-  <title>Edit Group | Peace Sports School Admission System</title>
+  <title>Edit Group | Peace Sports School </title>
 
   <!-- Bootstrap CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -227,11 +227,11 @@ if (strlen($_SESSION['sportadmission']==0)) {
                     <div class="col-sm-10">
                       <select class="form-control m-bot15" name="season" id="season">
                         <option value="">Choose a Season</option>
-                          <?php $query=$pdoConnection-> query("select * from season where season.state = 'on' ");
+                          <?php $query=$pdoConnection-> query("select * from season ");
                             while($row3=$query ->fetch(PDO:: FETCH_ASSOC))
                             {
                             ?>    
-                          <option value="<?php echo $row3['ID'];?>" <?php if($row3['ID'] == $row['seasonId']){ echo "selected='selected'";}?>><?php echo $row3['name'];?></option>
+                          <option value="<?php echo $row3['ID'];?>" <?php if($row3['ID'] == $row['seasonId']){ echo "selected='selected'";}?>><?php echo $row3['name'] . "(" . $row3['state'] . ")" ;?></option>
                             <?php } ?> 
                       </select>
                       <?php if(isset($_POST['submit']) && isset($errors['season'])) { ?>

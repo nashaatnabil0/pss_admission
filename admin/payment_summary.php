@@ -9,12 +9,11 @@ else {
 // Check if the clear_session flag is set and clear only the payment_summary
 if (isset($_GET['clear_session']) && $_GET['clear_session'] == 'true') {
   unset($_SESSION['payment_summary']);
-  header('Location: make_payment.php'); // Redirect back to make paymrnt page after clearing
   exit;
 }
 
 if (!isset($_SESSION['payment_summary'])) {
-    header('Location: add_payment.php');     // Redirect back if there's no summary
+    header('Location: make_payment.php');     // Redirect back if there's no summary
     exit;
 }
 
@@ -69,7 +68,7 @@ $summary = $_SESSION['payment_summary'];
     width: auto; 
   }
 
-  button#print ,  button#back {
+  button#print ,  button#back , button#viewall {
     display: none !important;
   }
   .sidebar {
@@ -181,8 +180,11 @@ $summary = $_SESSION['payment_summary'];
                       <input class=" form-control" id="remaining" name="remaining" type="text" value="<?php echo $summary['remaining_amount']; ?>" readonly />
                     </div>
                   </div>
-                  <p style="text-align: center;"> <button type="submit" name="print" id= "print" onclick="window.print()" class="btn btn-primary">Print</button></p>
-                 <p style="text-align: center;"> <button type="button" name="back" id= "back" class="btn btn-primary" onclick="window.location.href='add_payment.php'">Back</button></p>
+                  <div style="text-align: center;">
+                 <span style="text-align: center;"> <button type="submit" name="print" id= "print" onclick="window.print()" class="btn btn-primary">Print</button></span>
+                 <span style="text-align: center; margin:20px;"> <button type="button" name="back" id= "back" class="btn btn-primary" onclick="clearAndGoBack()" >Add New Payment</button></span> 
+                 <span style="text-align: center;"> <button type="button" name="viewall" id= "viewall" class="btn btn-primary" onclick="clearSessionAndViewAll()">View All Payments</button></span>
+                 </div>
                 </form>
               </div>
             </section>
@@ -233,22 +235,47 @@ $summary = $_SESSION['payment_summary'];
   <script src="js/scripts.js"></script>
 
   <script>
-  // Trigger session clearing when the page is closed
-  window.onbeforeunload = function() {
-    if (!window.reloading) {
-      window.location.href = 'payment_summary.php?clear_session=true';
+    // Clear session and navigate to make_payment.php
+    function clearAndGoBack() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "payment_summary.php?clear_session=true", false);
+    xhr.send(null);
+
+    // Redirect to make_payment.php after clearing the session
+    window.location.href = 'make_payment.php';
     }
-  };
 
-  // Trigger session clearing after the page is printed
-  window.onafterprint = function() {
-    window.location.href = 'payment_summary.php?clear_session=true';
-  };
+    // Trigger session clearing when the page is closed 
+    window.onbeforeunload = function() {
+      if (!window.reloading) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "payment_summary.php?clear_session=true", false);
+        xhr.send(null);
+      }
+    };
 
-  // Prevent session clearing on page reload
-  window.onload = function() {
-    window.reloading = true;
-  };
+    // Trigger session clearing after the page is printed
+    window.onafterprint = function() {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "payment_summary.php?clear_session=true", false);
+      xhr.send(null);
+    };
+
+    // Prevent session clearing on page reload
+    window.onload = function() {
+     window.reloading = true;
+    };
+    
+    // Clear session and navigate to view all payments page
+     function clearSessionAndViewAll() {
+     var xhr = new XMLHttpRequest();
+     xhr.open("GET", "payment_summary.php?clear_session=true", false);
+     xhr.send(null);
+  
+    // After clearing session, navigate to view all payments page
+    window.location.href = 'viewall_payments.php';
+  }
+
 </script>
 
 

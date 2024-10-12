@@ -272,6 +272,7 @@ try {
                                                         AND se.state ='on'
                                                         WHERE g.minAge <= ?
                                                         AND g.maxAge >= ?
+                                                        AND g.state='open'
                                                         AND sp.ID NOT IN ($placeholders)";
                                                 
                                                 $params = array_merge([$ageY, $ageY], $diabledsportArr);
@@ -290,7 +291,8 @@ try {
                                                         JOIN season se ON g.seasonId=se.ID
                                                         WHERE g.minAge <= ?
                                                         AND g.maxAge >= ?
-                                                        AND se.state ='on'";
+                                                        AND se.state ='on'
+                                                        AND g.state='open'";
                                                 $stmt = $pdoConnection->prepare($sql);
                                                 $stmt->execute([$ageY, $ageY]);
                                             }

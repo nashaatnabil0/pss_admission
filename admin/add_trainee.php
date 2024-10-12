@@ -134,7 +134,7 @@ if (isset($_POST['submit'])) {
   
     //notes
   $notes = trim($_POST['Notes']);
-  if ($notes == "") {
+  if ($notes == "" || empty($notes)) {
       $notes = null;
   }
   

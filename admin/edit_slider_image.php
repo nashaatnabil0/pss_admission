@@ -9,45 +9,31 @@ if (strlen($_SESSION['sportadmission']==0)) {
     $errors = [];
     $cid=$_GET['editid'];
     
-    // Check if any season is active
-    $checkActiveSeason = $pdoConnection->query("SELECT * FROM season WHERE state = 'on' || state= 'ON'");
-    if ($checkActiveSeason->rowCount() > 0) {
-        $activeSeason = true;
-    }
+
     if(isset($_POST['submit']))
     {
-      $delete_image = $pdoConnection -> query("select image from season where ID='$cid'");
+      $delete_image = $pdoConnection -> query("select image from slider_images where ID='$cid'");
       $image_data = $delete_image-> fetch(PDO:: FETCH_ASSOC);
       $exist_image_name = $image_data['image'];
 
-      $Name=trim($_POST['Name']);
-      $alphapet_NumPattern = '/^([a-zA-Z0-9\s]+|[\p{Arabic}0-9\s]+)$/u';
-      if (empty($Name)){
-        $errors['Name'] = "Please enter a season name";
-      }elseif (!preg_match($alphapet_NumPattern, $Name)){
-        $errors['Name']='Name must be letters only';
-      }
+    $title=trim($_POST['title']);
+    $alphapet_NamePattern = '/^([a-zA-Z0-9\s]+|[\p{Arabic}0-9\s]+)$/u';
+    if (empty($title)){
+      $errors['title'] = "Please enter a title for the image.";
+    }elseif (!preg_match($alphapet_NamePattern, $title)){
+      $errors['title']='The title must be letters only'; 
+    }
+    $caption= trim($_POST['caption']);
+    if(empty($caption)){
+       $caption = null;
+    }
 
-      $State = trim($_POST['seasonstate']);
-      if (empty($State)){
-        $errors['seasonstate'] = "Please choose state for the season";
-      }
+    $allowed_extensions = ["jpg", "jpeg", "png", "gif"];
 
-      $stDate=trim($_POST['startdate']);
-      if(empty($stDate) || $stDate == ""){
-        $stDate = null;
-      }
-      $notes = trim($_POST['notes']);
-      if (empty($notes)) {
-          $notes = null; 
-      }
-      
-      $allowed_extensions = ["jpg", "jpeg", "png", "gif"];
-   
-    function uploadImages($imageFile, $name) {
+    function uploadImages($imageFile, $title) {
       if ($imageFile["name"] != "") {
         $extension = strtolower(pathinfo($imageFile["name"], PATHINFO_EXTENSION));
-              $newImageName =  $name. '-poster.' . $extension;
+              $newImageName =  $title. '-slider.' . $extension;
               move_uploaded_file($imageFile["tmp_name"], "images/" . $newImageName);
               return $newImageName;
           } else {
@@ -57,34 +43,28 @@ if (strlen($_SESSION['sportadmission']==0)) {
       return null;
     }
 
-      $seasonImg = $_FILES['image']['name'];
-      if($seasonImg!=""){
-        $extension = strtolower(pathinfo($seasonImg, PATHINFO_EXTENSION));
+      $Img = $_FILES['image']['name'];
+      if($Img!=""){
+        $extension = strtolower(pathinfo($Img, PATHINFO_EXTENSION));
         // Validation for allowed extensions
         if (!in_array($extension, $allowed_extensions)) {
           $errors['imageinvalid'] = "Image Extension not acceptable use one of (jpg, jpeg, png, gif)";
         }
 
       }else {
-        $seasonImg = $exist_image_name;
+        $Img = $exist_image_name;
       }
 
       if (empty($errors)) {
-          if ($seasonImg != $exist_image_name) {
-            $seasonImg = uploadImages($_FILES["image"],$Name);
+          if ($Img != $exist_image_name) {
+            $Img = uploadImages($_FILES["image"],$title);
         }        
-        $query = $pdoConnection->query("UPDATE season SET name='$Name',state='$State',startDate='$stDate',image='$seasonImg' , notes='$notes' WHERE ID = $cid;");
-
+        $query = $pdoConnection->query("UPDATE slider_images SET image='$Img', title='$title', caption='$caption' WHERE ID = $cid;");
 
           if ($query) {
-            if ($seasonImg != $exist_image_name) {unlink("images/$exist_image_name");}
-            if($State == 'off' || $State== 'OFF'){
-                $groupstate = $pdoConnection -> query(" UPDATE groups SET state= 'closed' WHERE seasonId = $cid ;") ;
-                echo "<script>alert('Season Data has been Updated. all groups related to this season are now closed.');</script>";
-            }else{
-            echo "<script>alert('Season Data has been Updated.');</script>";
-            }
-            echo "<script>window.location.href ='viewall_seasons.php'</script>";
+            if ($Img != $exist_image_name) {unlink("images/$exist_image_name");}
+            echo "<script>alert('Image has been Updated.');</script>";
+            echo "<script>window.location.href ='viewall_slider_image.php'</script>";
           }
           else
           {
@@ -100,7 +80,7 @@ if (strlen($_SESSION['sportadmission']==0)) {
 
 <head>
   
-  <title>Edit Season | Peace Sports School </title>
+  <title>Edit Home Page Slider Image | Peace Sports School</title>
 
   <!-- Bootstrap CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -140,11 +120,11 @@ if (strlen($_SESSION['sportadmission']==0)) {
       <section class="wrapper">
         <div class="row">
         <div class="col-lg-12">
-            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Edit Season</h3>
+            <h3 class="page-header"><i class="fa fa-file-text-o"></i>Edit Image</h3>
             <ol class="breadcrumb">
               <li><i class="fa fa-home"></i><a href="dashboard.php">Home</a></li>
-              <li><i class="icon_document_alt"></i>Season</li>
-              <li><i class="fa fa-file-text-o"></i>Edit Season</li>
+              <li><i class="icon_document_alt"></i>Image</li>
+              <li><i class="fa fa-file-text-o"></i>Edit Image</li>
             </ol>
           </div>
         </div>
@@ -152,49 +132,32 @@ if (strlen($_SESSION['sportadmission']==0)) {
           <div class="col-lg-12">
             <section class="panel">
               <header class="panel-heading">
-               Update Season Details
+               Update Image Details
               </header>
               <div class="panel-body">
               <form class="form-horizontal " method="post" action="" enctype="multipart/form-data">
               <?php
-                      $query=$pdoConnection-> query("select * from season where ID='$cid'");
+                      $query=$pdoConnection-> query("select * from slider_images where ID='$cid'");
                       $row=$query ->fetch(PDO:: FETCH_ASSOC);
                       if($row > 0) {
                       ?>
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Season Name</label>
+                    <label class="col-sm-2 control-label">Image title</label>
                     <div class="col-sm-10">
-                      <input class="form-control" id="Name" name="Name"  type="text" value="<?php  echo $row['name'];?>">
-                      <?php if( isset($errors['Name'])){ ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['Name'] ?></span>
+                      <input class="form-control" id="title" name="title"  type="text" value="<?php  echo $row['title'];?>">
+                      <?php if( isset($errors['title'])){ ?>
+                        <span style="color:red;display:block;text-align:left"><?php echo $errors['title'] ?></span>
                        <?php } ?>
                     </div>
                   </div>
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Season State</label>
-                    <div class="col-sm-10">
-                        <input type="radio" id="seasonstate-on" name="seasonstate" value="on" style="margin:7px" <?php if ($row['state'] === 'on') echo 'checked'; ?>> Active  <span style="margin: 30px"></span>
-                        <input type="radio" id="seasonstate-off" name="seasonstate" value="off" style="margin:7px" <?php if ($row['state'] === 'off') echo 'checked'; ?>> Inactive
-                        <span id="state-note" style="color: #3d557d ;display:block;text-align:left"></span>
-                        <?php if(isset($errors['seasonstate'])) { ?>
-                        <span style="color:red;display:block;text-align:left"><?php echo $errors['seasonstate'] ?></span>
-                      <?php } ?>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="col-sm-2 control-label">Start Date</label>
-                    <div class="col-sm-10">
-                      <input class="form-control" id="startDate" name="startdate"  type="date" value="<?php  echo $row['startDate'];?>">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="col-sm-2 control-label">Season Poster</label>
+                    <label class="col-sm-2 control-label">Image</label>
                     <div class="col-sm-10">
                       <img src="images/<?php echo $row['image'];?>" width="150" height="200" value="<?php  echo $row['image'];?>">
                     </div>
                   </div>
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Change Poster</label>
+                    <label class="col-sm-2 control-label">Change Image</label>
                     <div class="col-sm-10">
                        <input type="file" class="form-control" name="image" id="image" value="">
                        <?php if( isset($errors['imageinvalid'])){ ?>
@@ -203,11 +166,11 @@ if (strlen($_SESSION['sportadmission']==0)) {
                       </div>
                   </div>
                   <div class="form-group">
-                    <label class="col-sm-2 control-label">Notes</label>
+                    <label class="col-sm-2 control-label">Caption</label>
                     <div class="col-sm-10">
-                    <textarea class="form-control" name="notes"><?php echo htmlspecialchars($row['notes']); ?></textarea>
+                        <textarea class="form-control" name="caption"><?php echo htmlspecialchars($row['caption']); ?></textarea>
                     </div>
-                  </div>
+                 </div>
                 <?php } ?>
                  <p style="text-align: center;"> <button type="submit" name='submit' class="btn btn-primary">Update</button></p>
                 </form>
@@ -260,21 +223,6 @@ if (strlen($_SESSION['sportadmission']==0)) {
   <script src="js/form-component.js"></script>
   <!-- custome script for all page -->
   <script src="js/scripts.js"></script>
-  <!-- allow only one active season-->
-  <script>
-    window.onload = function () {
-        let activeSeason = <?php echo $activeSeason ? 'true' : 'false'; ?>; 
-        let currentSeasonState = '<?php echo $row['state']; ?>'; 
-        let stateNote = document.getElementById('state-note');
-        let stateOn = document.getElementById('seasonstate-on');
-
-        // Check if there is an active season and if it's not the current season being edited
-        if (activeSeason && currentSeasonState !== 'on') {
-            stateOn.disabled = true; // Disable activating another season
-            stateNote.innerHTML = 'Another season is active. Deactivate the active season to activate this one.';
-        }
-    }
-</script>
 
 
 </body>

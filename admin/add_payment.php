@@ -53,7 +53,7 @@ if ($formSubmitted) {
         $errors['addedby'] = "Admin not found";
     }
 
-    $notes = $_POST['notes'];
+    $notes = trim($_POST['notes']);
     if (empty($notes)) {
         $notes = NULL;
     }
@@ -101,9 +101,9 @@ if ($formSubmitted) {
               'discount' => $discount,
               'payment_date' => $pymntdate,
              ];
-
-            echo "<script>alert('Payment has been added.');</script>";
-            echo "<script>window.location.href ='payment_summary.php'</script>";
+             
+             echo "<script>alert('Payment has been added.');</script>";
+             echo "<script>window.location.href ='payment_summary.php'</script>";
         }else {
           echo "<script>alert('Something Went Wrong. Please try again.');</script>";
         } 
@@ -114,7 +114,7 @@ if ($formSubmitted) {
 <html lang="en">
 
 <head>
-  <title>Add Payment | Peace Sports School Admission System</title>
+  <title>Add Payment | Peace Sports School</title>
 
   <!-- Bootstrap CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -308,11 +308,7 @@ if ($formSubmitted) {
             
           </div>
         </div>
-        <!-- Basic Forms & Horizontal Forms-->
-
-        
-         
-      
+        <!-- Basic Forms & Horizontal Forms-->      
         <!-- page end-->
       </section>
     </section>
@@ -366,9 +362,6 @@ if ($formSubmitted) {
   // Set the value of the input as today's date
   dateElement.value = formattedDate;  
 </script>
-
-
-
 </body>
 
 </html>
