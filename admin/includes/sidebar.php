@@ -50,7 +50,7 @@
           </li>
           <li class="sub-menu">
             <a href="javascript:;" class="">
-                          <i class="icon_document_alt"></i>
+                          <i class="icon_contacts_alt"></i>
                           <span>Trainees</span>
                           <span class="menu-arrow arrow_carrot-right"></span>
                       </a>
@@ -72,24 +72,13 @@
           </li>
           <li class="sub-menu">
             <a href="javascript:;" class="">
-                          <i class="icon_table"></i>
+                          <i class="icon_bag_alt"></i>
                           <span>Enrollment</span>
                           <span class="menu-arrow arrow_carrot-right"></span>
                       </a>
             <ul class="sub">
               <li><a class="" href="add_enrollment.php">Add Enrollment</a></li>
               <li><a class="" href="viewall_enrollments.php">Manage Enrollments</a></li>
-            </ul>
-          </li>
-          <li class="sub-menu">
-            <a href="javascript:;" class="">
-                          <i class="icon_genius"></i>
-                          <span>Slider Images</span>
-                          <span class="menu-arrow arrow_carrot-right"></span>
-                      </a>
-            <ul class="sub">
-              <li><a class="" href="add_slider_image.php">Add Image</a></li>
-              <li><a class="" href="viewall_slider_image.php">Manage Images</a></li>
             </ul>
           </li>
           <?php endif; ?>
@@ -105,7 +94,18 @@
             </ul>
           </li>          
           <?php if($Urole == 'admin'): ?>
-          <li class="sub-menu">
+            <li class="sub-menu">
+            <a href="javascript:;" class="">
+                          <i class="icon_paperclip"></i>
+                          <span>Reports</span>
+                          <span class="menu-arrow arrow_carrot-right"></span>
+                      </a>
+            <ul class="sub">
+              <li><a class="" href="enrollment_report.php">Enrollment Report</a></li>
+              <!-- <li><a class="" href="viewall_slider_image.php">Manage Images</a></li> -->
+            </ul>
+          </li>
+            <li class="sub-menu">
             <a href="javascript:;" class="">
               <i class="icon_documents_alt"></i>
               <span>Users</span>
@@ -115,6 +115,17 @@
                 <li><a class="" href="add_user.php"><span>Add User</span></a></li>
                 <li><a class="" href="Viewall_users.php"><span>Manage Users</span></a></li>
               </ul>
+          </li>
+          <li class="sub-menu">
+            <a href="javascript:;" class="">
+                          <i class="icon_genius"></i>
+                          <span>Slider Images</span>
+                          <span class="menu-arrow arrow_carrot-right"></span>
+                      </a>
+            <ul class="sub">
+              <li><a class="" href="add_slider_image.php">Add Image</a></li>
+              <li><a class="" href="viewall_slider_image.php">Manage Images</a></li>
+            </ul>
           </li>
           <?php endif; ?>
         </ul>
