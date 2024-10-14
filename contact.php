@@ -145,7 +145,7 @@ include('includes/dbconnection.php');
 
 
     <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+    <a href="#" class="btn btn-lg btn-primary back-to-top rounded"><i class="fa fa-angle-double-up"></i></a>
 
 
     <!-- JavaScript Libraries -->

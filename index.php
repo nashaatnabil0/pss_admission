@@ -313,7 +313,7 @@ lightbox.addEventListener('click', function(e) {
     <!-- Footer End -->
 
     <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+    <a href="#" class="btn btn-lg btn-primary back-to-top rounded"><i class="fa fa-angle-double-up"></i></a>
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

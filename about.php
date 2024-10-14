@@ -69,7 +69,7 @@ include('includes/dbconnection.php');
             <div class="row align-items-center">
                 <div class="col-lg-5 pb-4 pb-lg-0">
                     <img class="img-fluid w-100" src="img/aabout.jpg" alt="">
-                    <div class="bg-primary text-dark text-center p-4">
+                    <div class="bg-primary text-dark text-center p-4 rounded">
                         <h3 class="m-0">Peace Sports School - Assuit Branch</h3>
                     </div>
                 </div>
@@ -128,7 +128,7 @@ include('includes/dbconnection.php');
 
 
     <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+    <a href="#" class="btn btn-lg btn-primary back-to-top rounded"><i class="fa fa-angle-double-up"></i></a>
 
 
     <!-- JavaScript Libraries -->
