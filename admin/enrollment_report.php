@@ -42,9 +42,37 @@ $sql= $pdoConnection -> query("DELETE FROM enrollment WHERE ID='$rid'");
     <!-- Include DataTables Buttons CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
     <style>
-        /* Ensure that the filter row dropdowns do not interfere with sorting controls */
+        /* Styling adjustments */
         #filterRow th {
             padding: 5px;
+            background-color: #f8f9fa; Light background for filters
+        }
+        #athleteTable thead tr th {
+            background-color: #343a40;
+            color: #fff;
+            text-align: center;
+        }
+        /* Customize buttons */
+        .dt-buttons .btn {
+            margin-right: 5px;
+        }
+        .dt-buttons {
+            margin-bottom: 10px;
+        }
+        /* Align filter row text */
+        select {
+            width: 100%;
+        }
+        /* Style reset button */
+        #resetFilters {
+            margin-top: 10px;
+        }
+        /* Mobile responsiveness */
+        @media (max-width: 767px) {
+            #filterRow th, #athleteTable thead tr th {
+                font-size: 12px;
+                padding: 3px;
+            }
         }
     </style>
 </head>
@@ -81,7 +109,7 @@ $sql= $pdoConnection -> query("DELETE FROM enrollment WHERE ID='$rid'");
             <button id="resetFilters" class="btn btn-primary" style="  margin: 10px;">Reset Filters</button>
             
         </div>
-          <table id="athleteTable" class="display table table-bordered" >
+          <table id="athleteTable" class="display table " >
             <thead>
             <tr id="filterRow">
                     <th></th> <!-- Counter column (no filter) -->
