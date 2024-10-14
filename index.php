@@ -120,6 +120,20 @@ try {
     border-radius: 10px;
 }
 
+/* Ensure each item in the carousel aligns properly */
+.owl-carousel .item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;  /* Add padding between images */
+}
+
+/* Adjust the image size when showing multiple items */
+.owl-carousel .item img {
+    width: 90%; /* Reduce width to fit multiple images */
+    height: auto;
+}
+
 
 .owl-prev, .owl-next {
     position: absolute;
@@ -343,14 +357,15 @@ $(document).ready(function(){
         autoplay: true,  // Enable auto-play
         autoplayTimeout: 5000,  // 5000ms = 5 seconds
         autoplayHoverPause: true,  // Pause on hover
-        items: 1,  // Display one image at a time
+        items: 3,  // Display three images at a time
         responsive:{
-            0:{ items: 1 },
-            600:{ items: 1 },
-            1000:{ items: 1 }
+            0:{ items: 1 },    // 1 image on small screens
+            600:{ items: 2 },  // 2 images on medium screens
+            1000:{ items: 3 }  // 3 images on larger screens
         }
     });
 });
+
 
 
         </script>
