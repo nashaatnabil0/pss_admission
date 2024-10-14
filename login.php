@@ -137,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="input-group pt-5" >
                         <input type="text" id="NID" name="nid" class=" form-control border-light" style="padding: 30px;" placeholder="Enter NID" >
                         <div class="input-group-append">
-                            <button type="submit" id="subBtn" class=" btn btn-primary px-3">Submit</button>
+                            <button type="submit" id="subBtn" class=" btn btn-primary px-3 rounded">Submit</button>
                         </div>
                     </div>
                 </form>

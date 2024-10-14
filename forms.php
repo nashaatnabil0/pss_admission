@@ -354,7 +354,7 @@ try {
                                         <?php } ?>
                                     <input type="hidden" name="enrollState" id="enrollStatVal" value="">
 
-                                <button type="submit"  class="btn btn-primary">Register</button>
+                                <button type="submit"  class="btn btn-primary rounded">Register</button>
                             </form>
                         </div>
                     </div>

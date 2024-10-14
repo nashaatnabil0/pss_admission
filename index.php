@@ -219,7 +219,7 @@ try {
         <h2><?php echo htmlspecialchars($row['name']); ?></h2>
         <p><strong>Start Date:</strong> <?php echo date('F d, Y', strtotime($row['startDate'])); ?></p>
         <br />
-            <a href="login.php" class="btn btn-primary py-2 px-2">Enroll Now</a>
+            <a href="login.php" class="btn btn-primary py-2 px-2 rounded">Enroll Now</a>
     </div>
     <?php
         } else {

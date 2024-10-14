@@ -42,9 +42,9 @@ $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
             </button>
             <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
                 <div class="navbar-nav m-auto py-0">
-                    <a href="index.php" class="lang en nav-item nav-link <?php if (strpos($url,'index') == true) { echo ' active'; } ?>">Home</a>
-                    <a href="about.php" class="lang en nav-item nav-link <?php if (strpos($url,'about') == true) { echo ' active'; } ?>" >About</a>
-                    <a href="contact.php" class="lang en nav-item nav-link <?php if (strpos($url,'contact') == true) { echo ' active'; } ?>">Contact</a>
+                    <a href="index.php" class="lang en nav-item nav-link rounded <?php if (strpos($url,'index') == true) { echo ' active'; } ?>">Home</a>
+                    <a href="about.php" class="lang en nav-item nav-link rounded <?php if (strpos($url,'about') == true) { echo ' active'; } ?>" >About</a>
+                    <a href="contact.php" class="lang en nav-item nav-link rounded <?php if (strpos($url,'contact') == true) { echo ' active'; } ?>">Contact</a>
                 </div>
                 <a href="login.php" class="btn btn-primary py-2 px-4 d-none d-lg-block rounded">Register / Enroll</a>
                 <a href="login.php" class="btn btn-primary py-2 px-4 d-block d-lg-none">Register / Enroll</a>
