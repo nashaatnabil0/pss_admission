@@ -11,8 +11,10 @@ $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
                     <small class="px-3">|</small>
                     <small><i class="fa fa-envelope mr-2"></i>pssassiut1@gmail.com</small>
                 </div>
+                <div class="d-inline-flex align-items-center" id="google_translate_element"></div>
             </div>
-            <div class="col-lg-6 text-center text-lg-right">
+            
+            <div class="col-lg-6 text-center text-lg-right"> 
 
                 <div class="d-inline-flex align-items-center">
                     <a class="text-white px-2" href="https://www.facebook.com/people/Peace-Sports-School-Assuit/100091623236982/" target="_blank">
@@ -52,6 +54,15 @@ $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
             </div>
         </nav>
     </div>
+    <script type="text/javascript">
+            function googleTranslateElementInit(){
+                new google.translate.TranslateElement(
+                    {PageLangauage: 'en'},
+                    'google_translate_element'
+                );
+            }
+            </script>
+            <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 
     <!-- Navbar End -->

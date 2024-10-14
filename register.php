@@ -235,6 +235,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <small><i class="fa fa-phone-alt mr-2"></i>+01205557683</small>
                     <small class="px-3">|</small>
                     <small><i class="fa fa-envelope mr-2"></i>pssassiut1@gmail.com</small>
+                    <div class="d-inline-flex align-items-center" id="google_translate_element"></div>
                 </div>
             </div>
             <div class="col-lg-6 text-center text-lg-right">
@@ -438,6 +439,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <!-- Language Function -->
     <script src="js/lang.js"></script>
+
+    <script type="text/javascript">
+            function googleTranslateElementInit(){
+                new google.translate.TranslateElement(
+                    {PageLangauage: 'en'},
+                    'google_translate_element'
+                );
+            }
+            </script>
+            <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 
 </html>
