@@ -218,9 +218,9 @@ try {
             </button>
             <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
                 <div class="navbar-nav m-auto py-0">
-                    <a href="index.php" class="nav-item nav-link ">Home</a>
-                    <a href="about.php" class="nav-item nav-link">About</a>                    
-                    <a href="contact.php" class="nav-item nav-link">Contact</a>
+                    <a href="index.php" class="nav-item nav-link rounded">Home</a>
+                    <a href="about.php" class="nav-item nav-link rounded">About</a>                    
+                    <a href="contact.php" class="nav-item nav-link rounded">Contact</a>
                 </div>
             </div>
         </nav>

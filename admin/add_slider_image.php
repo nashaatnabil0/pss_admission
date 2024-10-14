@@ -10,13 +10,16 @@ $errors = [];
 if(isset($_POST['submit']))
   {
    
-    $title=trim($_POST['title']);
-    $alphapet_NamePattern = '/^([a-zA-Z0-9\s]+|[\p{Arabic}0-9\s]+)$/u';
-    if (empty($title)){
-      $errors['title'] = "Please enter a title for the image.";
-    }elseif (!preg_match($alphapet_NamePattern, $title)){
-      $errors['title']='The title must be letters only'; 
+    $title = trim($_POST['title']);
+    $alphapet_NamePattern = '/^([a-zA-Z0-9\s\p{Arabic}\p{P}\p{S}]+)$/u';
+    
+    if (empty($title)) {
+        $errors['title'] = "Please enter a title for the image.";
+    } elseif (!preg_match($alphapet_NamePattern, $title)) {
+        $errors['title'] = 'The title can contain letters, numbers, and symbols.';
     }
+    
+    
 
     $Img = trim($_FILES['image']['name']);
     if (empty($Img)){
