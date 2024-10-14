@@ -47,7 +47,7 @@ $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
                     <a href="contact.php" class="lang en nav-item nav-link rounded <?php if (strpos($url,'contact') == true) { echo ' active'; } ?>">Contact</a>
                 </div>
                 <a href="login.php" class="btn btn-primary py-2 px-4 d-none d-lg-block rounded">Register / Enroll</a>
-                <a href="login.php" class="btn btn-primary py-2 px-4 d-block d-lg-none">Register / Enroll</a>
+                <a href="login.php" class="btn btn-primary py-2 px-4 d-block d-lg-none rounded">Register / Enroll</a>
                 </div>
             </div>
         </nav>
