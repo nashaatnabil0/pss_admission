@@ -12,6 +12,8 @@ $sql = "SELECT
                     en.discount,
                     en.date,
                     t.Name as Tname,
+                    t.birthDate,
+                    t.contactMobNum,
                     g.Title as Gtilte,
                     g.days as Gdays,
                     g.minAge as gminAge,

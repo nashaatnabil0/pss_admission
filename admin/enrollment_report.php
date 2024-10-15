@@ -119,16 +119,24 @@ $sql= $pdoConnection -> query("DELETE FROM enrollment WHERE ID='$rid'");
                     <th></th>
                     <th></th>
                     <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
                 </tr>    
             
             <tr>
                     <th>#</th> <!-- Counter column -->
-                    <th>ID</th>
+                    <th>E-ID</th>
                     <th>Name</th>
-                    <th>Age</th>
+                    <th>NID</th>
+                    <th>Enrolled Group</th>
+                    <th>Enrollment State</th>
+                    <th>Payment State</th>
                     <th>Sport</th>
-                    <th>Training Group</th>
-                    <th>Enrollment Date</th>
+                    <th>BirthDate</th>
+                    <th>Payment Plan</th>
+                    <th>Contact Num</th>
                 </tr>
                 
             </thead>
@@ -214,14 +222,23 @@ $sql= $pdoConnection -> query("DELETE FROM enrollment WHERE ID='$rid'");
                     "dataSrc": ""
                 },
                 "columns": [
-                  { "data": null, "className": "dt-center", "orderable": false }, // Counter column
-                    { "data": "ID" },
+                    { "data": null, "className": "dt-center", "orderable": false }, // Counter column
+                    { "data": "ID", "className": "dt-center",},
                     { "data": "Tname" },
                     { "data": "traineeNID" },
-                    // { "data": "sport", "visible": false }, // Sport column (hidden by default)
-                    { "data": "Gtilte" },
+                    {
+                        // Combine Sport and Training Group into one column
+                        "data": null,
+                        "render": function(data, type, row) {
+                            return row.Gtilte + ' / ' + row.gminAge+'y - '+row.gmaxAge + 'y / '+row.Timing;
+                        }
+                    },
+                    { "data": "state" },
                     { "data": "paymentState" },
-                    { "data": "state" }
+                    { "data": "spname" },
+                    { "data": "birthDate", "visible": false },
+                    { "data": "paymentPlan", "visible": false },
+                    { "data": "contactMobNum", "visible": false }
                 ],
                 // "order": [[ 1, "asc" ]], // Default sorting on the first column
                 "dom": 'Bfrtip', // Add the Buttons above the table
@@ -273,8 +290,30 @@ $sql= $pdoConnection -> query("DELETE FROM enrollment WHERE ID='$rid'");
                     this.api().columns().every(function(i) {
                         var column = this;
                         
+                        if (i === 4) {  // Index 4 (Sport / Training Group combined column)
+                            var select = $('<select><option value="">All</option></select>')
+                                .appendTo($('#filterRow th').eq(i)) // Add the select to the filter row
+                                .on('change', function() {
+                                    var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                                    column.search(val ? '^' + val + '$' : '', true, false).draw();
+                                });
+
+                             // Use a Set to store unique combined values
+                            var uniqueValues = new Set();
+                            
+                            column.data().each(function(d, j) {
+                                // Ensure we are correctly showing the combined data
+                                var combinedValue = d.Gtilte + ' / ' + d.gminAge+'y - '+d.gmaxAge + 'y / '+d.Timing;
+                                uniqueValues.add(combinedValue); // Add to the Set (prevents duplicates)
+                            });
+
+                            // Populate the dropdown with unique values from the Set
+                            uniqueValues.forEach(function(value) {
+                                select.append('<option value="' + value + '">' + value + '</option>');
+                            });
+                        }
                         // Only add filters to specific columns (e.g., Sport and Training Group)
-                        if (i === 4 || i === 5 || i === 6) {  // Index 3 (Sport) and 4 (Training Group)
+                        if (i === 5 || i === 6 || i === 7) {  // Index 3 (Sport) and 4 (Training Group)
                             var select = $('<select><option value="">All</option></select>')
                                 .appendTo($('#filterRow th').eq(i)) // Add the select to the filter row
                                 .on('change', function() {

@@ -17,7 +17,7 @@
                     <div class="col-md-6 mb-5">
                         <h3 class="text-primary mb-4">Quick Links</h3>
                         <div class="d-flex flex-column justify-content-start">
-                            <a class="text-white mb-2" href="index.php"><i class="fa fa-angle-right mr-2"></i>Home</a>
+                            <a class="text-white mb-2" href="index.php"><i class="fa fa-angle-right mr-2"></i>Home Page</a>
                             <a class="text-white mb-2" href="about.php"><i class="fa fa-angle-right mr-2"></i>About Us</a>
                             <!-- <a class="text-white mb-2" href="login.php"><i class="fa fa-angle-right mr-2"></i>Login</a>
                             <a class="text-white mb-2" href="account.php"><i class="fa fa-angle-right mr-2"></i>Account</a> -->
