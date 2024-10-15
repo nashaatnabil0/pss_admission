@@ -16,7 +16,7 @@ if(isset($_POST['submit']))
     if (empty($title)) {
         $errors['title'] = "Please enter a title for the image.";
     } elseif (!preg_match($alphapet_NamePattern, $title)) {
-        $errors['title'] = 'The title can contain letters, numbers, and symbols.';
+        $errors['title'] = 'Title must be either entirely in Arabic or entirely in English.';
     }
     
     
