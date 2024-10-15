@@ -11,7 +11,7 @@ if(isset($_POST['submit']))
   {
    
     $title = trim($_POST['title']);
-    $alphapet_NamePattern = '/^([a-zA-Z0-9\s\p{Arabic}\p{P}\p{S}]+)$/u';
+    $alphapet_NamePattern = '/^([a-zA-Z0-9\s]+|[\p{Arabic}0-9\s]+)$/u';
     
     if (empty($title)) {
         $errors['title'] = "Please enter a title for the image.";
